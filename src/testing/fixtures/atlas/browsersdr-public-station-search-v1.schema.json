@@ -1,0 +1,522 @@
+{
+  "$comment": "Wire allowlist only. Cross-field ordering, URL review and publication eligibility are normative in the linked contract, not inferred by this schema.",
+  "$defs": {
+    "PublicErrorEnvelope": {
+      "additionalProperties": false,
+      "properties": {
+        "error": {
+          "additionalProperties": false,
+          "properties": {
+            "code": {
+              "enum": [
+                "untrusted_host",
+                "untrusted_origin",
+                "not_found",
+                "method_not_allowed",
+                "catalog_changed",
+                "cursor_expired",
+                "validation_error",
+                "invalid_cursor",
+                "query_too_broad",
+                "public_rate_limited",
+                "public_busy",
+                "public_catalog_unavailable",
+                "public_query_timeout"
+              ]
+            },
+            "details": {
+              "additionalProperties": false,
+              "properties": {},
+              "required": [],
+              "type": "object"
+            },
+            "message": {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            "request_id": {
+              "maxLength": 128,
+              "minLength": 1,
+              "pattern": "^[A-Za-z0-9_-]+$",
+              "type": "string"
+            }
+          },
+          "required": [
+            "code",
+            "message",
+            "details",
+            "request_id"
+          ],
+          "type": "object"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "type": "object"
+    },
+    "PublicMatch": {
+      "additionalProperties": false,
+      "properties": {
+        "reference_ids": {
+          "items": {
+            "format": "uuid",
+            "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+            "type": "string"
+          },
+          "maxItems": 50,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "station_fields": {
+          "items": {
+            "enum": [
+              "name",
+              "aliases",
+              "call_sign",
+              "network",
+              "service",
+              "country"
+            ]
+          },
+          "maxItems": 6,
+          "type": "array",
+          "uniqueItems": true
+        }
+      },
+      "required": [
+        "station_fields",
+        "reference_ids"
+      ],
+      "type": "object"
+    },
+    "PublicSite": {
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "properties": {
+            "place_name": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "properties": {
+            "country": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "properties": {
+        "country": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "place_name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "place_name",
+        "country"
+      ],
+      "type": "object"
+    },
+    "PublicSource": {
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "properties": {
+            "published_on": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "properties": {
+            "retrieved_at": {
+              "type": "string"
+            }
+          }
+        },
+        {
+          "properties": {
+            "reviewed_at": {
+              "type": "string"
+            }
+          }
+        }
+      ],
+      "properties": {
+        "published_on": {
+          "format": "date",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publisher": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": "string"
+        },
+        "retrieved_at": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reviewed_at": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "url": {
+          "format": "uri",
+          "maxLength": 2048,
+          "pattern": "^https://[A-Za-z0-9.-]+(?:/[^?#\\s]*)?$",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "publisher",
+        "url",
+        "published_on",
+        "retrieved_at",
+        "reviewed_at"
+      ],
+      "type": "object"
+    },
+    "PublicStation": {
+      "additionalProperties": false,
+      "properties": {
+        "aliases": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 30,
+          "type": "array",
+          "uniqueItems": true
+        },
+        "call_sign": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "country": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "id": {
+          "format": "uuid",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": "string"
+        },
+        "network": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "publication_version": {
+          "minimum": 1,
+          "type": "integer"
+        },
+        "service": {
+          "maxLength": 200,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/PublicSource"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "type": "array"
+        },
+        "transmissions": {
+          "items": {
+            "$ref": "#/$defs/PublicTransmission"
+          },
+          "maxItems": 50,
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "publication_version",
+        "name",
+        "aliases",
+        "call_sign",
+        "network",
+        "service",
+        "country",
+        "sources",
+        "transmissions"
+      ],
+      "type": "object"
+    },
+    "PublicStationDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "catalog_revision": {
+          "format": "uuid",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "browsersdr-public-station-search/1"
+        },
+        "station": {
+          "$ref": "#/$defs/PublicStation"
+        }
+      },
+      "required": [
+        "contract_version",
+        "catalog_revision",
+        "station"
+      ],
+      "type": "object"
+    },
+    "PublicStationListItem": {
+      "additionalProperties": false,
+      "properties": {
+        "match": {
+          "$ref": "#/$defs/PublicMatch"
+        },
+        "station": {
+          "$ref": "#/$defs/PublicStation"
+        }
+      },
+      "required": [
+        "station",
+        "match"
+      ],
+      "type": "object"
+    },
+    "PublicStationPage": {
+      "additionalProperties": false,
+      "properties": {
+        "catalog_revision": {
+          "format": "uuid",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "browsersdr-public-station-search/1"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/PublicStationListItem"
+          },
+          "maxItems": 50,
+          "type": "array"
+        },
+        "next_cursor": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "contract_version",
+        "catalog_revision",
+        "items",
+        "next_cursor"
+      ],
+      "type": "object"
+    },
+    "PublicStationQuery": {
+      "additionalProperties": false,
+      "dependentRequired": {
+        "max_frequency_hz": [
+          "min_frequency_hz"
+        ],
+        "min_frequency_hz": [
+          "max_frequency_hz"
+        ]
+      },
+      "properties": {
+        "cursor": {
+          "maxLength": 2048,
+          "minLength": 1,
+          "pattern": "^[A-Za-z0-9_-]+$",
+          "type": "string"
+        },
+        "limit": {
+          "default": 50,
+          "maximum": 50,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "max_frequency_hz": {
+          "maximum": 1000000000000.0,
+          "minimum": 0,
+          "type": "number"
+        },
+        "min_frequency_hz": {
+          "maximum": 1000000000000.0,
+          "minimum": 0,
+          "type": "number"
+        },
+        "q": {
+          "maxLength": 200,
+          "type": "string"
+        }
+      },
+      "type": "object"
+    },
+    "PublicTransmission": {
+      "additionalProperties": false,
+      "properties": {
+        "bandwidth_hz": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "broadcast_format": {
+          "maxLength": 100,
+          "minLength": 1,
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "frequency_hz": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "type": "number"
+        },
+        "id": {
+          "format": "uuid",
+          "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$",
+          "type": "string"
+        },
+        "site": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PublicSite"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/PublicSource"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "type": "array"
+        },
+        "valid_from": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "valid_to": {
+          "format": "date-time",
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:\\.\\d+)?Z$",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "frequency_hz",
+        "broadcast_format",
+        "bandwidth_hz",
+        "site",
+        "sources",
+        "valid_from",
+        "valid_to"
+      ],
+      "type": "object"
+    }
+  },
+  "$id": "urn:sigintatlas:browsersdr-public-station-search:1",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/PublicStationPage"
+    },
+    {
+      "$ref": "#/$defs/PublicStationDetail"
+    },
+    {
+      "$ref": "#/$defs/PublicErrorEnvelope"
+    }
+  ],
+  "title": "BrowserSDR public station search v1 (design only)",
+  "x-contract-version": "browsersdr-public-station-search/1",
+  "x-policy-version": "station-publication/1"
+}

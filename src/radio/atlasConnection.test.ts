@@ -3,6 +3,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AtlasClient, AtlasRequestError } from "./atlasClient";
 import { AtlasCredentialStore, ATLAS_USER_TOKEN_KEY } from "./atlasCredentials";
 import { AtlasConnection } from "./atlasConnection";
+import { PublicStationClient } from "./publicStationClient";
+import publicFixture from "../testing/fixtures/atlas/browsersdr-public-station-search-v1.json";
 
 const TOKEN = "test-credential-".repeat(3);
 const NEXT = "replacement-credential-".repeat(3);
@@ -181,6 +183,40 @@ describe("Atlas shared credential storage", () => {
 });
 
 describe("Atlas connection and session ownership", () => {
+  it("public discovery leaves an authenticated transfer session and remembered credentials untouched", async () => {
+    const { store, peer, client, connection } = setup();
+    store.save(TOKEN);
+    await connection.ensureAuthenticated();
+    const hold = deferred<void>();
+    const transfer = connection.withTransfer(
+      TOKEN,
+      () => hold.promise,
+      new AbortController().signal,
+    );
+    const before = connection.getSnapshot();
+    const publicFetch = vi.fn<typeof fetch>(async (_url, init) => {
+      expect(init?.credentials).toBe("omit");
+      expect(init?.headers).toEqual({ Accept: "application/json" });
+      return Response.json(publicFixture.queries[0]!.response);
+    });
+    try {
+      await new PublicStationClient(publicFetch).list({ q: "energy" });
+      expect(connection.getSnapshot()).toBe(before);
+      expect(store.getSnapshot().token).toBe(TOKEN);
+      expect(localStorage.getItem(ATLAS_USER_TOKEN_KEY)).toBe(TOKEN);
+      expect(peer.logins).toBe(1);
+      await client.createUpload(
+        {},
+        "after-public-search",
+        new AbortController().signal,
+      );
+      expect(peer.calls.at(-1)!.headers.get("X-CSRF-Token")).toBe("csrf-1");
+      expect(connection.getSnapshot().transferActive).toBe(true);
+    } finally {
+      hold.resolve();
+      await transfer;
+    }
+  });
   it("deduplicates concurrent authentication and checks /me without IQ capabilities", async () => {
     const { store, peer, connection } = setup();
     store.save(TOKEN);

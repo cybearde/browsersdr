@@ -235,7 +235,8 @@ async function click(label: string) {
 it("exposes independent Pro stages, validates gain drafts before commands and shows accepted values", async () => {
   await change(control("Source"), "hackrf");
   expect(control("RX VGA gain").value).toBe("12");
-  expect(document.querySelector('option[value="auto"]')).toBeNull();
+  expect(document.querySelector('#source-stage-body')).not.toBeNull();
+  expect(document.querySelector('#source-stage-body option[value="auto"]')).toBeNull();
   await click("Connect");
   expect(options[0]?.source).toBe("hackrf");
   expect(options[0]).not.toHaveProperty("gainDb");

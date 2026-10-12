@@ -74,7 +74,7 @@ test("favorites save, edit, search, reorder, recall and round trip JSON without 
   await page
     .getByRole("combobox", { name: "Signal source", exact: true })
     .selectOption("synthetic");
-  const panel = page.locator(".favorites-panel");
+  const panel = page.getByRole("dialog", { name: "Favorites", exact: true });
   await page.getByRole("button", { name: /^Favorites/ }).click();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBe(
     1440,
@@ -170,7 +170,7 @@ test("unreadable favorites are preserved until explicit valid backup restoration
     localStorage.setItem("browsersdr.bookmarks.v1", "invalid prior data"),
   );
   await page.goto("/");
-  const panel = page.locator(".favorites-panel");
+  const panel = page.getByRole("dialog", { name: "Favorites", exact: true });
   await page.getByRole("button", { name: /^Favorites/ }).click();
   await expect(panel).toContainText(
     "Existing browser data has been preserved.",

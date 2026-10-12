@@ -1,0 +1,3541 @@
+{
+  "catalog_revision": "00000000-0000-4000-8000-000000000901",
+  "contract_version": "browsersdr-public-station-search/1",
+  "credential_acceptance": [
+    {
+      "caller": "anonymous",
+      "expected": "Identical eligible projection/status/public versions; no Set-Cookie or user/token/session write; request ID and cursor signatures ignored in comparison."
+    },
+    {
+      "caller": "admin",
+      "expected": "Identical eligible projection/status/public versions; no Set-Cookie or user/token/session write; request ID and cursor signatures ignored in comparison."
+    },
+    {
+      "caller": "user-A-private-recordings",
+      "expected": "Identical eligible projection/status/public versions; no Set-Cookie or user/token/session write; request ID and cursor signatures ignored in comparison."
+    },
+    {
+      "caller": "user-B-different-private-recordings",
+      "expected": "Identical eligible projection/status/public versions; no Set-Cookie or user/token/session write; request ID and cursor signatures ignored in comparison."
+    },
+    {
+      "caller": "malformed-bearer",
+      "expected": "Identical eligible projection/status/public versions; no Set-Cookie or user/token/session write; request ID and cursor signatures ignored in comparison."
+    },
+    {
+      "caller": "expired-token",
+      "expected": "Identical eligible projection/status/public versions; no Set-Cookie or user/token/session write; request ID and cursor signatures ignored in comparison."
+    },
+    {
+      "caller": "revoked-token",
+      "expected": "Identical eligible projection/status/public versions; no Set-Cookie or user/token/session write; request ID and cursor signatures ignored in comparison."
+    },
+    {
+      "caller": "invalid-cookie",
+      "expected": "Identical eligible projection/status/public versions; no Set-Cookie or user/token/session write; request ID and cursor signatures ignored in comparison."
+    },
+    {
+      "caller": "valid-cookie-and-invalid-bearer",
+      "expected": "Identical eligible projection/status/public versions; no Set-Cookie or user/token/session write; request ID and cursor signatures ignored in comparison."
+    },
+    {
+      "caller": "csrf-cookie-only",
+      "expected": "Identical eligible projection/status/public versions; no Set-Cookie or user/token/session write; request ID and cursor signatures ignored in comparison."
+    }
+  ],
+  "details": {
+    "00000000-0000-4000-8000-000000000001": {
+      "catalog_revision": "00000000-0000-4000-8000-000000000901",
+      "contract_version": "browsersdr-public-station-search/1",
+      "station": {
+        "aliases": [
+          "Energy Berlin"
+        ],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "name": "ENERGY Berlin (illustrative)",
+        "network": null,
+        "publication_version": 1,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmissions": [
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 103400000,
+            "id": "00000000-0000-4000-8000-000000000011",
+            "site": {
+              "country": null,
+              "name": null,
+              "place_name": "North example"
+            },
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          },
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": "DAB+",
+            "frequency_hz": 229072000,
+            "id": "00000000-0000-4000-8000-000000000012",
+            "site": {
+              "country": null,
+              "name": null,
+              "place_name": "South example"
+            },
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          }
+        ]
+      }
+    },
+    "00000000-0000-4000-8000-000000000002": {
+      "catalog_revision": "00000000-0000-4000-8000-000000000901",
+      "contract_version": "browsersdr-public-station-search/1",
+      "station": {
+        "aliases": [
+          "Energy Munich"
+        ],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000002",
+        "name": "ENERGY München (illustrative)",
+        "network": null,
+        "publication_version": 1,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmissions": [
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 93300000,
+            "id": "00000000-0000-4000-8000-000000000021",
+            "site": null,
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": "2020-12-31T23:59:59Z"
+          },
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": null,
+            "frequency_hz": 220352000,
+            "id": "00000000-0000-4000-8000-000000000022",
+            "site": {
+              "country": null,
+              "name": null,
+              "place_name": "Munich example"
+            },
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          }
+        ]
+      }
+    },
+    "00000000-0000-4000-8000-000000000003": {
+      "catalog_revision": "00000000-0000-4000-8000-000000000901",
+      "contract_version": "browsersdr-public-station-search/1",
+      "station": {
+        "aliases": [],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "name": "ENERGY Sachsen (illustrative)",
+        "network": null,
+        "publication_version": 1,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmissions": [
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": null,
+            "frequency_hz": 99000000,
+            "id": "00000000-0000-4000-8000-000000000031",
+            "site": null,
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          }
+        ]
+      }
+    },
+    "00000000-0000-4000-8000-000000000004": {
+      "catalog_revision": "00000000-0000-4000-8000-000000000901",
+      "contract_version": "browsersdr-public-station-search/1",
+      "station": {
+        "aliases": [],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000004",
+        "name": "Literal 100%_radio (illustrative)",
+        "network": null,
+        "publication_version": 1,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmissions": [
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 101000000,
+            "id": "00000000-0000-4000-8000-000000000041",
+            "site": null,
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          }
+        ]
+      }
+    },
+    "00000000-0000-4000-8000-000000000005": {
+      "catalog_revision": "00000000-0000-4000-8000-000000000901",
+      "contract_version": "browsersdr-public-station-search/1",
+      "station": {
+        "aliases": [],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000005",
+        "name": "Aerial Null Service (illustrative)",
+        "network": null,
+        "publication_version": 1,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmissions": []
+      }
+    }
+  },
+  "direct_detail_probes": [
+    {
+      "body": {
+        "error": {
+          "code": "not_found",
+          "details": {},
+          "message": "Station unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "station_id": "00000000-0000-4000-8000-000000000006",
+      "status": 404
+    },
+    {
+      "body": {
+        "error": {
+          "code": "not_found",
+          "details": {},
+          "message": "Station unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "station_id": "00000000-0000-4000-8000-000000000007",
+      "status": 404
+    },
+    {
+      "body": {
+        "error": {
+          "code": "not_found",
+          "details": {},
+          "message": "Station unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "station_id": "00000000-0000-4000-8000-000000000999",
+      "status": 404
+    }
+  ],
+  "errors": {
+    "catalog_changed": {
+      "body": {
+        "error": {
+          "code": "catalog_changed",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Cache-Control": "no-store",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 409
+    },
+    "cursor_expired": {
+      "body": {
+        "error": {
+          "code": "cursor_expired",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Cache-Control": "no-store",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 409
+    },
+    "invalid_cursor": {
+      "body": {
+        "error": {
+          "code": "invalid_cursor",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Cache-Control": "no-store",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 422
+    },
+    "method_not_allowed": {
+      "body": {
+        "error": {
+          "code": "method_not_allowed",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Allow": "GET",
+        "Cache-Control": "no-store",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 405
+    },
+    "not_found": {
+      "body": {
+        "error": {
+          "code": "not_found",
+          "details": {},
+          "message": "Station unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Cache-Control": "no-store",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 404
+    },
+    "public_busy": {
+      "body": {
+        "error": {
+          "code": "public_busy",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Cache-Control": "no-store",
+        "Retry-After": "2",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 429
+    },
+    "public_catalog_unavailable": {
+      "body": {
+        "error": {
+          "code": "public_catalog_unavailable",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Cache-Control": "no-store",
+        "Retry-After": "2",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 503
+    },
+    "public_query_timeout": {
+      "body": {
+        "error": {
+          "code": "public_query_timeout",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Cache-Control": "no-store",
+        "Retry-After": "2",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 503
+    },
+    "public_rate_limited": {
+      "body": {
+        "error": {
+          "code": "public_rate_limited",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Cache-Control": "no-store",
+        "Retry-After": "2",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 429
+    },
+    "query_too_broad": {
+      "body": {
+        "error": {
+          "code": "query_too_broad",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Cache-Control": "no-store",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 422
+    },
+    "untrusted_host": {
+      "body": {
+        "error": {
+          "code": "untrusted_host",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Cache-Control": "no-store",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 400
+    },
+    "untrusted_origin": {
+      "body": {
+        "error": {
+          "code": "untrusted_origin",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Cache-Control": "no-store",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 403
+    },
+    "validation_error": {
+      "body": {
+        "error": {
+          "code": "validation_error",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "headers": {
+        "Cache-Control": "no-store",
+        "X-Request-ID": "synthetic_request_01"
+      },
+      "status": 422
+    }
+  },
+  "evidence": "Generated synthetic data; no source approval, catalog accuracy or RF evidence. Private test inputs must never be served. FIXTURE cursors are unsigned labels, not server cursor examples.",
+  "hidden_search_probes": [
+    "hiddenaliasprobe",
+    "hiddennetworkprobe",
+    "hiddensiteprobe",
+    "hiddenreferenceprobe",
+    "retiredreferenceprobe",
+    "rawsourceprobe",
+    "rawpathprobe",
+    "hiddenrdsprobe",
+    "sourceinternalprobe",
+    "privatenoteprobe",
+    "privateuserprobe",
+    "privaterecordingprobe",
+    "privaterunprobe",
+    "unpublishedstationprobe",
+    "withdrawnstationprobe",
+    "52.123456",
+    "13.123456"
+  ],
+  "invalid_queries": [
+    {
+      "case": "single-character",
+      "code": "validation_error",
+      "query": {
+        "q": "a"
+      }
+    },
+    {
+      "case": "too-long",
+      "code": "validation_error",
+      "query": {
+        "q": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      }
+    },
+    {
+      "case": "unpaired-range",
+      "code": "validation_error",
+      "query": {
+        "min_frequency_hz": 1
+      }
+    },
+    {
+      "case": "inverted-range",
+      "code": "validation_error",
+      "query": {
+        "max_frequency_hz": 1,
+        "min_frequency_hz": 2
+      }
+    },
+    {
+      "case": "limit-too-large",
+      "code": "validation_error",
+      "query": {
+        "limit": 51
+      }
+    },
+    {
+      "case": "limit-zero",
+      "code": "validation_error",
+      "query": {
+        "limit": 0
+      }
+    },
+    {
+      "case": "unknown-private-filter",
+      "code": "validation_error",
+      "query": {
+        "received_since": "2026-10-11T09:00:00Z"
+      }
+    },
+    {
+      "case": "malformed-cursor",
+      "code": "invalid_cursor",
+      "query": {
+        "cursor": "!"
+      }
+    },
+    {
+      "case": "bad-bound",
+      "code": "validation_error",
+      "raw_query": "min_frequency_hz=NaN&max_frequency_hz=Infinity"
+    },
+    {
+      "case": "duplicate-query",
+      "code": "validation_error",
+      "raw_query": "q=energy&q=hiddenaliasprobe"
+    },
+    {
+      "case": "changed-filter-cursor",
+      "code": "invalid_cursor",
+      "query": {
+        "cursor": "FIXTURE_energy_page2",
+        "limit": 2,
+        "q": "aerial"
+      }
+    }
+  ],
+  "lifecycle": [
+    {
+      "case": "rename-stable-id",
+      "detail": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000902",
+        "contract_version": "browsersdr-public-station-search/1",
+        "station": {
+          "aliases": [
+            "Energy Berlin"
+          ],
+          "call_sign": null,
+          "country": null,
+          "id": "00000000-0000-4000-8000-000000000001",
+          "name": "ENERGY Berlin Renamed (illustrative)",
+          "network": null,
+          "publication_version": 2,
+          "service": null,
+          "sources": [
+            {
+              "published_on": null,
+              "publisher": "Generated example publisher (no reuse approval)",
+              "retrieved_at": "2026-10-11T09:00:00Z",
+              "reviewed_at": "2026-10-11T10:00:00Z",
+              "url": "https://example.org/illustrative-radio"
+            }
+          ],
+          "transmissions": [
+            {
+              "bandwidth_hz": null,
+              "broadcast_format": "FM",
+              "frequency_hz": 103400000,
+              "id": "00000000-0000-4000-8000-000000000011",
+              "site": {
+                "country": null,
+                "name": null,
+                "place_name": "North example"
+              },
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "valid_from": null,
+              "valid_to": null
+            },
+            {
+              "bandwidth_hz": null,
+              "broadcast_format": "DAB+",
+              "frequency_hz": 229072000,
+              "id": "00000000-0000-4000-8000-000000000012",
+              "site": {
+                "country": null,
+                "name": null,
+                "place_name": "South example"
+              },
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "valid_from": null,
+              "valid_to": null
+            }
+          ]
+        }
+      },
+      "old_cursor_error": {
+        "error": {
+          "code": "catalog_changed",
+          "details": {},
+          "message": "Public request unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      }
+    },
+    {
+      "case": "retire-selected-reference",
+      "detail": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000903",
+        "contract_version": "browsersdr-public-station-search/1",
+        "station": {
+          "aliases": [
+            "Energy Berlin"
+          ],
+          "call_sign": null,
+          "country": null,
+          "id": "00000000-0000-4000-8000-000000000001",
+          "name": "ENERGY Berlin Renamed (illustrative)",
+          "network": null,
+          "publication_version": 3,
+          "service": null,
+          "sources": [
+            {
+              "published_on": null,
+              "publisher": "Generated example publisher (no reuse approval)",
+              "retrieved_at": "2026-10-11T09:00:00Z",
+              "reviewed_at": "2026-10-11T10:00:00Z",
+              "url": "https://example.org/illustrative-radio"
+            }
+          ],
+          "transmissions": [
+            {
+              "bandwidth_hz": null,
+              "broadcast_format": "DAB+",
+              "frequency_hz": 229072000,
+              "id": "00000000-0000-4000-8000-000000000012",
+              "site": {
+                "country": null,
+                "name": null,
+                "place_name": "South example"
+              },
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "valid_from": null,
+              "valid_to": null
+            }
+          ]
+        }
+      },
+      "unavailable_reference_id": "00000000-0000-4000-8000-000000000011"
+    },
+    {
+      "body": {
+        "error": {
+          "code": "not_found",
+          "details": {},
+          "message": "Station unavailable",
+          "request_id": "synthetic_request_01"
+        }
+      },
+      "case": "withdraw-station",
+      "catalog_revision": "00000000-0000-4000-8000-000000000904",
+      "station_id": "00000000-0000-4000-8000-000000000001",
+      "status": 404
+    },
+    {
+      "case": "expire-cursor",
+      "code": "cursor_expired"
+    },
+    {
+      "case": "mandatory-name-drift",
+      "pending_approval_name": "unapprovednewnameprobe",
+      "station_id": "00000000-0000-4000-8000-000000000001",
+      "status": 404
+    },
+    {
+      "case": "optional-field-drift",
+      "expected_public_value": null,
+      "field": "country",
+      "pending_approval_value": "unapprovedcountryprobe",
+      "station_id": "00000000-0000-4000-8000-000000000001"
+    }
+  ],
+  "policy_version": "station-publication/1",
+  "private_mutations": [
+    {
+      "operation": "replace",
+      "path": "transmitter_notes",
+      "station_id": "00000000-0000-4000-8000-000000000001",
+      "value": "changedprivatenoteprobe"
+    },
+    {
+      "operation": "replace",
+      "path": "network",
+      "station_id": "00000000-0000-4000-8000-000000000001",
+      "value": "changedhiddennetworkprobe"
+    },
+    {
+      "operation": "replace",
+      "path": "private_version",
+      "station_id": "00000000-0000-4000-8000-000000000001",
+      "value": 89
+    },
+    {
+      "operation": "replace",
+      "path": "name",
+      "station_id": "00000000-0000-4000-8000-000000000006",
+      "value": "energy hidden new row"
+    },
+    {
+      "operation": "append_alias",
+      "station_id": "00000000-0000-4000-8000-000000000001",
+      "value": "newunapprovedaliasprobe"
+    },
+    {
+      "operation": "replace_source_private_note",
+      "station_id": "00000000-0000-4000-8000-000000000001",
+      "value": "newsourceinternalprobe"
+    }
+  ],
+  "queries": [
+    {
+      "case": "regional-page1",
+      "query": {
+        "limit": 2,
+        "q": "energy"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000011",
+                "00000000-0000-4000-8000-000000000012"
+              ],
+              "station_fields": [
+                "name",
+                "aliases"
+              ]
+            },
+            "station": {
+              "aliases": [
+                "Energy Berlin"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000001",
+              "name": "ENERGY Berlin (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 103400000,
+                  "id": "00000000-0000-4000-8000-000000000011",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "North example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                },
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "DAB+",
+                  "frequency_hz": 229072000,
+                  "id": "00000000-0000-4000-8000-000000000012",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "South example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          },
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000021",
+                "00000000-0000-4000-8000-000000000022"
+              ],
+              "station_fields": [
+                "name",
+                "aliases"
+              ]
+            },
+            "station": {
+              "aliases": [
+                "Energy Munich"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000002",
+              "name": "ENERGY München (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 93300000,
+                  "id": "00000000-0000-4000-8000-000000000021",
+                  "site": null,
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": "2020-12-31T23:59:59Z"
+                },
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": null,
+                  "frequency_hz": 220352000,
+                  "id": "00000000-0000-4000-8000-000000000022",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "Munich example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": "FIXTURE_energy_page2"
+      }
+    },
+    {
+      "case": "regional-page2",
+      "query": {
+        "cursor": "FIXTURE_energy_page2",
+        "limit": 2,
+        "q": "energy"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000031"
+              ],
+              "station_fields": [
+                "name"
+              ]
+            },
+            "station": {
+              "aliases": [],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000003",
+              "name": "ENERGY Sachsen (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": null,
+                  "frequency_hz": 99000000,
+                  "id": "00000000-0000-4000-8000-000000000031",
+                  "site": null,
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "casefold-whitespace",
+      "query": {
+        "q": "  ENERGY   BERLIN  "
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000011",
+                "00000000-0000-4000-8000-000000000012"
+              ],
+              "station_fields": [
+                "name",
+                "aliases"
+              ]
+            },
+            "station": {
+              "aliases": [
+                "Energy Berlin"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000001",
+              "name": "ENERGY Berlin (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 103400000,
+                  "id": "00000000-0000-4000-8000-000000000011",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "North example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                },
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "DAB+",
+                  "frequency_hz": 229072000,
+                  "id": "00000000-0000-4000-8000-000000000012",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "South example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "nfkc",
+      "query": {
+        "q": "ＥＮＥＲＧＹ"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000011",
+                "00000000-0000-4000-8000-000000000012"
+              ],
+              "station_fields": [
+                "name",
+                "aliases"
+              ]
+            },
+            "station": {
+              "aliases": [
+                "Energy Berlin"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000001",
+              "name": "ENERGY Berlin (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 103400000,
+                  "id": "00000000-0000-4000-8000-000000000011",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "North example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                },
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "DAB+",
+                  "frequency_hz": 229072000,
+                  "id": "00000000-0000-4000-8000-000000000012",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "South example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          },
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000021",
+                "00000000-0000-4000-8000-000000000022"
+              ],
+              "station_fields": [
+                "name",
+                "aliases"
+              ]
+            },
+            "station": {
+              "aliases": [
+                "Energy Munich"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000002",
+              "name": "ENERGY München (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 93300000,
+                  "id": "00000000-0000-4000-8000-000000000021",
+                  "site": null,
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": "2020-12-31T23:59:59Z"
+                },
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": null,
+                  "frequency_hz": 220352000,
+                  "id": "00000000-0000-4000-8000-000000000022",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "Munich example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          },
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000031"
+              ],
+              "station_fields": [
+                "name"
+              ]
+            },
+            "station": {
+              "aliases": [],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000003",
+              "name": "ENERGY Sachsen (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": null,
+                  "frequency_hz": 99000000,
+                  "id": "00000000-0000-4000-8000-000000000031",
+                  "site": null,
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "approved-localized-alias",
+      "query": {
+        "q": "munich"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000021",
+                "00000000-0000-4000-8000-000000000022"
+              ],
+              "station_fields": [
+                "aliases"
+              ]
+            },
+            "station": {
+              "aliases": [
+                "Energy Munich"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000002",
+              "name": "ENERGY München (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 93300000,
+                  "id": "00000000-0000-4000-8000-000000000021",
+                  "site": null,
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": "2020-12-31T23:59:59Z"
+                },
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": null,
+                  "frequency_hz": 220352000,
+                  "id": "00000000-0000-4000-8000-000000000022",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "Munich example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "no-accent-fold",
+      "query": {
+        "q": "munchen"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "site-match-subset",
+      "query": {
+        "q": "north example"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000011"
+              ],
+              "station_fields": []
+            },
+            "station": {
+              "aliases": [
+                "Energy Berlin"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000001",
+              "name": "ENERGY Berlin (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 103400000,
+                  "id": "00000000-0000-4000-8000-000000000011",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "North example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "cross-reference-text-frequency-negative",
+      "query": {
+        "max_frequency_hz": 103400001,
+        "min_frequency_hz": 103400000,
+        "q": "south example"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "text-frequency-same-reference",
+      "query": {
+        "max_frequency_hz": 103400001,
+        "min_frequency_hz": 103400000,
+        "q": "north example"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000011"
+              ],
+              "station_fields": []
+            },
+            "station": {
+              "aliases": [
+                "Energy Berlin"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000001",
+              "name": "ENERGY Berlin (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 103400000,
+                  "id": "00000000-0000-4000-8000-000000000011",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "North example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "station-text-frequency-subset",
+      "query": {
+        "max_frequency_hz": 104000000,
+        "min_frequency_hz": 93000000,
+        "q": "energy"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000011"
+              ],
+              "station_fields": [
+                "name",
+                "aliases"
+              ]
+            },
+            "station": {
+              "aliases": [
+                "Energy Berlin"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000001",
+              "name": "ENERGY Berlin (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 103400000,
+                  "id": "00000000-0000-4000-8000-000000000011",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "North example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          },
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000021"
+              ],
+              "station_fields": [
+                "name",
+                "aliases"
+              ]
+            },
+            "station": {
+              "aliases": [
+                "Energy Munich"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000002",
+              "name": "ENERGY München (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 93300000,
+                  "id": "00000000-0000-4000-8000-000000000021",
+                  "site": null,
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": "2020-12-31T23:59:59Z"
+                }
+              ]
+            }
+          },
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000031"
+              ],
+              "station_fields": [
+                "name"
+              ]
+            },
+            "station": {
+              "aliases": [],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000003",
+              "name": "ENERGY Sachsen (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": null,
+                  "frequency_hz": 99000000,
+                  "id": "00000000-0000-4000-8000-000000000031",
+                  "site": null,
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "lower-edge-inclusive",
+      "query": {
+        "max_frequency_hz": 103400001,
+        "min_frequency_hz": 103400000
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000011"
+              ],
+              "station_fields": []
+            },
+            "station": {
+              "aliases": [
+                "Energy Berlin"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000001",
+              "name": "ENERGY Berlin (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 103400000,
+                  "id": "00000000-0000-4000-8000-000000000011",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "North example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "upper-edge-exclusive",
+      "query": {
+        "max_frequency_hz": 103400000,
+        "min_frequency_hz": 103399999
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "literal-wildcards",
+      "query": {
+        "q": "%_"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000041"
+              ],
+              "station_fields": [
+                "name"
+              ]
+            },
+            "station": {
+              "aliases": [],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000004",
+              "name": "Literal 100%_radio (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 101000000,
+                  "id": "00000000-0000-4000-8000-000000000041",
+                  "site": null,
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "wildcards-not-operators",
+      "query": {
+        "q": "%%"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "no-numeric-text-parser",
+      "query": {
+        "q": "103.4"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "source-not-searchable",
+      "query": {
+        "q": "example.org"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "dated-source-not-searchable",
+      "query": {
+        "q": "2026-10-11"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "no-reference-station",
+      "query": {
+        "q": "aerial"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [],
+              "station_fields": [
+                "name"
+              ]
+            },
+            "station": {
+              "aliases": [],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000005",
+              "name": "Aerial Null Service (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": []
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "browse",
+      "query": {},
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [],
+              "station_fields": []
+            },
+            "station": {
+              "aliases": [],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000005",
+              "name": "Aerial Null Service (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": []
+            }
+          },
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000011",
+                "00000000-0000-4000-8000-000000000012"
+              ],
+              "station_fields": []
+            },
+            "station": {
+              "aliases": [
+                "Energy Berlin"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000001",
+              "name": "ENERGY Berlin (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 103400000,
+                  "id": "00000000-0000-4000-8000-000000000011",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "North example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                },
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "DAB+",
+                  "frequency_hz": 229072000,
+                  "id": "00000000-0000-4000-8000-000000000012",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "South example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          },
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000021",
+                "00000000-0000-4000-8000-000000000022"
+              ],
+              "station_fields": []
+            },
+            "station": {
+              "aliases": [
+                "Energy Munich"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000002",
+              "name": "ENERGY München (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 93300000,
+                  "id": "00000000-0000-4000-8000-000000000021",
+                  "site": null,
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": "2020-12-31T23:59:59Z"
+                },
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": null,
+                  "frequency_hz": 220352000,
+                  "id": "00000000-0000-4000-8000-000000000022",
+                  "site": {
+                    "country": null,
+                    "name": null,
+                    "place_name": "Munich example"
+                  },
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          },
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000031"
+              ],
+              "station_fields": []
+            },
+            "station": {
+              "aliases": [],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000003",
+              "name": "ENERGY Sachsen (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": null,
+                  "frequency_hz": 99000000,
+                  "id": "00000000-0000-4000-8000-000000000031",
+                  "site": null,
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          },
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000041"
+              ],
+              "station_fields": []
+            },
+            "station": {
+              "aliases": [],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000004",
+              "name": "Literal 100%_radio (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 101000000,
+                  "id": "00000000-0000-4000-8000-000000000041",
+                  "site": null,
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": null
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "expired-validity-remains-reference",
+      "query": {
+        "max_frequency_hz": 93300001,
+        "min_frequency_hz": 93300000
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [
+          {
+            "match": {
+              "reference_ids": [
+                "00000000-0000-4000-8000-000000000021"
+              ],
+              "station_fields": []
+            },
+            "station": {
+              "aliases": [
+                "Energy Munich"
+              ],
+              "call_sign": null,
+              "country": null,
+              "id": "00000000-0000-4000-8000-000000000002",
+              "name": "ENERGY München (illustrative)",
+              "network": null,
+              "publication_version": 1,
+              "service": null,
+              "sources": [
+                {
+                  "published_on": null,
+                  "publisher": "Generated example publisher (no reuse approval)",
+                  "retrieved_at": "2026-10-11T09:00:00Z",
+                  "reviewed_at": "2026-10-11T10:00:00Z",
+                  "url": "https://example.org/illustrative-radio"
+                }
+              ],
+              "transmissions": [
+                {
+                  "bandwidth_hz": null,
+                  "broadcast_format": "FM",
+                  "frequency_hz": 93300000,
+                  "id": "00000000-0000-4000-8000-000000000021",
+                  "site": null,
+                  "sources": [
+                    {
+                      "published_on": null,
+                      "publisher": "Generated example publisher (no reuse approval)",
+                      "retrieved_at": "2026-10-11T09:00:00Z",
+                      "reviewed_at": "2026-10-11T10:00:00Z",
+                      "url": "https://example.org/illustrative-radio"
+                    }
+                  ],
+                  "valid_from": null,
+                  "valid_to": "2020-12-31T23:59:59Z"
+                }
+              ]
+            }
+          }
+        ],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-hiddenaliasprobe",
+      "query": {
+        "q": "hiddenaliasprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-hiddennetworkprobe",
+      "query": {
+        "q": "hiddennetworkprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-hiddensiteprobe",
+      "query": {
+        "q": "hiddensiteprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-hiddenreferenceprobe",
+      "query": {
+        "q": "hiddenreferenceprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-retiredreferenceprobe",
+      "query": {
+        "q": "retiredreferenceprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-rawsourceprobe",
+      "query": {
+        "q": "rawsourceprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-rawpathprobe",
+      "query": {
+        "q": "rawpathprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-hiddenrdsprobe",
+      "query": {
+        "q": "hiddenrdsprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-sourceinternalprobe",
+      "query": {
+        "q": "sourceinternalprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-privatenoteprobe",
+      "query": {
+        "q": "privatenoteprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-privateuserprobe",
+      "query": {
+        "q": "privateuserprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-privaterecordingprobe",
+      "query": {
+        "q": "privaterecordingprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-privaterunprobe",
+      "query": {
+        "q": "privaterunprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-unpublishedstationprobe",
+      "query": {
+        "q": "unpublishedstationprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-withdrawnstationprobe",
+      "query": {
+        "q": "withdrawnstationprobe"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-52.123456",
+      "query": {
+        "q": "52.123456"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    },
+    {
+      "case": "hidden-13.123456",
+      "query": {
+        "q": "13.123456"
+      },
+      "response": {
+        "catalog_revision": "00000000-0000-4000-8000-000000000901",
+        "contract_version": "browsersdr-public-station-search/1",
+        "items": [],
+        "next_cursor": null
+      }
+    }
+  ],
+  "route_acceptance": [
+    {
+      "expected": "Existing authentication required, no anonymous data",
+      "method": "GET",
+      "path": "/api/v1/recordings"
+    },
+    {
+      "expected": "Existing authentication required, no anonymous data",
+      "method": "GET",
+      "path": "/api/v1/runs/00000000-0000-4000-8000-000000000999"
+    },
+    {
+      "expected": "Existing authentication/admin policy, no anonymous data",
+      "method": "GET",
+      "path": "/api/v1/admin/coverage"
+    },
+    {
+      "expected": "405, Allow GET",
+      "method": "POST",
+      "path": "/api/v1/public/stations"
+    },
+    {
+      "expected": "405, Allow GET",
+      "method": "PATCH",
+      "path": "/api/v1/public/stations/00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "expected": "405, Allow GET",
+      "method": "DELETE",
+      "path": "/api/v1/public/stations/00000000-0000-4000-8000-000000000001"
+    },
+    {
+      "expected": "405 headers, no HEAD body",
+      "method": "HEAD",
+      "path": "/api/v1/public/stations"
+    },
+    {
+      "expected": "404, no anonymous history",
+      "method": "GET",
+      "path": "/api/v1/public/stations/00000000-0000-4000-8000-000000000001/history"
+    },
+    {
+      "expected": "No path normalization/auth bypass",
+      "method": "GET",
+      "path": "/api/v1/public/stations/%2e%2e/%2e%2e/admin/coverage"
+    }
+  ],
+  "test_catalog": [
+    {
+      "approved_alias_values": [
+        "Energy Berlin"
+      ],
+      "record_approved": true,
+      "record_retired": false,
+      "reference_approvals": {
+        "00000000-0000-4000-8000-000000000011": {
+          "approved_values": {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 103400000,
+            "id": "00000000-0000-4000-8000-000000000011",
+            "site.country": null,
+            "site.place_name": "North example",
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          },
+          "fields": [
+            "id",
+            "frequency_hz",
+            "broadcast_format",
+            "bandwidth_hz",
+            "sources",
+            "valid_from",
+            "valid_to",
+            "site.place_name",
+            "site.country"
+          ],
+          "record_approved": true,
+          "record_retired": false
+        },
+        "00000000-0000-4000-8000-000000000012": {
+          "approved_values": {
+            "bandwidth_hz": null,
+            "broadcast_format": "DAB+",
+            "frequency_hz": 229072000,
+            "id": "00000000-0000-4000-8000-000000000012",
+            "site.country": null,
+            "site.name": null,
+            "site.place_name": "South example",
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          },
+          "fields": [
+            "id",
+            "frequency_hz",
+            "broadcast_format",
+            "bandwidth_hz",
+            "sources",
+            "valid_from",
+            "valid_to",
+            "site.name",
+            "site.place_name",
+            "site.country"
+          ],
+          "record_approved": true,
+          "record_retired": false
+        },
+        "00000000-0000-4000-8000-000000000013": {
+          "approved_values": {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 91600000,
+            "id": "00000000-0000-4000-8000-000000000013",
+            "site.country": null,
+            "site.name": null,
+            "site.place_name": "hiddenreferenceprobe",
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          },
+          "fields": [
+            "id",
+            "frequency_hz",
+            "broadcast_format",
+            "bandwidth_hz",
+            "sources",
+            "valid_from",
+            "valid_to",
+            "site.name",
+            "site.place_name",
+            "site.country"
+          ],
+          "record_approved": false,
+          "record_retired": false
+        },
+        "00000000-0000-4000-8000-000000000014": {
+          "approved_values": {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 87600000,
+            "id": "00000000-0000-4000-8000-000000000014",
+            "site.country": null,
+            "site.name": null,
+            "site.place_name": "retiredreferenceprobe",
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          },
+          "fields": [
+            "id",
+            "frequency_hz",
+            "broadcast_format",
+            "bandwidth_hz",
+            "sources",
+            "valid_from",
+            "valid_to",
+            "site.name",
+            "site.place_name",
+            "site.country"
+          ],
+          "record_approved": true,
+          "record_retired": true
+        }
+      },
+      "station": {
+        "aliases": [
+          "Energy Berlin",
+          "hiddenaliasprobe"
+        ],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "name": "ENERGY Berlin (illustrative)",
+        "network": "hiddennetworkprobe",
+        "owner_id": "privateuserprobe",
+        "private_version": 88,
+        "publication_version": 1,
+        "reception": {
+          "last_reception_at": "2026-10-11T10:00:00Z",
+          "reception_count": 999,
+          "recording_id": "privaterecordingprobe",
+          "run_id": "privaterunprobe"
+        },
+        "service": null,
+        "sources": [
+          {
+            "internal_notes": "sourceinternalprobe",
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmissions": [
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 103400000,
+            "id": "00000000-0000-4000-8000-000000000011",
+            "rds_ps": "hiddenrdsprobe",
+            "site": {
+              "country": null,
+              "latitude": 52.123456,
+              "longitude": 13.123456,
+              "name": "hiddensiteprobe",
+              "place_name": "North example"
+            },
+            "source": "rawsourceprobe /private/rawpathprobe.sigmf-data",
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          },
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": "DAB+",
+            "frequency_hz": 229072000,
+            "id": "00000000-0000-4000-8000-000000000012",
+            "site": {
+              "country": null,
+              "name": null,
+              "place_name": "South example"
+            },
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          },
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 91600000,
+            "id": "00000000-0000-4000-8000-000000000013",
+            "site": {
+              "country": null,
+              "name": null,
+              "place_name": "hiddenreferenceprobe"
+            },
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          },
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 87600000,
+            "id": "00000000-0000-4000-8000-000000000014",
+            "site": {
+              "country": null,
+              "name": null,
+              "place_name": "retiredreferenceprobe"
+            },
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          }
+        ],
+        "transmitter_notes": "privatenoteprobe"
+      },
+      "station_approved_fields": [
+        "id",
+        "name",
+        "aliases",
+        "call_sign",
+        "service",
+        "country",
+        "sources"
+      ],
+      "station_approved_values": {
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "name": "ENERGY Berlin (illustrative)",
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ]
+      },
+      "unapproved_aliases": [
+        "hiddenaliasprobe"
+      ]
+    },
+    {
+      "approved_alias_values": [
+        "Energy Munich"
+      ],
+      "record_approved": true,
+      "record_retired": false,
+      "reference_approvals": {
+        "00000000-0000-4000-8000-000000000021": {
+          "approved_values": {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 93300000,
+            "id": "00000000-0000-4000-8000-000000000021",
+            "site.country": null,
+            "site.name": null,
+            "site.place_name": null,
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": "2020-12-31T23:59:59Z"
+          },
+          "fields": [
+            "id",
+            "frequency_hz",
+            "broadcast_format",
+            "bandwidth_hz",
+            "sources",
+            "valid_from",
+            "valid_to",
+            "site.name",
+            "site.place_name",
+            "site.country"
+          ],
+          "record_approved": true,
+          "record_retired": false
+        },
+        "00000000-0000-4000-8000-000000000022": {
+          "approved_values": {
+            "bandwidth_hz": null,
+            "broadcast_format": null,
+            "frequency_hz": 220352000,
+            "id": "00000000-0000-4000-8000-000000000022",
+            "site.country": null,
+            "site.name": null,
+            "site.place_name": "Munich example",
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          },
+          "fields": [
+            "id",
+            "frequency_hz",
+            "broadcast_format",
+            "bandwidth_hz",
+            "sources",
+            "valid_from",
+            "valid_to",
+            "site.name",
+            "site.place_name",
+            "site.country"
+          ],
+          "record_approved": true,
+          "record_retired": false
+        }
+      },
+      "station": {
+        "aliases": [
+          "Energy Munich"
+        ],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000002",
+        "name": "ENERGY München (illustrative)",
+        "network": null,
+        "publication_version": 1,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmissions": [
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 93300000,
+            "id": "00000000-0000-4000-8000-000000000021",
+            "site": null,
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": "2020-12-31T23:59:59Z"
+          },
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": null,
+            "frequency_hz": 220352000,
+            "id": "00000000-0000-4000-8000-000000000022",
+            "site": {
+              "country": null,
+              "name": null,
+              "place_name": "Munich example"
+            },
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          }
+        ]
+      },
+      "station_approved_fields": [
+        "id",
+        "name",
+        "aliases",
+        "call_sign",
+        "network",
+        "service",
+        "country",
+        "sources"
+      ],
+      "station_approved_values": {
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000002",
+        "name": "ENERGY München (illustrative)",
+        "network": null,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ]
+      },
+      "unapproved_aliases": []
+    },
+    {
+      "approved_alias_values": [],
+      "record_approved": true,
+      "record_retired": false,
+      "reference_approvals": {
+        "00000000-0000-4000-8000-000000000031": {
+          "approved_values": {
+            "bandwidth_hz": null,
+            "broadcast_format": null,
+            "frequency_hz": 99000000,
+            "id": "00000000-0000-4000-8000-000000000031",
+            "site.country": null,
+            "site.name": null,
+            "site.place_name": null,
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          },
+          "fields": [
+            "id",
+            "frequency_hz",
+            "broadcast_format",
+            "bandwidth_hz",
+            "sources",
+            "valid_from",
+            "valid_to",
+            "site.name",
+            "site.place_name",
+            "site.country"
+          ],
+          "record_approved": true,
+          "record_retired": false
+        }
+      },
+      "station": {
+        "aliases": [],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "name": "ENERGY Sachsen (illustrative)",
+        "network": null,
+        "publication_version": 1,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmissions": [
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": null,
+            "frequency_hz": 99000000,
+            "id": "00000000-0000-4000-8000-000000000031",
+            "site": null,
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          }
+        ]
+      },
+      "station_approved_fields": [
+        "id",
+        "name",
+        "aliases",
+        "call_sign",
+        "network",
+        "service",
+        "country",
+        "sources"
+      ],
+      "station_approved_values": {
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000003",
+        "name": "ENERGY Sachsen (illustrative)",
+        "network": null,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ]
+      },
+      "unapproved_aliases": []
+    },
+    {
+      "approved_alias_values": [],
+      "record_approved": true,
+      "record_retired": false,
+      "reference_approvals": {
+        "00000000-0000-4000-8000-000000000041": {
+          "approved_values": {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 101000000,
+            "id": "00000000-0000-4000-8000-000000000041",
+            "site.country": null,
+            "site.name": null,
+            "site.place_name": null,
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          },
+          "fields": [
+            "id",
+            "frequency_hz",
+            "broadcast_format",
+            "bandwidth_hz",
+            "sources",
+            "valid_from",
+            "valid_to",
+            "site.name",
+            "site.place_name",
+            "site.country"
+          ],
+          "record_approved": true,
+          "record_retired": false
+        }
+      },
+      "station": {
+        "aliases": [],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000004",
+        "name": "Literal 100%_radio (illustrative)",
+        "network": null,
+        "publication_version": 1,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmissions": [
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 101000000,
+            "id": "00000000-0000-4000-8000-000000000041",
+            "site": null,
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          }
+        ]
+      },
+      "station_approved_fields": [
+        "id",
+        "name",
+        "aliases",
+        "call_sign",
+        "network",
+        "service",
+        "country",
+        "sources"
+      ],
+      "station_approved_values": {
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000004",
+        "name": "Literal 100%_radio (illustrative)",
+        "network": null,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ]
+      },
+      "unapproved_aliases": []
+    },
+    {
+      "approved_alias_values": [],
+      "record_approved": true,
+      "record_retired": false,
+      "reference_approvals": {},
+      "station": {
+        "aliases": [],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000005",
+        "name": "Aerial Null Service (illustrative)",
+        "network": null,
+        "publication_version": 1,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmissions": []
+      },
+      "station_approved_fields": [
+        "id",
+        "name",
+        "aliases",
+        "call_sign",
+        "network",
+        "service",
+        "country",
+        "sources"
+      ],
+      "station_approved_values": {
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000005",
+        "name": "Aerial Null Service (illustrative)",
+        "network": null,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ]
+      },
+      "unapproved_aliases": []
+    },
+    {
+      "approved_alias_values": [],
+      "record_approved": false,
+      "record_retired": false,
+      "reference_approvals": {
+        "00000000-0000-4000-8000-000000000061": {
+          "approved_values": {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 103400000,
+            "id": "00000000-0000-4000-8000-000000000061",
+            "site.country": null,
+            "site.name": null,
+            "site.place_name": null,
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          },
+          "fields": [
+            "id",
+            "frequency_hz",
+            "broadcast_format",
+            "bandwidth_hz",
+            "sources",
+            "valid_from",
+            "valid_to",
+            "site.name",
+            "site.place_name",
+            "site.country"
+          ],
+          "record_approved": true,
+          "record_retired": false
+        }
+      },
+      "station": {
+        "aliases": [],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000006",
+        "name": "unpublishedstationprobe",
+        "network": null,
+        "publication_version": 1,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmissions": [
+          {
+            "bandwidth_hz": null,
+            "broadcast_format": "FM",
+            "frequency_hz": 103400000,
+            "id": "00000000-0000-4000-8000-000000000061",
+            "site": null,
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "valid_from": null,
+            "valid_to": null
+          }
+        ]
+      },
+      "station_approved_fields": [
+        "id",
+        "name",
+        "aliases",
+        "call_sign",
+        "network",
+        "service",
+        "country",
+        "sources"
+      ],
+      "station_approved_values": {
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000006",
+        "name": "unpublishedstationprobe",
+        "network": null,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ]
+      },
+      "unapproved_aliases": []
+    },
+    {
+      "approved_alias_values": [],
+      "record_approved": true,
+      "record_retired": true,
+      "reference_approvals": {},
+      "station": {
+        "aliases": [],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000007",
+        "name": "withdrawnstationprobe",
+        "network": null,
+        "publication_version": 1,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmissions": []
+      },
+      "station_approved_fields": [
+        "id",
+        "name",
+        "aliases",
+        "call_sign",
+        "network",
+        "service",
+        "country",
+        "sources"
+      ],
+      "station_approved_values": {
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000007",
+        "name": "withdrawnstationprobe",
+        "network": null,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ]
+      },
+      "unapproved_aliases": []
+    }
+  ]
+}

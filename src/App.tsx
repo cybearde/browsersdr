@@ -10,7 +10,8 @@ import { FavoritesPanel, useFavorites } from "./ui/FavoritesPanel";
 import { useWorkspaceLayout, WorkspaceControls } from "./ui/WorkspaceLayout";
 import { bookmarkFromCandidate, validateBookmark, type Bookmark } from "./radio/bookmarks";
 import { applyBookmark } from "./radio/bookmarkSelection";
-import { AtlasStationSearchPanel } from "./ui/AtlasStationSearchPanel";
+import { SearchOverlay } from "./ui/SearchOverlay";
+import { previewDiscovery } from "./radio/discoverySelection";
 import { applyReceptionCandidate } from "./radio/atlasStationSelection";
 import { ReceiverTuningControl } from "./ui/ReceiverTuningControl";
 import { editableFrequencyMHz, formatFrequencyMHz, formatSampleRate } from "./ui/frequencyFormat";
@@ -3081,7 +3082,7 @@ export function ReceiverApp({
 
   const stationUseBlockedReason = remoteSelected ? "Return to the local receiver before applying local station settings or favorites." : stationSelectionBusy ? "Applying station settings…"
     : source === "replay" ? "Choose a live receiver source or the demo to use a station."
-    : transitioning || receiver.cleanupRequired ? "Wait for the receiver operation or scan to finish."
+    : transitioning || scanActive || receiver.cleanupRequired ? "Wait for the receiver operation or scan to finish."
     : recordingStatus || exportingRecording ? "Stop recording and finish preparation before selecting a station."
     : atlasTransferActive ? "Wait for the Atlas transfer to finish or cancel it before selecting a station."
     : retainedCapturePresent ? "Download and discard the retained capture before selecting another station."
@@ -4491,19 +4492,13 @@ export function ReceiverApp({
                   }}
                 />}
                 </div>
+                <SearchOverlay favorites={favorites.items} frequencyHz={displayedFrequencyHz ?? frequencyMhz * 1e6} mode={mode}
+                  contextKey={`${source}:${remoteSelected}:${receiver.sessionGeneration}:${mode}:${sampleRateHz}:${frequencyMhz}`}
+                  blockedReason={stationUseBlockedReason} onRecall={recallFavorite} onUseStation={useAtlasStation} onFavorite={saveAtlasFavorite}
+                  onPreview={(bookmark) => previewDiscovery(controller, bookmark, { source, channelFrequencyHz: frequencyMhz * 1e6, modeSettings: currentModeSettings, sampleRateHz, ...hardwareOptions })} />
                 <FavoritesPanel items={favorites.items} storageMessage={favorites.message} draft={favoriteDraft}
                   onNew={newFavorite} onEdit={(item) => setFavoriteDraft(structuredClone(item))} onCancel={() => setFavoriteDraft(undefined)}
                   onChange={favorites.change} onRecall={recallFavorite} blockedReason={stationUseBlockedReason?.replaceAll("station", "favorite")} saveBlockedReason={saveFavoriteBlockedReason} />
-                <AtlasStationSearchPanel
-              onFavorite={saveAtlasFavorite}
-                  connection={atlasConnection}
-                  channelFrequencyHz={displayedFrequencyHz ?? frequencyMhz * 1e6}
-                  channelBandwidthHz={bandwidthHz}
-                  candidate={receptionCandidate}
-                  blockedReason={stationUseBlockedReason}
-                  onUse={useAtlasStation}
-                  onOpenSettings={() => openAuxiliaryView("settings")}
-                />
                 {mode === "WBFM" && (
                   <FmStationSummary controller={controller} />
                 )}

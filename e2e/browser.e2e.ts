@@ -1844,7 +1844,10 @@ test("favorite recall preserves USB ownership and blocks active or retained reco
   await expect(
     page.getByRole("button", { name: "Stop receiving", exact: true }),
   ).toBeEnabled();
-  const favorites = page.locator(".favorites-panel");
+  const favorites = page.getByRole("dialog", {
+    name: "Favorites",
+    exact: true,
+  });
   const previousFrequency = await page
     .getByLabel("Channel frequency", { exact: true })
     .inputValue();

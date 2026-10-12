@@ -1,0 +1,120 @@
+.favorites-panel.discovery-panel {
+  width: min(880px, calc(100vw - 32px));
+  max-width: calc(100vw - 16px);
+}
+.discovery-panel .favorites-heading h2 {
+  margin: 0;
+  font-size: 1.15rem;
+}
+.discovery-panel .favorites-heading > div {
+  min-width: 0;
+}
+.discovery-panel .favorites-heading p {
+  font-size: 0.8rem;
+}
+.discovery-body {
+  display: grid;
+  gap: 18px;
+  min-height: 0;
+  overscroll-behavior: contain;
+  overflow-wrap: anywhere;
+}
+.discovery-body form,
+.discovery-body section {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+}
+.discovery-body :is(h3, h4, p) {
+  margin: 0;
+}
+.discovery-body h3 {
+  font-size: 1rem;
+}
+.discovery-body h4 {
+  font-size: 0.95rem;
+}
+.discovery-body label {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+  font-size: 0.8rem;
+}
+.discovery-body :is(input, select) {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+.discovery-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.discovery-body article {
+  display: grid;
+  gap: 8px;
+  padding: 14px;
+  border: 1px solid var(--line, #294359);
+  border-radius: 10px;
+  background: rgba(12, 29, 45, 0.6);
+}
+.discovery-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.discovery-actions > button {
+  max-width: 100%;
+  white-space: normal;
+}
+.discovery-reference {
+  display: grid;
+  gap: 8px;
+  border-top: 1px solid #294359;
+  padding-top: 12px;
+}
+.discovery-sources {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.73rem;
+  color: var(--muted);
+}
+.discovery-preview {
+  padding: 14px;
+  border: 1px solid var(--cyan);
+  border-radius: 10px;
+  background: #10293b;
+}
+.discovery-panel .favorites-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.discovery-panel :is(button, select, input, summary) {
+  min-height: 44px;
+}
+.discovery-panel summary {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+@media (max-width: 500px) {
+  .favorites-panel.discovery-panel {
+    width: calc(100vw - 16px);
+    max-height: calc(100dvh - 16px);
+  }
+  .discovery-panel .favorites-heading,
+  .discovery-panel .favorites-footer {
+    padding: 12px;
+  }
+  .discovery-body {
+    padding: 12px;
+  }
+  .discovery-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .discovery-panel .favorites-footer > span {
+    max-width: 60%;
+  }
+}
