@@ -1,7 +1,10 @@
 import { expect, test, type Page } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { unzipSync } from "fflate";
-import fixture from "../src/testing/fixtures/atlas/browsersdr-public-station-search-v1.json" with { type: "json" };
+import {
+  publicStationFixture as fixture,
+  publicReferencesFor,
+} from "../src/testing/publicStationFixture";
 const token = "invented-personal-credential-not-for-public-search";
 const id = "00000000-0000-4000-8000-000000000001";
 async function setup(page: Page, remembered = false) {
@@ -26,14 +29,14 @@ async function setup(page: Page, remembered = false) {
     .addCookies([
       { name: "personal", value: "invented-session", url: "http://127.0.0.1" },
     ]);
-  await page.route("**/api/v1/**", async (route) => {
+  await page.route("**/api/v*/**", async (route) => {
     const request = route.request(),
       url = new URL(request.url());
     requests.push({
       path: url.pathname + url.search,
       headers: await request.allHeaders(),
     });
-    if (!url.pathname.startsWith("/api/v1/public/stations"))
+    if (!url.pathname.startsWith("/api/v2/public/stations"))
       return route.fulfill({ status: 500, json: { unexpected: true } });
     if (offline) return route.abort("internetdisconnected");
     if (malformed)
@@ -53,11 +56,15 @@ async function setup(page: Page, remembered = false) {
           },
         },
       });
+    if (url.pathname.endsWith("/transmissions")) {
+      return route.fulfill({
+        json: publicReferencesFor(url.pathname.split("/")[5]!),
+      });
+    }
     if (url.pathname.includes("/stations/")) {
-      const detail = structuredClone(fixture.details[id]);
+      const detail = structuredClone(fixture.details[id]!);
       if (changed) {
         detail.station.publication_version++;
-        detail.station.transmissions = [];
       }
       return route.fulfill({ json: detail });
     }
@@ -145,6 +152,12 @@ test("public Atlas search needs no account and preserves personal credentials, c
     await page.getByLabel("Channel frequency", { exact: true }).inputValue(),
   ).toBe(before);
   await p.panel
+    .getByRole("button", {
+      name: "Show references for ENERGY Berlin (illustrative)",
+      exact: true,
+    })
+    .click();
+  await p.panel
     .getByRole("button", { name: "Preview 103.4 MHz", exact: true })
     .click();
   await expect(
@@ -162,7 +175,7 @@ test("public Atlas search needs no account and preserves personal credentials, c
   await expect(
     page.getByRole("button", { name: "Start demo", exact: true }),
   ).toBeEnabled();
-  expect(p.requests).toHaveLength(2);
+  expect(p.requests).toHaveLength(4);
   for (const request of p.requests) {
     expect(request.headers.authorization).toBeUndefined();
     expect(request.headers.cookie).toBeUndefined();
@@ -235,7 +248,7 @@ test("local ADS aliases, decimal units, UAT status and DAB block previews never 
     page.getByRole("button", { name: /^Connect/, exact: false }).first(),
   ).toBeEnabled();
   expect(
-    p.requests.every((r) => r.path.startsWith("/api/v1/public/stations")),
+    p.requests.every((r) => r.path.startsWith("/api/v2/public/stations")),
   ).toBe(true);
   expect(p.errors).toEqual([]);
 });
@@ -284,6 +297,12 @@ test("changed public references never tune and digital references never offer an
   const p = await setup(page);
   await p.open();
   await p.search();
+  await p.panel
+    .getByRole("button", {
+      name: "Show references for ENERGY Berlin (illustrative)",
+      exact: true,
+    })
+    .click();
   await expect(p.panel).toContainText(
     "Station handoff unavailable for this declared format",
   );
@@ -293,6 +312,7 @@ test("changed public references never tune and digital references never offer an
   const before = await page
     .getByLabel("Channel frequency", { exact: true })
     .inputValue();
+
   await p.panel
     .getByRole("button", { name: "Preview 103.4 MHz", exact: true })
     .click();
@@ -300,7 +320,7 @@ test("changed public references never tune and digital references never offer an
   await p.panel
     .getByRole("button", { name: "Apply to receiver", exact: true })
     .click();
-  await expect(p.panel).toContainText("changed or was retired");
+  await expect(p.panel).toContainText("catalog or page cursor changed");
   await p.close();
   expect(
     await page.getByLabel("Channel frequency", { exact: true }).inputValue(),
@@ -334,7 +354,7 @@ test("public unavailable, rate-limit, malformed and offline states never ask for
   await p.search();
   await expect(p.panel.getByRole("alert")).toContainText("unavailable");
   await expect(p.panel).not.toContainText("DO NOT DISPLAY");
-  expect(p.requests.every((r) => r.path.startsWith("/api/v1/public/"))).toBe(
+  expect(p.requests.every((r) => r.path.startsWith("/api/v2/public/"))).toBe(
     true,
   );
 });
@@ -399,6 +419,12 @@ test("public station favorites stay local and recall keeps reception stopped", a
   await p.open();
   await p.search();
   await p.panel
+    .getByRole("button", {
+      name: "Show references for ENERGY Berlin (illustrative)",
+      exact: true,
+    })
+    .click();
+  await p.panel
     .getByRole("button", { name: "Save station favorite", exact: true })
     .first()
     .click();
@@ -420,7 +446,7 @@ test("public station favorites stay local and recall keeps reception stopped", a
   await expect(
     page.locator(".favorites-panel:not(.discovery-panel)"),
   ).toContainText("ENERGY Berlin");
-  expect(p.requests).toHaveLength(1);
+  expect(p.requests).toHaveLength(2);
 });
 test("public search is passive during recording and preserves capture-start candidate through download", async ({
   page,
@@ -429,6 +455,12 @@ test("public search is passive during recording and preserves capture-start cand
   const p = await setup(page);
   await p.open();
   await p.search();
+  await p.panel
+    .getByRole("button", {
+      name: "Show references for ENERGY Berlin (illustrative)",
+      exact: true,
+    })
+    .click();
   await p.panel
     .getByRole("button", { name: "Preview 103.4 MHz", exact: true })
     .click();
@@ -454,6 +486,12 @@ test("public search is passive during recording and preserves capture-start cand
   await p.open();
   await p.search();
   await p.panel
+    .getByRole("button", {
+      name: "Show references for ENERGY München (illustrative)",
+      exact: true,
+    })
+    .click();
+  await p.panel
     .getByRole("button", { name: "Preview 93.3 MHz", exact: true })
     .click();
   await expect(
@@ -468,6 +506,12 @@ test("public search is passive during recording and preserves capture-start cand
   ).toBeVisible();
   await p.open();
   await p.search();
+  await p.panel
+    .getByRole("button", {
+      name: "Show references for ENERGY München (illustrative)",
+      exact: true,
+    })
+    .click();
   await p.panel
     .getByRole("button", { name: "Preview 93.3 MHz", exact: true })
     .click();
@@ -490,7 +534,7 @@ test("public search is passive during recording and preserves capture-start cand
     source_kind: "synthetic",
     candidate: {
       station_id: id,
-      transmission_id: fixture.details[id].station.transmissions[0]!.id,
+      transmission_id: fixture.references.items[0]!.id,
       bandwidth_hz: 150000,
     },
   });

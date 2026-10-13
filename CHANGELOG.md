@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.3 — 2026-10-14
+
+- Migrate anonymous Atlas station search to v2 station headers and lazy reference pages with exact counts.
+- Preserve filters, UUID reference links and deliberate tuning; recheck references before applying and recover explicitly from stale cursors or request failures.
+
 ## 1.1.2 — 2026-10-14
 
 - Fix the blue-background startup failure on Safari configurations that reject relaxed-SIMD WASM instructions. Select a standard-SIMD DSP filter when the original kernel is unsupported, while retaining the existing kernel on supporting browsers.

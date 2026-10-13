@@ -9,9 +9,9 @@ import {
 } from "./sourceCapabilities";
 import type { ReceiverController } from "./receiverController";
 import type { ReceptionCandidate } from "./receptionEvidence";
-import type { PublicStation } from "./publicStations";
+import type { PublicStationReferences } from "./publicStations";
 export function publicReceptionCandidate(
-  station: PublicStation,
+  station: PublicStationReferences,
   transmissionId: string,
 ): ReceptionCandidate {
   const ref = station.transmissions.find((t) => t.id === transmissionId);
@@ -85,8 +85,8 @@ export function previewDiscovery(
   return `${source} · ${bookmark.frequencyHz / 1e6} MHz · ${settings.mode} · ${settings.bandwidthHz.toLocaleString()} Hz bandwidth · ${(rate / 1e6).toLocaleString()} MS/s. ${running ? "Apply will reconfigure active reception." : "Settings only; Connect and Start remain manual."}`;
 }
 export function unchangedPublicReference(
-  original: PublicStation,
-  current: PublicStation,
+  original: PublicStationReferences,
+  current: PublicStationReferences,
   referenceId: string,
 ): void {
   if (

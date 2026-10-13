@@ -3,10 +3,12 @@ import {
   malformedPublicResponse,
   parsePublicDetail,
   parsePublicPage,
+  parsePublicTransmissions,
+  type PublicStationReferences,
   publicQueryParams,
   type PublicStationQuery,
 } from "./publicStations";
-const PATH = "/api/v1/public/stations";
+const PATH = "/api/v2/public/stations";
 const MAX_BYTES = 1024 * 1024;
 function boundedWait<T>(promise: Promise<T>, signal: AbortSignal): Promise<T> {
   signal.throwIfAborted();
@@ -56,6 +58,58 @@ export class PublicStationClient {
     return this.request(`${PATH}/${id}`, signal).then((value) =>
       parsePublicDetail(value, id),
     );
+  }
+  transmissions(
+    id: string,
+    query: PublicStationQuery = {},
+    signal?: AbortSignal,
+  ) {
+    if (!PUBLIC_UUID.test(id)) throw new Error("Invalid public station ID.");
+    const path = `${PATH}/${id}/transmissions?${publicQueryParams(query)}`;
+    if (new TextEncoder().encode(path).length > 4096)
+      throw new Error("Search request is too long. Narrow the query.");
+    return this.request(path, signal).then((value) =>
+      parsePublicTransmissions(value, id),
+    );
+  }
+  /** Resolve an exact UUID, including later pages, against one fresh header/generation. */
+  async reference(
+    id: string,
+    referenceId: string,
+    signal?: AbortSignal,
+  ): Promise<PublicStationReferences> {
+    if (!PUBLIC_UUID.test(referenceId))
+      throw new Error("Invalid public reference ID.");
+    const detail = await this.detail(id, signal);
+    const seen = new Set<string>(),
+      cursors = new Set<string>();
+    let cursor: string | undefined;
+    do {
+      const page = await this.transmissions(id, { cursor }, signal);
+      if (
+        page.catalog_revision !== detail.catalog_revision ||
+        page.publication_version !== detail.station.publication_version ||
+        page.total !== detail.station.transmission_count
+      )
+        throw new PublicCatalogError(409, "catalog_changed");
+      for (const ref of page.items) {
+        if (seen.has(ref.id)) return malformedPublicResponse();
+        seen.add(ref.id);
+      }
+      if (
+        seen.size > page.total ||
+        (page.next_cursor === null && seen.size !== page.total) ||
+        (page.next_cursor !== null && seen.size >= page.total)
+      )
+        return malformedPublicResponse();
+      const ref = page.items.find((ref) => ref.id === referenceId);
+      if (ref) return { ...detail.station, transmissions: [ref] };
+      if (page.next_cursor && cursors.has(page.next_cursor))
+        return malformedPublicResponse();
+      cursor = page.next_cursor ?? undefined;
+      if (cursor) cursors.add(cursor);
+    } while (cursor);
+    throw new PublicCatalogError(404, "not_found");
   }
   private async request(path: string, caller?: AbortSignal): Promise<unknown> {
     if (Date.now() < this.retryAt)

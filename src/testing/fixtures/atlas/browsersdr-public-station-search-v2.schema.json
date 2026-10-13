@@ -1,0 +1,589 @@
+{
+  "$defs": {
+    "PublicErrorBody": {
+      "additionalProperties": false,
+      "properties": {
+        "code": {
+          "enum": [
+            "untrusted_host",
+            "untrusted_origin",
+            "not_found",
+            "method_not_allowed",
+            "catalog_changed",
+            "cursor_expired",
+            "validation_error",
+            "invalid_cursor",
+            "query_too_broad",
+            "public_rate_limited",
+            "public_busy",
+            "public_catalog_unavailable",
+            "public_query_timeout"
+          ],
+          "title": "Code",
+          "type": "string"
+        },
+        "details": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "maxProperties": 0,
+          "title": "Details",
+          "type": "object"
+        },
+        "message": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Message",
+          "type": "string"
+        },
+        "request_id": {
+          "pattern": "^[A-Za-z0-9_-]{1,128}$",
+          "title": "Request Id",
+          "type": "string"
+        }
+      },
+      "required": [
+        "code",
+        "message",
+        "details",
+        "request_id"
+      ],
+      "title": "PublicErrorBody",
+      "type": "object"
+    },
+    "PublicErrorEnvelope": {
+      "additionalProperties": false,
+      "properties": {
+        "error": {
+          "$ref": "#/$defs/PublicErrorBody"
+        }
+      },
+      "required": [
+        "error"
+      ],
+      "title": "PublicErrorEnvelope",
+      "type": "object"
+    },
+    "PublicSite": {
+      "additionalProperties": false,
+      "properties": {
+        "country": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Country"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Name"
+        },
+        "place_name": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Place Name"
+        }
+      },
+      "required": [
+        "name",
+        "place_name",
+        "country"
+      ],
+      "title": "PublicSite",
+      "type": "object"
+    },
+    "PublicSource": {
+      "additionalProperties": false,
+      "properties": {
+        "published_on": {
+          "anyOf": [
+            {
+              "format": "date",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Published On"
+        },
+        "publisher": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Publisher",
+          "type": "string"
+        },
+        "retrieved_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Retrieved At"
+        },
+        "reviewed_at": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Reviewed At"
+        },
+        "url": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Url"
+        }
+      },
+      "required": [
+        "publisher",
+        "url",
+        "published_on",
+        "retrieved_at",
+        "reviewed_at"
+      ],
+      "title": "PublicSource",
+      "type": "object"
+    },
+    "PublicStationHeader": {
+      "additionalProperties": false,
+      "properties": {
+        "aliases": {
+          "items": {
+            "maxLength": 200,
+            "minLength": 1,
+            "type": "string"
+          },
+          "maxItems": 30,
+          "title": "Aliases",
+          "type": "array"
+        },
+        "call_sign": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Call Sign"
+        },
+        "country": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Country"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "maxLength": 200,
+          "minLength": 1,
+          "title": "Name",
+          "type": "string"
+        },
+        "network": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Network"
+        },
+        "publication_version": {
+          "minimum": 1,
+          "title": "Publication Version",
+          "type": "integer"
+        },
+        "service": {
+          "anyOf": [
+            {
+              "maxLength": 200,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Service"
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/PublicSource"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "transmission_count": {
+          "minimum": 0,
+          "title": "Transmission Count",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "publication_version",
+        "name",
+        "aliases",
+        "call_sign",
+        "network",
+        "service",
+        "country",
+        "sources",
+        "transmission_count"
+      ],
+      "title": "PublicStationHeader",
+      "type": "object"
+    },
+    "PublicStationHeaderDetail": {
+      "additionalProperties": false,
+      "properties": {
+        "catalog_revision": {
+          "format": "uuid",
+          "title": "Catalog Revision",
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "browsersdr-public-station-search/2",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "station": {
+          "$ref": "#/$defs/PublicStationHeader"
+        }
+      },
+      "required": [
+        "contract_version",
+        "catalog_revision",
+        "station"
+      ],
+      "title": "PublicStationHeaderDetail",
+      "type": "object"
+    },
+    "PublicStationHeaderItem": {
+      "additionalProperties": false,
+      "properties": {
+        "match": {
+          "$ref": "#/$defs/PublicStationHeaderMatch"
+        },
+        "station": {
+          "$ref": "#/$defs/PublicStationHeader"
+        }
+      },
+      "required": [
+        "station",
+        "match"
+      ],
+      "title": "PublicStationHeaderItem",
+      "type": "object"
+    },
+    "PublicStationHeaderMatch": {
+      "additionalProperties": false,
+      "properties": {
+        "matching_transmission_count": {
+          "minimum": 0,
+          "title": "Matching Transmission Count",
+          "type": "integer"
+        },
+        "station_fields": {
+          "items": {
+            "enum": [
+              "name",
+              "aliases",
+              "call_sign",
+              "network",
+              "service",
+              "country"
+            ],
+            "type": "string"
+          },
+          "maxItems": 6,
+          "title": "Station Fields",
+          "type": "array"
+        }
+      },
+      "required": [
+        "station_fields",
+        "matching_transmission_count"
+      ],
+      "title": "PublicStationHeaderMatch",
+      "type": "object"
+    },
+    "PublicStationHeaderPage": {
+      "additionalProperties": false,
+      "properties": {
+        "catalog_revision": {
+          "format": "uuid",
+          "title": "Catalog Revision",
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "browsersdr-public-station-search/2",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/PublicStationHeaderItem"
+          },
+          "maxItems": 50,
+          "title": "Items",
+          "type": "array"
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Next Cursor"
+        }
+      },
+      "required": [
+        "contract_version",
+        "catalog_revision",
+        "items",
+        "next_cursor"
+      ],
+      "title": "PublicStationHeaderPage",
+      "type": "object"
+    },
+    "PublicTransmission": {
+      "additionalProperties": false,
+      "properties": {
+        "bandwidth_hz": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "maximum": 1000000000000.0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Bandwidth Hz"
+        },
+        "broadcast_format": {
+          "anyOf": [
+            {
+              "maxLength": 100,
+              "minLength": 1,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Broadcast Format"
+        },
+        "frequency_hz": {
+          "exclusiveMinimum": 0,
+          "maximum": 1000000000000.0,
+          "title": "Frequency Hz",
+          "type": "number"
+        },
+        "id": {
+          "format": "uuid",
+          "title": "Id",
+          "type": "string"
+        },
+        "site": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/PublicSite"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "sources": {
+          "items": {
+            "$ref": "#/$defs/PublicSource"
+          },
+          "maxItems": 5,
+          "minItems": 1,
+          "title": "Sources",
+          "type": "array"
+        },
+        "valid_from": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Valid From"
+        },
+        "valid_to": {
+          "anyOf": [
+            {
+              "format": "date-time",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Valid To"
+        }
+      },
+      "required": [
+        "id",
+        "frequency_hz",
+        "broadcast_format",
+        "bandwidth_hz",
+        "site",
+        "sources",
+        "valid_from",
+        "valid_to"
+      ],
+      "title": "PublicTransmission",
+      "type": "object"
+    },
+    "PublicTransmissionPage": {
+      "additionalProperties": false,
+      "properties": {
+        "catalog_revision": {
+          "format": "uuid",
+          "title": "Catalog Revision",
+          "type": "string"
+        },
+        "contract_version": {
+          "const": "browsersdr-public-station-search/2",
+          "title": "Contract Version",
+          "type": "string"
+        },
+        "items": {
+          "items": {
+            "$ref": "#/$defs/PublicTransmission"
+          },
+          "maxItems": 50,
+          "title": "Items",
+          "type": "array"
+        },
+        "next_cursor": {
+          "anyOf": [
+            {
+              "maxLength": 2048,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Next Cursor"
+        },
+        "publication_version": {
+          "minimum": 1,
+          "title": "Publication Version",
+          "type": "integer"
+        },
+        "station_id": {
+          "format": "uuid",
+          "title": "Station Id",
+          "type": "string"
+        },
+        "total": {
+          "minimum": 0,
+          "title": "Total",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "contract_version",
+        "catalog_revision",
+        "station_id",
+        "publication_version",
+        "total",
+        "items",
+        "next_cursor"
+      ],
+      "title": "PublicTransmissionPage",
+      "type": "object"
+    }
+  },
+  "$id": "browsersdr-public-station-search/2",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/PublicStationHeaderPage"
+    },
+    {
+      "$ref": "#/$defs/PublicStationHeaderDetail"
+    },
+    {
+      "$ref": "#/$defs/PublicTransmissionPage"
+    },
+    {
+      "$ref": "#/$defs/PublicErrorEnvelope"
+    }
+  ]
+}

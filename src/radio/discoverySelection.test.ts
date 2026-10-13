@@ -1,6 +1,5 @@
 import { expect, it, vi } from "vitest";
-import fixture from "../testing/fixtures/atlas/browsersdr-public-station-search-v1.json";
-import { parsePublicDetail } from "./publicStations";
+import { publicStationFixture as fixture } from "../testing/publicStationFixture";
 import {
   publicReceptionCandidate,
   unchangedPublicReference,
@@ -9,7 +8,7 @@ import {
 import { guideBookmark } from "./discoveryGuides";
 import { ReceiverController } from "./receiverController";
 const id = "00000000-0000-4000-8000-000000000001";
-const station = parsePublicDetail(fixture.details[id], id).station;
+const station = fixture.selected;
 it("retains exact public IDs, rejects digital/retired/changed references rather than guessing", () => {
   expect(
     publicReceptionCandidate(station, station.transmissions[0]!.id),

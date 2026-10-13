@@ -1,6 +1,6 @@
-/** Anonymous public projection v1. Deliberately independent of AtlasConnection/session DTOs. */
+/** Anonymous public projection v2. Deliberately independent of AtlasConnection/session DTOs. */
 export const PUBLIC_STATION_VERSION =
-  "browsersdr-public-station-search/1" as const;
+  "browsersdr-public-station-search/2" as const;
 export const PUBLIC_UUID =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 export interface PublicSource {
@@ -34,7 +34,7 @@ export interface PublicStation {
   service: string | null;
   country: string | null;
   sources: PublicSource[];
-  transmissions: PublicTransmission[];
+  transmission_count: number;
 }
 export interface PublicStationDetail {
   contract_version: typeof PUBLIC_STATION_VERSION;
@@ -46,9 +46,22 @@ export interface PublicStationPage {
   catalog_revision: string;
   items: Array<{
     station: PublicStation;
-    match: { station_fields: string[]; reference_ids: string[] };
+    match: { station_fields: string[]; matching_transmission_count: number };
   }>;
   next_cursor: string | null;
+}
+export interface PublicTransmissionPage {
+  contract_version: typeof PUBLIC_STATION_VERSION;
+  catalog_revision: string;
+  station_id: string;
+  publication_version: number;
+  total: number;
+  items: PublicTransmission[];
+  next_cursor: string | null;
+}
+/** Internal selected references, never a wire DTO or complete enumeration. */
+export interface PublicStationReferences extends PublicStation {
+  transmissions: PublicTransmission[];
 }
 export interface PublicStationQuery {
   q?: string;
@@ -169,7 +182,7 @@ function station(value: unknown): PublicStation {
     "publication_version",
     ...fields,
     "sources",
-    "transmissions",
+    "transmission_count",
   ]);
   if (
     !uuid(s.id) ||
@@ -184,44 +197,47 @@ function station(value: unknown): PublicStation {
   if (!aliases.every((v) => text(v))) malformedPublicResponse();
   unique(aliases);
   sources(s.sources);
-  const refs = array(s.transmissions, 50);
-  const ids = refs.map((v) => {
-    const r = object(v, [
-      "id",
-      "frequency_hz",
-      "broadcast_format",
-      "bandwidth_hz",
-      "site",
-      "sources",
-      "valid_from",
-      "valid_to",
-    ]);
-    if (
-      !uuid(r.id) ||
-      !positive(r.frequency_hz) ||
-      !nullable(r.broadcast_format, 100) ||
-      !(r.bandwidth_hz === null || positive(r.bandwidth_hz)) ||
-      !date(r.valid_from) ||
-      !date(r.valid_to) ||
-      (r.valid_from &&
-        r.valid_to &&
-        Date.parse(String(r.valid_from)) > Date.parse(String(r.valid_to)))
-    )
-      malformedPublicResponse();
-    if (r.site !== null) {
-      const site = object(r.site, ["name", "place_name", "country"]);
-      if (
-        !Object.values(site).every((v) => nullable(v)) ||
-        !Object.values(site).some(Boolean)
-      )
-        malformedPublicResponse();
-    }
-    sources(r.sources);
-    return r.id;
-  });
-  unique(ids);
+  if (!count(s.transmission_count)) malformedPublicResponse();
   return value as PublicStation;
 }
+function count(v: unknown): v is number {
+  return Number.isSafeInteger(v) && (v as number) >= 0;
+}
+function transmission(v: unknown): PublicTransmission {
+  const r = object(v, [
+    "id",
+    "frequency_hz",
+    "broadcast_format",
+    "bandwidth_hz",
+    "site",
+    "sources",
+    "valid_from",
+    "valid_to",
+  ]);
+  if (
+    !uuid(r.id) ||
+    !positive(r.frequency_hz) ||
+    !nullable(r.broadcast_format, 100) ||
+    !(r.bandwidth_hz === null || positive(r.bandwidth_hz)) ||
+    !date(r.valid_from) ||
+    !date(r.valid_to) ||
+    (r.valid_from &&
+      r.valid_to &&
+      Date.parse(String(r.valid_from)) > Date.parse(String(r.valid_to)))
+  )
+    malformedPublicResponse();
+  if (r.site !== null) {
+    const site = object(r.site, ["name", "place_name", "country"]);
+    if (
+      !Object.values(site).every((v) => nullable(v)) ||
+      !Object.values(site).some(Boolean)
+    )
+      malformedPublicResponse();
+  }
+  sources(r.sources);
+  return v as PublicTransmission;
+}
+
 function envelope(r: Record<string, unknown>) {
   if (
     r.contract_version !== PUBLIC_STATION_VERSION ||
@@ -255,21 +271,55 @@ export function parsePublicPage(value: unknown): PublicStationPage {
   const ids = array(r.items, 50).map((v) => {
     const item = object(v, ["station", "match"]),
       s = station(item.station),
-      m = object(item.match, ["station_fields", "reference_ids"]);
-    const matched = array(m.station_fields, 6),
-      references = array(m.reference_ids, 50);
+      m = object(item.match, ["station_fields", "matching_transmission_count"]);
+    const matched = array(m.station_fields, 6);
     unique(matched);
-    unique(references);
     if (
       !matched.every((k) => typeof k === "string" && fields.includes(k)) ||
-      references.length !== s.transmissions.length ||
-      !s.transmissions.every((t) => references.includes(t.id))
+      !count(m.matching_transmission_count) ||
+      m.matching_transmission_count > s.transmission_count
     )
       malformedPublicResponse();
     return s.id;
   });
   unique(ids);
   return value as PublicStationPage;
+}
+export function parsePublicTransmissions(
+  value: unknown,
+  expectedId: string,
+): PublicTransmissionPage {
+  const r = object(value, [
+    "contract_version",
+    "catalog_revision",
+    "station_id",
+    "publication_version",
+    "total",
+    "items",
+    "next_cursor",
+  ]);
+  envelope(r);
+  if (
+    r.station_id !== expectedId ||
+    !uuid(r.station_id) ||
+    !Number.isSafeInteger(r.publication_version) ||
+    (r.publication_version as number) < 1 ||
+    !count(r.total)
+  )
+    malformedPublicResponse();
+  const rows = array(r.items, 50).map(transmission);
+  unique(rows.map((row) => row.id));
+  if (
+    !(
+      r.next_cursor === null ||
+      (typeof r.next_cursor === "string" &&
+        /^[A-Za-z0-9_-]{1,2048}$/.test(r.next_cursor))
+    ) ||
+    rows.length > r.total ||
+    (r.next_cursor !== null && !rows.length)
+  )
+    malformedPublicResponse();
+  return value as PublicTransmissionPage;
 }
 export function publicQueryParams(query: PublicStationQuery): URLSearchParams {
   const params = new URLSearchParams({ limit: "50" });
@@ -306,7 +356,7 @@ export function publicQueryParams(query: PublicStationQuery): URLSearchParams {
     params.set("cursor", query.cursor);
   }
   if (
-    new TextEncoder().encode(`/api/v1/public/stations?${params}`).length > 4096
+    new TextEncoder().encode(`/api/v2/public/stations?${params}`).length > 4096
   )
     throw new Error("Search request is too long. Narrow the query.");
   return params;

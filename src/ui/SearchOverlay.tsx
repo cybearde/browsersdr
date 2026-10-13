@@ -8,9 +8,16 @@ import {
 import { createPortal } from "react-dom";
 import { AppIcon } from "./AppIcon";
 import { useOverlayDialog } from "./useOverlayDialog";
+import { atlasStationUrl } from "../radio/atlasStationNavigation";
 import { PublicStationClient } from "../radio/publicStationClient";
 import { PublicStationSearch } from "../radio/publicStationSearch";
-import type { PublicSource, PublicStation } from "../radio/publicStations";
+import { PublicTransmissionSearch } from "../radio/publicTransmissionSearch";
+import type {
+  PublicSource,
+  PublicStation,
+  PublicStationReferences,
+  PublicStationQuery,
+} from "../radio/publicStations";
 import {
   discoveryQuery,
   guideBookmark,
@@ -28,7 +35,7 @@ import type { ReceiverMode } from "../radio/receiverConfig";
 import "./SearchOverlay.css";
 interface Preview {
   bookmark: Bookmark;
-  station?: PublicStation;
+  station?: PublicStationReferences;
   referenceId?: string;
   context: string;
 }
@@ -62,6 +69,189 @@ function Sources({ sources }: { sources: PublicSource[] }) {
         </li>
       ))}
     </ul>
+  );
+}
+function StationReferences({
+  client,
+  station,
+  catalogRevision,
+  total,
+  query,
+  choose,
+  onFavorite,
+  onMessage,
+}: {
+  client: PublicStationClient;
+  station: PublicStation;
+  catalogRevision: string;
+  total: number;
+  query: PublicStationQuery;
+  choose: (
+    bookmark: Bookmark,
+    station?: PublicStationReferences,
+    referenceId?: string,
+  ) => void;
+  onFavorite: SearchOverlayProps["onFavorite"];
+  onMessage: (message: string) => void;
+}) {
+  const [pager] = useState(
+    () =>
+      new PublicTransmissionSearch(
+        client,
+        station,
+        catalogRevision,
+        total,
+        query,
+      ),
+  );
+  const state = useSyncExternalStore(pager.subscribe, pager.getSnapshot);
+  useEffect(() => () => pager.cancel(), [pager]);
+  return (
+    <section aria-label={`References for ${station.name}`}>
+      <p>
+        {total} matching references · {station.transmission_count} published in
+        total.
+      </p>
+      {state.status === "idle" && (
+        <button
+          type="button"
+          className="secondary"
+          onClick={() => void pager.load()}
+        >
+          Show references for {station.name}
+        </button>
+      )}
+      {state.status === "loading" && (
+        <p role="status">Loading published references…</p>
+      )}
+      {state.message && <p role="alert">{state.message}</p>}
+      {state.status === "error" &&
+        (state.restart ? (
+          <p>Search Atlas again to refresh this station and its references.</p>
+        ) : (
+          <button
+            type="button"
+            className="secondary"
+            onClick={() => void pager.retry()}
+          >
+            Retry references
+          </button>
+        ))}
+      {state.status === "ready" && (
+        <>
+          <p role="status">
+            Reference page {state.pageIndex + 1} · {state.page!.items.length} of{" "}
+            {state.page!.total} matching references
+          </p>
+          {!state.page!.total && (
+            <p>No published transmission references match these filters.</p>
+          )}
+          {state.page!.items.map((reference) => {
+            const selected = { ...station, transmissions: [reference] };
+            let candidate: ReceptionCandidate | undefined;
+            try {
+              candidate = publicReceptionCandidate(selected, reference.id);
+            } catch {
+              /* Unsupported declared mode is readable, never guessed. */
+            }
+            return (
+              <div key={reference.id} className="discovery-reference">
+                <p>
+                  <strong>
+                    {reference.frequency_hz / 1e6} MHz ·{" "}
+                    {reference.broadcast_format ?? "Unknown format"}
+                  </strong>{" "}
+                  ·{" "}
+                  {[
+                    reference.site?.name,
+                    reference.site?.place_name,
+                    reference.site?.country,
+                  ]
+                    .filter(Boolean)
+                    .join(", ") || "Site unknown"}
+                </p>
+                <p className="display-note">
+                  Validity: {reference.valid_from ?? "unknown"} to{" "}
+                  {reference.valid_to ?? "unknown"}. Source dates and validity
+                  do not prove current RF activity.
+                </p>
+                <Sources sources={reference.sources} />
+                <a
+                  href={atlasStationUrl(station.id, reference.id)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Open exact Atlas reference
+                </a>
+                {candidate ? (
+                  <div className="discovery-actions">
+                    <button
+                      type="button"
+                      className="secondary"
+                      onClick={() =>
+                        choose(
+                          bookmarkFromCandidate(candidate!),
+                          selected,
+                          reference.id,
+                        )
+                      }
+                    >
+                      Preview {reference.frequency_hz / 1e6} MHz
+                    </button>
+                    <button
+                      type="button"
+                      className="secondary"
+                      onClick={() => {
+                        try {
+                          onFavorite(candidate!);
+                          onMessage(
+                            "Station favorite saved locally; public reference is not revalidated by saving.",
+                          );
+                        } catch (error) {
+                          onMessage(
+                            error instanceof Error
+                              ? error.message
+                              : "Could not save favorite.",
+                          );
+                        }
+                      }}
+                    >
+                      Save station favorite
+                    </button>
+                  </div>
+                ) : (
+                  <p>
+                    Station handoff unavailable for this declared format. Use a
+                    compatible local guide without attaching station identity.
+                  </p>
+                )}
+              </div>
+            );
+          })}
+          <nav
+            className="discovery-actions"
+            aria-label="Public reference pages"
+          >
+            <button
+              type="button"
+              className="secondary"
+              disabled={!state.previous}
+              onClick={() => void pager.previous()}
+            >
+              Previous references
+            </button>
+            <button
+              type="button"
+              className="secondary"
+              disabled={!state.next}
+              onClick={() => void pager.next()}
+            >
+              Next references
+            </button>
+          </nav>
+        </>
+      )}
+    </section>
   );
 }
 export function SearchOverlay(props: SearchOverlayProps) {
@@ -134,7 +324,7 @@ export function SearchOverlay(props: SearchOverlayProps) {
   }
   function choose(
     bookmark: Bookmark,
-    station?: PublicStation,
+    station?: PublicStationReferences,
     referenceId?: string,
   ) {
     invalidate();
@@ -155,17 +345,18 @@ export function SearchOverlay(props: SearchOverlayProps) {
     try {
       let candidate: ReceptionCandidate | undefined;
       if (selected.station && selected.referenceId) {
-        const current = await client.detail(selected.station.id, owner.signal);
+        const current = await client.reference(
+          selected.station.id,
+          selected.referenceId,
+          owner.signal,
+        );
         owner.signal.throwIfAborted();
         unchangedPublicReference(
           selected.station,
-          current.station,
+          current,
           selected.referenceId,
         );
-        candidate = publicReceptionCandidate(
-          current.station,
-          selected.referenceId,
-        );
+        candidate = publicReceptionCandidate(current, selected.referenceId);
       }
       if (
         version !== revision.current ||
@@ -521,11 +712,11 @@ export function SearchOverlay(props: SearchOverlayProps) {
               <section aria-label="Atlas stations">
                 <h3>Atlas stations</h3>
                 <p className="display-note">
-                  Published references only, alphabetical pages of up to 50, at
-                  most 20 pages. No global relevance ranking or complete
-                  worldwide inventory. Text matching is literal; Atlas preserves
-                  accents and approved aliases. A DAB format does not establish
-                  programme membership.
+                  Published references only, alphabetical pages of up to 50,
+                  with continuation while the catalog is unchanged. No global
+                  relevance ranking or complete worldwide inventory. Text
+                  matching is literal; Atlas preserves accents and approved
+                  aliases. A DAB format does not establish programme membership.
                 </p>
                 {state.status === "idle" && (
                   <p>Choose Search Atlas to query the public catalog.</p>
@@ -537,6 +728,18 @@ export function SearchOverlay(props: SearchOverlayProps) {
                   <p role={state.status === "error" ? "alert" : "status"}>
                     {state.message}
                   </p>
+                )}
+                {state.status === "error" && (
+                  <button
+                    type="button"
+                    className="secondary"
+                    onClick={() => {
+                      invalidate();
+                      void search.retry();
+                    }}
+                  >
+                    Retry station page
+                  </button>
                 )}
                 {state.status === "ready" && (
                   <>
@@ -574,91 +777,17 @@ export function SearchOverlay(props: SearchOverlayProps) {
                           listed.
                         </p>
                         <Sources sources={station.sources} />
-                        {!station.transmissions.length && (
-                          <p>No published transmission references.</p>
-                        )}
-                        {station.transmissions.map((reference) => {
-                          let candidate: ReceptionCandidate | undefined;
-                          try {
-                            candidate = publicReceptionCandidate(
-                              station,
-                              reference.id,
-                            );
-                          } catch {
-                            /* Unsupported declared mode is readable, never guessed. */
-                          }
-                          return (
-                            <div
-                              key={reference.id}
-                              className="discovery-reference"
-                            >
-                              <p>
-                                <strong>
-                                  {reference.frequency_hz / 1e6} MHz ·{" "}
-                                  {reference.broadcast_format ??
-                                    "Unknown format"}
-                                </strong>{" "}
-                                ·{" "}
-                                {[
-                                  reference.site?.name,
-                                  reference.site?.place_name,
-                                  reference.site?.country,
-                                ]
-                                  .filter(Boolean)
-                                  .join(", ") || "Site unknown"}
-                              </p>
-                              <p className="display-note">
-                                Validity: {reference.valid_from ?? "unknown"} to{" "}
-                                {reference.valid_to ?? "unknown"}. Source dates
-                                and validity do not prove current RF activity.
-                              </p>
-                              <Sources sources={reference.sources} />
-                              {candidate ? (
-                                <div className="discovery-actions">
-                                  <button
-                                    type="button"
-                                    className="secondary"
-                                    onClick={() =>
-                                      choose(
-                                        bookmarkFromCandidate(candidate!),
-                                        station,
-                                        reference.id,
-                                      )
-                                    }
-                                  >
-                                    Preview {reference.frequency_hz / 1e6} MHz
-                                  </button>
-                                  <button
-                                    type="button"
-                                    className="secondary"
-                                    onClick={() => {
-                                      try {
-                                        props.onFavorite(candidate!);
-                                        setMessage(
-                                          "Station favorite saved locally; public reference is not revalidated by saving.",
-                                        );
-                                      } catch (error) {
-                                        setMessage(
-                                          error instanceof Error
-                                            ? error.message
-                                            : "Could not save favorite.",
-                                        );
-                                      }
-                                    }}
-                                  >
-                                    Save station favorite
-                                  </button>
-                                </div>
-                              ) : (
-                                <p>
-                                  Station handoff unavailable for this declared
-                                  format. Use a compatible local guide without
-                                  attaching station identity.
-                                </p>
-                              )}
-                            </div>
-                          );
-                        })}
+                        <StationReferences
+                          key={`${state.page!.catalog_revision}:${station.id}:${station.publication_version}`}
+                          client={client}
+                          station={station}
+                          catalogRevision={state.page!.catalog_revision}
+                          total={match.matching_transmission_count}
+                          query={search.getQuery()}
+                          choose={choose}
+                          onFavorite={props.onFavorite}
+                          onMessage={setMessage}
+                        />
                       </article>
                     ))}
                     <nav

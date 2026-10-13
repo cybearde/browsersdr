@@ -4,7 +4,7 @@ import { AtlasClient, AtlasRequestError } from "./atlasClient";
 import { AtlasCredentialStore, ATLAS_USER_TOKEN_KEY } from "./atlasCredentials";
 import { AtlasConnection } from "./atlasConnection";
 import { PublicStationClient } from "./publicStationClient";
-import publicFixture from "../testing/fixtures/atlas/browsersdr-public-station-search-v1.json";
+import { publicStationFixture as publicFixture } from "../testing/publicStationFixture";
 
 const TOKEN = "test-credential-".repeat(3);
 const NEXT = "replacement-credential-".repeat(3);

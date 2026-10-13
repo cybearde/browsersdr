@@ -1,5 +1,5 @@
 import { afterEach, expect, it, vi } from "vitest";
-import fixture from "../testing/fixtures/atlas/browsersdr-public-station-search-v1.json";
+import { publicStationFixture as fixture } from "../testing/publicStationFixture";
 import { PublicStationClient } from "./publicStationClient";
 import { PublicStationSearch } from "./publicStationSearch";
 import { parsePublicPage } from "./publicStations";
@@ -8,16 +8,18 @@ afterEach(() => vi.useRealTimers());
 it("uses only exact anonymous same-origin GETs, omits credentials and never follows login redirects", async () => {
   const fetcher = vi.fn<typeof fetch>(async (input) =>
     Response.json(
-      String(input).includes("/stations/")
-        ? Object.values(fixture.details)[0]
-        : page,
+      String(input).includes("/transmissions?")
+        ? fixture.references
+        : String(input).includes("/stations/")
+          ? Object.values(fixture.details)[0]
+          : page,
     ),
   );
   const client = new PublicStationClient(fetcher);
   await client.list({ q: "energy" });
   await client.detail(page.items[0]!.station.id);
   for (const [url, options] of fetcher.mock.calls) {
-    expect(String(url)).toMatch(/^\/api\/v1\/public\/stations[?/]/);
+    expect(String(url)).toMatch(/^\/api\/v2\/public\/stations[?/]/);
     expect(options).toMatchObject({
       method: "GET",
       credentials: "omit",
@@ -107,8 +109,12 @@ it("clears obsolete pages on changed catalogs and stops repeated cursors", async
     catalog_revision: "00000000-0000-4000-8000-000000000999",
   });
   await search.previous();
-  expect(search.getSnapshot().status).toBe("ready");
-  vi.spyOn(client, "list").mockResolvedValueOnce(page);
+  expect(search.getSnapshot().status).toBe("error");
+  await search.search({ q: "energy" });
+  vi.spyOn(client, "list").mockResolvedValueOnce({
+    ...page,
+    catalog_revision: "00000000-0000-4000-8000-000000000999",
+  });
   await search.next();
   expect(search.getSnapshot().status).toBe("error");
   expect(search.getSnapshot().page).toBeUndefined();

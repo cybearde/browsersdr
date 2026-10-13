@@ -1,4 +1,4 @@
-import { PublicStationClient } from "./publicStationClient";
+import { PublicCatalogError, PublicStationClient } from "./publicStationClient";
 import {
   publicQueryParams,
   type PublicStationPage,
@@ -22,9 +22,12 @@ export class PublicStationSearch {
   private query: PublicStationQuery = {};
   private cursors: Array<string | undefined> = [undefined];
   private generation = 0;
+  private catalogRevision?: string;
+  private targetIndex = 0;
   private aborter?: AbortController;
   private readonly listeners = new Set<() => void>();
   constructor(readonly client: PublicStationClient) {}
+  getQuery = () => ({ ...this.query, cursor: undefined });
   getSnapshot = () => this.snapshot;
   subscribe = (fn: () => void) => {
     this.listeners.add(fn);
@@ -51,6 +54,7 @@ export class PublicStationSearch {
     publicQueryParams(query);
     this.query = { ...query, cursor: undefined };
     this.cursors = [undefined];
+    this.catalogRevision = undefined;
     await this.load(0);
   }
   async next() {
@@ -63,12 +67,16 @@ export class PublicStationSearch {
     if (this.snapshot.previous && this.snapshot.status === "ready")
       await this.load(this.snapshot.pageIndex - 1);
   }
+  retry() {
+    return this.load(this.targetIndex);
+  }
   private async load(index: number) {
+    this.targetIndex = index;
     this.cancel();
     const generation = this.generation,
       aborter = new AbortController();
     this.aborter = aborter;
-    const revision = index ? this.snapshot.page?.catalog_revision : undefined;
+    const revision = this.catalogRevision;
     this.publish({
       status: "loading",
       pageIndex: index,
@@ -85,25 +93,32 @@ export class PublicStationSearch {
         throw new Error(
           "The public catalog changed. Search again to refresh the results.",
         );
+      this.catalogRevision = page.catalog_revision;
       const repeated =
         page.next_cursor !== null &&
         this.cursors.slice(0, index + 1).includes(page.next_cursor);
-      const bounded = index >= 19;
+
       this.publish({
         status: "ready",
         page,
         pageIndex: index,
         previous: index > 0,
-        next: !!page.next_cursor && !repeated && !bounded,
+        next: !!page.next_cursor && !repeated,
         message: repeated
           ? "Repeated cursor received. Narrow the query and search again."
-          : bounded && page.next_cursor
-            ? "Page limit reached. Narrow the query."
-            : undefined,
+          : undefined,
       });
     } catch (error) {
       if (generation !== this.generation || aborter.signal.aborted) return;
-      this.cursors = [undefined];
+      if (
+        (error instanceof PublicCatalogError &&
+          [404, 409, 422].includes(error.status)) ||
+        (error instanceof Error && error.message.includes("catalog changed"))
+      ) {
+        this.cursors = [undefined];
+        this.catalogRevision = undefined;
+        this.targetIndex = 0;
+      }
       this.publish({
         status: "error",
         pageIndex: 0,

@@ -1,0 +1,128 @@
+{
+  "responses": [
+    {
+      "catalog_revision": "00000000-0000-4000-8000-000000000901",
+      "contract_version": "browsersdr-public-station-search/2",
+      "station": {
+        "aliases": [
+          "Energy Berlin"
+        ],
+        "call_sign": null,
+        "country": null,
+        "id": "00000000-0000-4000-8000-000000000001",
+        "name": "ENERGY Berlin (illustrative)",
+        "network": null,
+        "publication_version": 1,
+        "service": null,
+        "sources": [
+          {
+            "published_on": null,
+            "publisher": "Generated example publisher (no reuse approval)",
+            "retrieved_at": "2026-10-11T09:00:00Z",
+            "reviewed_at": "2026-10-11T10:00:00Z",
+            "url": "https://example.org/illustrative-radio"
+          }
+        ],
+        "transmission_count": 2
+      }
+    },
+    {
+      "catalog_revision": "00000000-0000-4000-8000-000000000901",
+      "contract_version": "browsersdr-public-station-search/2",
+      "items": [
+        {
+          "match": {
+            "matching_transmission_count": 2,
+            "station_fields": []
+          },
+          "station": {
+            "aliases": [
+              "Energy Berlin"
+            ],
+            "call_sign": null,
+            "country": null,
+            "id": "00000000-0000-4000-8000-000000000001",
+            "name": "ENERGY Berlin (illustrative)",
+            "network": null,
+            "publication_version": 1,
+            "service": null,
+            "sources": [
+              {
+                "published_on": null,
+                "publisher": "Generated example publisher (no reuse approval)",
+                "retrieved_at": "2026-10-11T09:00:00Z",
+                "reviewed_at": "2026-10-11T10:00:00Z",
+                "url": "https://example.org/illustrative-radio"
+              }
+            ],
+            "transmission_count": 2
+          }
+        }
+      ],
+      "next_cursor": null
+    },
+    {
+      "catalog_revision": "00000000-0000-4000-8000-000000000901",
+      "contract_version": "browsersdr-public-station-search/2",
+      "items": [
+        {
+          "bandwidth_hz": null,
+          "broadcast_format": "FM",
+          "frequency_hz": 103400000,
+          "id": "00000000-0000-4000-8000-000000000011",
+          "site": {
+            "country": null,
+            "name": null,
+            "place_name": "North example"
+          },
+          "sources": [
+            {
+              "published_on": null,
+              "publisher": "Generated example publisher (no reuse approval)",
+              "retrieved_at": "2026-10-11T09:00:00Z",
+              "reviewed_at": "2026-10-11T10:00:00Z",
+              "url": "https://example.org/illustrative-radio"
+            }
+          ],
+          "valid_from": null,
+          "valid_to": null
+        },
+        {
+          "bandwidth_hz": null,
+          "broadcast_format": "DAB+",
+          "frequency_hz": 229072000,
+          "id": "00000000-0000-4000-8000-000000000012",
+          "site": {
+            "country": null,
+            "name": null,
+            "place_name": "South example"
+          },
+          "sources": [
+            {
+              "published_on": null,
+              "publisher": "Generated example publisher (no reuse approval)",
+              "retrieved_at": "2026-10-11T09:00:00Z",
+              "reviewed_at": "2026-10-11T10:00:00Z",
+              "url": "https://example.org/illustrative-radio"
+            }
+          ],
+          "valid_from": null,
+          "valid_to": null
+        }
+      ],
+      "next_cursor": null,
+      "publication_version": 1,
+      "station_id": "00000000-0000-4000-8000-000000000001",
+      "total": 2
+    },
+    {
+      "error": {
+        "code": "catalog_changed",
+        "details": {},
+        "message": "Public request unavailable",
+        "request_id": "generated-contract-example"
+      }
+    }
+  ],
+  "scope": "Generated illustrative contract examples; never production seed or publication approval"
+}
