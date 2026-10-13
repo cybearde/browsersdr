@@ -187,9 +187,16 @@ it.each([
     );
     if (failure === "lost" || failure === "render error")
       expect(host.querySelector("canvas")).not.toBe(gpuCanvas);
-    expect(status).toHaveBeenLastCalledWith(
-      expect.objectContaining({ kind: "ready", hasFrame: false }),
-    );
+    // Fallback initialization includes a deferred module import. Wait for its
+    // actual ready status before feeding frames, with the same assertion.
+    await vi.waitFor(async () => {
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 0));
+      });
+      expect(status).toHaveBeenLastCalledWith(
+        expect.objectContaining({ kind: "ready", hasFrame: false }),
+      );
+    });
     const frame = (sequence: number, generation = 0): SpectrumFrame => ({
       sessionGeneration: generation,
       sequence,
