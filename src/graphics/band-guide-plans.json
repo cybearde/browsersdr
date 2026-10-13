@@ -219,6 +219,20 @@
       "scope": "Selected UK allocations; UKFAT 2026. National footnotes and restricted/shared uses apply.",
       "bands": [
         {
+          "id": "20m",
+          "startHz": 14000000,
+          "endHz": 14350000,
+          "label": "20 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; amateur-satellite reference applies in 14–14.25 MHz. National operating conditions apply.",
+          "references": [
+            {
+              "sourceId": "GB",
+              "section": "PDF page 22; national allocation column"
+            }
+          ]
+        },
+        {
           "id": "fm",
           "startHz": 87500000,
           "endHz": 108000000,
@@ -820,6 +834,20 @@
       "group": "Oceania",
       "scope": "Selected Australian national allocations, 2025 update. © Commonwealth of Australia (Australian Communications and Media Authority) 2025; CC BY 4.0, adapted frequency facts.",
       "bands": [
+        {
+          "id": "20m",
+          "startHz": 14000000,
+          "endHz": 14350000,
+          "label": "20 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; amateur-satellite reference applies in 14–14.25 MHz. National operating conditions apply.",
+          "references": [
+            {
+              "sourceId": "AU",
+              "section": "PDF page 45; national allocation column"
+            }
+          ]
+        },
         {
           "id": "fm",
           "startHz": 87500000,
