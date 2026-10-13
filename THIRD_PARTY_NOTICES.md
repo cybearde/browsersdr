@@ -1,5 +1,34 @@
 # Third-party notices
 
+## Signals standard-SIMD convolver adaptation
+
+`src/dsp/signalsConvolverBytes.ts` is adapted from the embedded convolver in
+`@jtarrio/signals` **0.10.1**, copyright 2026 Jacobo Tarrio Barreiro,
+licensed under the Apache License, Version 2.0:
+<https://www.apache.org/licenses/LICENSE-2.0>.
+The full license is retained at `src/dsp/signals-APACHE-LICENSE.txt` and
+shipped as `SIGNALS-LICENSE.txt`. The original package remains pinned and
+unmodified. Source project:
+<https://github.com/jtarrio/signals>.
+
+BrowserSDR replaces its four `f32x4.relaxed_madd` instructions with a helper
+using standard `f32x4.mul` followed by `f32x4.add`. The adaptation retains
+the kernel exports and memory layout. Browsers that validate the original
+kernel continue using it; other browsers use this standard-SIMD kernel.
+Floating-point rounding can differ within the original relaxed operation's
+permitted semantics. FFT bytes are unchanged.
+
+Original convolver SHA-256:
+`5f00919c79db247f79d3f479264c455a469e804707f39c06b41893b77b2135db`.
+Adapted convolver SHA-256:
+`9d68c586b742a0afbe4d2b178ae2d0beccc8c44e9ee2513879d7af4c959312f9`.
+Regenerate from the exact installed package bytes with
+`scripts/build-signals-convolver-compat.mjs` and separately installed
+**wabt 1.0.37**; no tool download or regeneration occurs during ordinary builds.
+The script verifies the input hash and expected instruction count, and validates
+its output with relaxed SIMD disabled. wabt is an Apache-2.0 build tool and is
+not included in the application.
+
 ## Independent APRS modem-audio test fixture
 
 `src/aprs/fixtures/picoSoundcard.s16le` is an unchanged PCM excerpt from

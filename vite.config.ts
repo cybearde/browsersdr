@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import { signalsWasmCompatibility } from "./src/dsp/signalsWasmPlugin.ts";
 import { seoAssets } from "./scripts/seo-site.mjs";
 
 const LOCAL_USRP_PREFIX = "/local/usrp-b205/";
@@ -16,6 +17,7 @@ function staticSiteDocuments(): Record<string, string> {
   return {
     ...seoAssets(),
     "LICENSE.txt": readFileSync(new URL("./LICENSE", import.meta.url), "utf8"),
+    "SIGNALS-LICENSE.txt": readFileSync(new URL("./src/dsp/signals-APACHE-LICENSE.txt", import.meta.url), "utf8"),
     "NOTICE.txt": readFileSync(new URL("./NOTICE", import.meta.url), "utf8"),
     "THIRD_PARTY_NOTICES.txt": readFileSync(
       new URL("./THIRD_PARTY_NOTICES.md", import.meta.url), "utf8",
@@ -43,13 +45,16 @@ export default defineConfig({
   // Prebundle its DSP imports before serving worker modules to avoid stale
   // optimized dependency URLs on the first DAB startup.
   optimizeDeps: {
+    rolldownOptions: { plugins: [signalsWasmCompatibility()] },
     include: [
       "@jtarrio/signals/dsp/fft.js",
       "@jtarrio/signals/dsp/resamplers.js",
     ],
   },
+  worker: { plugins: () => [signalsWasmCompatibility()] },
   plugins: [
     react(),
+    signalsWasmCompatibility(),
     {
       name: "static-site-documents",
       generateBundle() {

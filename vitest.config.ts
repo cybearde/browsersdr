@@ -1,8 +1,9 @@
 import { defineConfig } from "vitest/config";
 import react from "@vitejs/plugin-react";
+import { signalsWasmCompatibility } from "./src/dsp/signalsWasmPlugin.ts";
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), signalsWasmCompatibility()],
   test: {
     maxWorkers: 2,
     projects: [

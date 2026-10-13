@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.1.2 — 2026-10-14
+
+- Fix the blue-background startup failure on Safari configurations that reject relaxed-SIMD WASM instructions. Select a standard-SIMD DSP filter when the original kernel is unsupported, while retaining the existing kernel on supporting browsers.
+- Apply the compatibility path to optimized development imports and module workers, with numerical and browser startup/processing regression coverage.
+
 ## 1.1.1 — 2026-10-14
 
 - Carry compatibility evidence across unchanged feature paths through reviewed dependency fingerprints and explicit build equivalence checks. Show original build/date/expiry and separate fresh counts; issues, corrections, exclusions and withdrawals continue to apply.
