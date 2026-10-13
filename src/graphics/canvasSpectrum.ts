@@ -114,6 +114,7 @@ export class CanvasSpectrum {
     floor: number,
     range: number,
     palette: SpectrumPalette = SPECTRUM_PALETTES.classic,
+    guideHeight = 0,
   ): void {
     const canvas = this.context.canvas;
     const width = Math.min(
@@ -139,8 +140,8 @@ export class CanvasSpectrum {
     if (count) {
       const start = HISTORY_ROWS - nextWriteRow;
       const first = Math.min(count, nextWriteRow);
-      const y = height * 0.38,
-        rowHeight = (height * 0.62) / count;
+      const y = height * (0.38 + Math.min(.5, guideHeight / Math.max(1, cssHeight))),
+        rowHeight = (height - y) / count;
       ctx.imageSmoothingEnabled = false;
       if (first)
         ctx.drawImage(

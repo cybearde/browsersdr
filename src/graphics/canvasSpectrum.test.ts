@@ -67,6 +67,11 @@ it("owns frames, rejects stale/repeated rows, retains clock gaps and wraps newes
   expect(canvas.width).toBe(1600);
   expect(canvas.height).toBe(800);
   expect(drawImage.mock.calls[0]!.slice(1, 5)).toEqual([0, 236, 1024, 4]);
+  drawImage.mockClear();
+  display.render(800, 400, 2, -105, 90, undefined, 28);
+  expect(drawImage.mock.calls[0]![6]).toBeCloseTo(360);
+  expect(drawImage.mock.calls[0]![8]).toBeCloseTo(440);
+  expect(drawImage.mock.calls[0]!.slice(1, 5)).toEqual([0, 236, 1024, 4]);
   const originalColor = uploads[0]!.data.slice(0, 4);
   display.render(10000, 10000, 3, -90, 20);
   expect(canvas.width).toBe(2048);

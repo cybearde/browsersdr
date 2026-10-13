@@ -16,6 +16,8 @@ afterEach(() => {
 });
 
 it("retains hidden rows without drawing, throttles status, and caches canvas layout", async () => {
+  // Settle the deferred guide before measuring steady-state renderer redraws.
+  await import("./BandGuideFeature");
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
   let resize!: ResizeObserverCallback;
   vi.stubGlobal(

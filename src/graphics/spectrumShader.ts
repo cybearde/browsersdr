@@ -4,7 +4,7 @@ export const spectrumShader = (size: number) => /* wgsl */ `
   @group(0) @binding(0) var<storage, read> levels: array<f32>;
   @group(0) @binding(1) var<storage, read> history: array<f32>;
   struct Display {
-    markerX: f32, floorDb: f32, rangeDb: f32, _padding: f32,
+    markerX: f32, floorDb: f32, rangeDb: f32, guideGap: f32,
     nextRow: u32, rowCount: u32, _padding2: vec2u,
     cold: vec4f, mid: vec4f, hot: vec4f, peak: vec4f, trace: vec4f, marker: vec4f,
   }
@@ -27,8 +27,9 @@ export const spectrumShader = (size: number) => /* wgsl */ `
     return select(mix(cold, violet, t * 2.0), select(mix(violet, electric, (t - 0.5) * 3.0), mix(electric, stellar, (t - 0.83) * 5.88), t > 0.83), t > 0.5);
   }
   @fragment fn waterfallFragment(input: FullscreenOutput) -> @location(0) vec4f {
-    if (input.uv.y < 0.38 || display.rowCount == 0u) { discard; }
-    let relativeY = clamp((input.uv.y - 0.38) / 0.62, 0.0, 0.999999);
+    let waterfallStart = 0.38 + display.guideGap;
+    if (input.uv.y < waterfallStart || display.rowCount == 0u) { discard; }
+    let relativeY = clamp((input.uv.y - waterfallStart) / (1.0 - waterfallStart), 0.0, 0.999999);
     let age = min(u32(relativeY * f32(display.rowCount)), display.rowCount - 1u);
     let row = (display.nextRow + ${HISTORY_ROWS}u - 1u - age) % ${HISTORY_ROWS}u;
     let bin = min(u32(clamp(input.uv.x, 0.0, 0.999999) * f32(${size})), ${size - 1}u);

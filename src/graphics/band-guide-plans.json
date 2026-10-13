@@ -1,0 +1,1421 @@
+{
+  "sources": {
+    "ECO": {
+      "title": "CEPT / ECO application frequency directory",
+      "url": "https://docdb.cept.org/frequencies/list",
+      "edition": "Directory inspected 14 October 2026",
+      "inspected": "2026-10-14",
+      "method": "Official indexed table"
+    },
+    "ECA": {
+      "title": "CEPT European Common Allocation Table",
+      "url": "https://docdb.cept.org/download/4874",
+      "edition": "ERC Report 025; November 2025 update",
+      "inspected": "2026-10-14",
+      "method": "Official indexed selected rows",
+      "sourceDate": "2025-11-28"
+    },
+    "GB": {
+      "title": "Ofcom UK Frequency Allocation Table",
+      "url": "https://www.ofcom.org.uk/siteassets/resources/documents/spectrum/spectrum-information/frequency-allocation-table/uk-frequency-allocation-table.pdf?v=420751",
+      "edition": "UKFAT 2026",
+      "inspected": "2026-10-14",
+      "method": "Official PDF text inspected through web",
+      "sourceDate": "2026-07-03"
+    },
+    "FR": {
+      "title": "ANFR TNRBF",
+      "url": "https://www.anfr.fr/fileadmin/mediatheque/documents/tnrbf/TNRBF_2026-05-26c.pdf",
+      "edition": "26 May 2026; restitution corrected 14 August 2026",
+      "inspected": "2026-10-14",
+      "method": "Publication bytes",
+      "sourceDate": "2026-05-26",
+      "sha256": "a6df2fff81958b3ac222a74550224ae0e020f23a7ed4e4cf2db6b78a92dec5a6"
+    },
+    "CH": {
+      "title": "BAKOM National Frequency Allocation Plan",
+      "url": "https://www.bakom.admin.ch/dam/en/sd-web/Y3GtudExOtP2/Swiss_National_Frequency_Allocation_Plan_2026.pdf",
+      "edition": "NFAP 2026; issue 1 January 2026",
+      "inspected": "2026-10-14",
+      "method": "Publication bytes",
+      "sourceDate": "2026-01-01",
+      "sha256": "27559ff1e7f2fc205489148a569386c1ce40f7b0c97d12ebcf40fd06eac6f575"
+    },
+    "ES": {
+      "title": "Spain CNAF",
+      "url": "https://www.boe.es/eli/es/o/2026/07/10/tdf732/dof/spa/pdf",
+      "edition": "Orden TDF/732/2026; BOE 17 July 2026",
+      "inspected": "2026-10-14",
+      "method": "Publication bytes",
+      "sourceDate": "2026-07-10",
+      "sha256": "4492920dc99c614746bf1061d4c767781d4537ec5367224a923c2e220aada97c"
+    },
+    "CA": {
+      "title": "ISED Canadian Table of Frequency Allocations",
+      "url": "https://ised-isde.canada.ca/site/spectrum-management-telecommunications/en/learn-more/key-documents/consultations/canadian-table-frequency-allocations-sf10759",
+      "edition": "CTFA 2022; later domestic decisions may apply",
+      "inspected": "2026-10-14",
+      "method": "Publication bytes",
+      "sourceDate": "2022-12",
+      "sha256": "ac1d2cbe58753737d821450bb1f58833896c72acc3014315cfb8b963335a4b0d"
+    },
+    "AU": {
+      "title": "ACMA Australian Radiofrequency Spectrum Plan",
+      "url": "https://www.acma.gov.au/sites/default/files/2026-03/Australian%20Radiofrequency%20Spectrum%20Plan%20%282025%20Update%29%202021_Including%20general%20information.pdf",
+      "edition": "2025 update; compilation 9 October 2025",
+      "inspected": "2026-10-14",
+      "method": "Official PDF text inspected through web",
+      "sourceDate": "2025-10-09"
+    },
+    "NZ": {
+      "title": "RSM Table of Radio Spectrum Usage",
+      "url": "https://www.rsm.govt.nz/assets/Uploads/documents/pibs/table-of-radio-spectrum-usage-in-new-zealand-pib-21.pdf",
+      "edition": "PIB 21 issue 11; June 2021",
+      "inspected": "2026-10-14",
+      "method": "Publication bytes",
+      "sourceDate": "2021-06",
+      "sha256": "a65eb54b995df19e88e4529048293c86d8b4a02352376ad0140a22f9018f5cd3"
+    },
+    "IN": {
+      "title": "DoT National Frequency Allocation Plan",
+      "url": "https://www.dot.gov.in/static/uploads/2026/02/b110cdc386d3a4e41c8483d7ffd7c410.pdf",
+      "edition": "NFAP 2025; effective 30 December 2025",
+      "inspected": "2026-10-14",
+      "method": "Publication bytes",
+      "sourceDate": "2025-12-30",
+      "sha256": "e20657c7b053e678672d96c4d914630b125463b380ffbb0bf153d66571e9d0cd"
+    },
+    "BR": {
+      "title": "Anatel Frequency Allocation and Destination Plan",
+      "url": "https://informacoes.anatel.gov.br/legislacao/resolucoes/AAAA/2157-resolucao-789",
+      "edition": "Resolution 789; 6 July 2026",
+      "inspected": "2026-10-14",
+      "method": "Publication bytes",
+      "sourceDate": "2026-07-06",
+      "sha256": "3f14ba591df1e0e610613144e887da8eafd39513e588db9abe6499835d450f1e"
+    },
+    "CA-FM": {
+      "title": "ISED FM broadcasting rules",
+      "url": "https://ised-isde.canada.ca/site/spectrum-management-telecommunications/sites/default/files/documents/BPR-3-i7-2024-05-EN.pdf",
+      "edition": "BPR-3 issue 7; May 2024",
+      "inspected": "2026-10-14",
+      "method": "Publication bytes",
+      "sourceDate": "2024-05",
+      "sha256": "9ab5ff6073d4d2494219e1ae6c790d780ad31eb1fddedcc27a975cc6ba31e426"
+    },
+    "US": {
+      "title": "FCC amateur frequency bands",
+      "url": "https://www.ecfr.gov/current/title-47/chapter-I/subchapter-D/part-97/subpart-D/section-97.301",
+      "edition": "47 CFR 97.301; eCFR current through 8 October 2026",
+      "inspected": "2026-10-14",
+      "method": "Official web text inspected"
+    },
+    "US-FM": {
+      "title": "FCC FM broadcast band",
+      "url": "https://www.ecfr.gov/current/title-47/chapter-I/subchapter-C/part-73/subpart-B/section-73.201",
+      "edition": "47 CFR 73.201; eCFR current through 8 October 2026",
+      "inspected": "2026-10-14",
+      "method": "Official web text inspected"
+    },
+    "CN": {
+      "title": "MIIT Radio Frequency Allocation Provisions",
+      "url": "https://www.miit.gov.cn/cms_files/filemanager/1226211233/attach/20236/9086700eed45430bafe236efd1096fd3.pdf",
+      "edition": "Order 62; effective 1 July 2023",
+      "inspected": "2026-10-14",
+      "method": "Official PDF text inspected through web",
+      "sourceDate": "2023-05-23"
+    },
+    "ZA": {
+      "title": "ICASA National Radio Frequency Plan",
+      "url": "https://www.icasa.org.za/uploads/files/Published-National-Radio-Frequency-Plan-2026.pdf",
+      "edition": "Final NRFP 2026; minister approved 2 July 2026",
+      "inspected": "2026-10-14",
+      "method": "Publication bytes",
+      "sourceDate": "2026-07-02",
+      "sha256": "c8ee61fb2c35d90c3a9a652a9f73f55e5f3de7725769e7b6269068c89e69e317"
+    }
+  },
+  "profiles": {
+    "CEPT": {
+      "label": "Europe (CEPT common)",
+      "group": "Europe",
+      "scope": "Selected common CEPT references. National availability and conditions differ; choose a country for its curated subset.",
+      "bands": [
+        {
+          "id": "fm",
+          "startHz": 87500000,
+          "endHz": 108000000,
+          "label": "FM broadcast",
+          "category": "shared",
+          "notes": "FM sound broadcasting and wireless audio / short-range applications. Common reference, not confirmation of use in every country.",
+          "references": [
+            {
+              "sourceId": "ECO",
+              "section": "Application directory: EN 302 018 / EN 303 345 / EN 301 357"
+            }
+          ]
+        },
+        {
+          "id": "air-nav",
+          "startHz": 108000000,
+          "endHz": 117975000,
+          "label": "Air navigation",
+          "category": "navigation",
+          "notes": "Navigation / GBAS reference; additional aeronautical communications and national conditions apply.",
+          "references": [
+            {
+              "sourceId": "ECO",
+              "section": "Application directory: EN 303 084 / EN 301 842"
+            }
+          ]
+        },
+        {
+          "id": "airband",
+          "startHz": 117975000,
+          "endHz": 137000000,
+          "label": "Airband",
+          "category": "navigation",
+          "notes": "Common aeronautical mobile (R) reference, with distress and special-use footnotes.",
+          "references": [
+            {
+              "sourceId": "ECA",
+              "section": "PDF page 61; 117.975–137 MHz"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 146000000,
+          "label": "2 m amateur / shared",
+          "category": "shared",
+          "notes": "Common amateur application reference. Other allocations and national limits apply.",
+          "references": [
+            {
+              "sourceId": "ECO",
+              "section": "Application directory: EN 301 783"
+            }
+          ]
+        },
+        {
+          "id": "70cm",
+          "startHz": 430000000,
+          "endHz": 440000000,
+          "label": "70 cm amateur / shared",
+          "category": "shared",
+          "notes": "Common amateur application reference. Other allocations and national limits apply.",
+          "references": [
+            {
+              "sourceId": "ECO",
+              "section": "Application directory: EN 301 783"
+            }
+          ]
+        }
+      ]
+    },
+    "GB": {
+      "label": "United Kingdom",
+      "group": "Europe",
+      "scope": "Selected UK allocations; UKFAT 2026. National footnotes and restricted/shared uses apply.",
+      "bands": [
+        {
+          "id": "fm",
+          "startHz": 87500000,
+          "endHz": 108000000,
+          "label": "VHF broadcasting",
+          "category": "broadcast",
+          "notes": "Broadcast reference interval; consult national application and sharing conditions.",
+          "references": [
+            {
+              "sourceId": "GB",
+              "section": "PDF page 28; UK223"
+            }
+          ]
+        },
+        {
+          "id": "air-nav",
+          "startHz": 108000000,
+          "endHz": 117975000,
+          "label": "Air navigation",
+          "category": "navigation",
+          "notes": "Aeronautical radionavigation; navigation-related mobile systems and national notes may also apply.",
+          "references": [
+            {
+              "sourceId": "GB",
+              "section": "PDF pages 28–29; 5.197A / UK4.1 and aeronautical footnotes"
+            }
+          ]
+        },
+        {
+          "id": "airband",
+          "startHz": 117975000,
+          "endHz": 137000000,
+          "label": "Airband",
+          "category": "navigation",
+          "notes": "Aeronautical communications. Satellite, distress and other special uses depend on the source notes.",
+          "references": [
+            {
+              "sourceId": "GB",
+              "section": "PDF pages 28–29; 5.197A / UK4.1 and aeronautical footnotes"
+            }
+          ]
+        },
+        {
+          "id": "10m",
+          "startHz": 28000000,
+          "endHz": 29700000,
+          "label": "10 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "GB",
+              "section": "PDF page 26; UK7"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 146000000,
+          "label": "2 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "GB",
+              "section": "PDF page 30; UK7"
+            }
+          ]
+        }
+      ]
+    },
+    "FR": {
+      "label": "France (metropolitan)",
+      "group": "Europe",
+      "scope": "Metropolitan France column of TNRBF 2026. Overseas territories require their own context.",
+      "bands": [
+        {
+          "id": "fm",
+          "startHz": 87500000,
+          "endHz": 108000000,
+          "label": "VHF broadcasting",
+          "category": "broadcast",
+          "notes": "Broadcast reference interval; consult national application and sharing conditions.",
+          "references": [
+            {
+              "sourceId": "FR",
+              "section": "PDF page 84 / feuillet 27a; metropolitan column"
+            }
+          ]
+        },
+        {
+          "id": "air-nav",
+          "startHz": 108000000,
+          "endHz": 117975000,
+          "label": "Air navigation",
+          "category": "navigation",
+          "notes": "Aeronautical radionavigation; navigation-related mobile systems and national notes may also apply.",
+          "references": [
+            {
+              "sourceId": "FR",
+              "section": "PDF page 84 / feuillet 27a; metropolitan column"
+            }
+          ]
+        },
+        {
+          "id": "airband",
+          "startHz": 117975000,
+          "endHz": 137000000,
+          "label": "Airband",
+          "category": "navigation",
+          "notes": "Aeronautical communications. Satellite, distress and other special uses depend on the source notes.",
+          "references": [
+            {
+              "sourceId": "FR",
+              "section": "PDF page 84 / feuillet 27a; metropolitan column"
+            }
+          ]
+        },
+        {
+          "id": "20m",
+          "startHz": 14000000,
+          "endHz": 14350000,
+          "label": "20 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "FR",
+              "section": "PDF page 66 / feuillet 18a"
+            }
+          ]
+        },
+        {
+          "id": "10m",
+          "startHz": 28000000,
+          "endHz": 29700000,
+          "label": "10 m amateur / shared",
+          "category": "shared",
+          "notes": "Amateur / amateur-satellite; national F17 allows additional defence mobile use.",
+          "references": [
+            {
+              "sourceId": "FR",
+              "section": "PDF page 76 / feuillet 23a"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 146000000,
+          "label": "2 m amateur / shared",
+          "category": "shared",
+          "notes": "Amateur / amateur-satellite; national F17 allows additional defence mobile use.",
+          "references": [
+            {
+              "sourceId": "FR",
+              "section": "PDF page 88 / feuillet 29a"
+            }
+          ]
+        },
+        {
+          "id": "70cm",
+          "startHz": 430000000,
+          "endHz": 440000000,
+          "label": "70 cm amateur / shared",
+          "category": "shared",
+          "notes": "Amateur shares with radiolocation and other services; allocations change within this interval.",
+          "references": [
+            {
+              "sourceId": "FR",
+              "section": "PDF pages 106–108; metropolitan column"
+            }
+          ]
+        }
+      ]
+    },
+    "CH": {
+      "label": "Switzerland",
+      "group": "Europe",
+      "scope": "Selected Swiss NFAP 2026 allocations. Technical interface regulations specify application conditions.",
+      "bands": [
+        {
+          "id": "fm",
+          "startHz": 87500000,
+          "endHz": 108000000,
+          "label": "FM broadcast",
+          "category": "shared",
+          "notes": "FM sound broadcasting; secondary land mobile, PMSE and short-range audio uses also occur.",
+          "references": [
+            {
+              "sourceId": "CH",
+              "section": "PDF page 36; RIR0201-30"
+            }
+          ]
+        },
+        {
+          "id": "air-nav",
+          "startHz": 108000000,
+          "endHz": 117975000,
+          "label": "Air navigation",
+          "category": "navigation",
+          "notes": "Aeronautical radionavigation; navigation-related mobile systems and national notes may also apply.",
+          "references": [
+            {
+              "sourceId": "CH",
+              "section": "PDF page 37; RIR0102 / RIR0101"
+            }
+          ]
+        },
+        {
+          "id": "airband",
+          "startHz": 117975000,
+          "endHz": 137000000,
+          "label": "Airband",
+          "category": "navigation",
+          "notes": "Aeronautical communications. Satellite, distress and other special uses depend on the source notes.",
+          "references": [
+            {
+              "sourceId": "CH",
+              "section": "PDF page 37; RIR0102 / RIR0101"
+            }
+          ]
+        },
+        {
+          "id": "20m",
+          "startHz": 14000000,
+          "endHz": 14350000,
+          "label": "20 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "CH",
+              "section": "PDF page 27; RIR1101-02"
+            }
+          ]
+        },
+        {
+          "id": "10m",
+          "startHz": 28000000,
+          "endHz": 29700000,
+          "label": "10 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "CH",
+              "section": "PDF page 33; national allocation"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 146000000,
+          "label": "2 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "CH",
+              "section": "PDF page 38; RIR1101-12"
+            }
+          ]
+        },
+        {
+          "id": "70cm",
+          "startHz": 430000000,
+          "endHz": 440000000,
+          "label": "70 cm amateur / shared",
+          "category": "shared",
+          "notes": "Amateur and other uses; sub-band sharing and technical interface conditions apply.",
+          "references": [
+            {
+              "sourceId": "CH",
+              "section": "PDF pages 50–51; national allocation"
+            }
+          ]
+        }
+      ]
+    },
+    "ES": {
+      "label": "Spain",
+      "group": "Europe",
+      "scope": "Selected Spanish CNAF 2026 allocations and application notes.",
+      "bands": [
+        {
+          "id": "fm",
+          "startHz": 87500000,
+          "endHz": 108000000,
+          "label": "FM broadcast",
+          "category": "broadcast",
+          "notes": "Broadcast reference interval; consult national application and sharing conditions.",
+          "references": [
+            {
+              "sourceId": "ES",
+              "section": "PDF page 143; UN-17"
+            }
+          ]
+        },
+        {
+          "id": "air-nav",
+          "startHz": 108000000,
+          "endHz": 117975000,
+          "label": "Air navigation",
+          "category": "navigation",
+          "notes": "Aeronautical radionavigation; navigation-related mobile systems and national notes may also apply.",
+          "references": [
+            {
+              "sourceId": "ES",
+              "section": "PDF pages 143–145; national column"
+            }
+          ]
+        },
+        {
+          "id": "airband",
+          "startHz": 117975000,
+          "endHz": 137000000,
+          "label": "Airband",
+          "category": "navigation",
+          "notes": "Aeronautical communications. Satellite, distress and other special uses depend on the source notes.",
+          "references": [
+            {
+              "sourceId": "ES",
+              "section": "PDF pages 143–145; national column"
+            }
+          ]
+        },
+        {
+          "id": "20m",
+          "startHz": 14000000,
+          "endHz": 14350000,
+          "label": "20 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "ES",
+              "section": "PDF page 130; UN-117"
+            }
+          ]
+        },
+        {
+          "id": "10m",
+          "startHz": 28000000,
+          "endHz": 29700000,
+          "label": "10 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "ES",
+              "section": "PDF page 137; UN-114"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 146000000,
+          "label": "2 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "ES",
+              "section": "PDF page 146; Spanish national allocation column"
+            }
+          ]
+        },
+        {
+          "id": "70cm",
+          "startHz": 430000000,
+          "endHz": 440000000,
+          "label": "70 cm amateur / shared",
+          "category": "shared",
+          "notes": "Amateur shares with radiolocation and other uses; national notes apply.",
+          "references": [
+            {
+              "sourceId": "ES",
+              "section": "PDF pages 159–160; UN-154"
+            }
+          ]
+        }
+      ]
+    },
+    "US": {
+      "label": "United States",
+      "group": "North America",
+      "scope": "Selected FCC FM and amateur references for the United States in ITU Region 2. Licence classes, sharing and geographic restrictions differ.",
+      "bands": [
+        {
+          "id": "fm",
+          "startHz": 88000000,
+          "endHz": 108000000,
+          "label": "FM broadcast",
+          "category": "broadcast",
+          "notes": "Broadcast reference interval; consult national application and sharing conditions.",
+          "references": [
+            {
+              "sourceId": "US-FM",
+              "section": "47 CFR 73.201, opening paragraph"
+            }
+          ]
+        },
+        {
+          "id": "20m",
+          "startHz": 14000000,
+          "endHz": 14350000,
+          "label": "20 m amateur / shared",
+          "category": "shared",
+          "notes": "FCC amateur reference; licence class, sharing and geographic restrictions apply. No transmitting permission is implied.",
+          "references": [
+            {
+              "sourceId": "US",
+              "section": "47 CFR 97.301(a)/(b), Region 2; see 97.303"
+            }
+          ]
+        },
+        {
+          "id": "10m",
+          "startHz": 28000000,
+          "endHz": 29700000,
+          "label": "10 m amateur / shared",
+          "category": "shared",
+          "notes": "FCC amateur reference; licence class, sharing and geographic restrictions apply. No transmitting permission is implied.",
+          "references": [
+            {
+              "sourceId": "US",
+              "section": "47 CFR 97.301(a)/(b), Region 2; see 97.303"
+            }
+          ]
+        },
+        {
+          "id": "6m",
+          "startHz": 50000000,
+          "endHz": 54000000,
+          "label": "6 m amateur / shared",
+          "category": "shared",
+          "notes": "FCC amateur reference; licence class, sharing and geographic restrictions apply. No transmitting permission is implied.",
+          "references": [
+            {
+              "sourceId": "US",
+              "section": "47 CFR 97.301(a)/(b), Region 2; see 97.303"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 148000000,
+          "label": "2 m amateur / shared",
+          "category": "shared",
+          "notes": "FCC amateur reference; licence class, sharing and geographic restrictions apply. No transmitting permission is implied.",
+          "references": [
+            {
+              "sourceId": "US",
+              "section": "47 CFR 97.301(a)/(b), Region 2; see 97.303"
+            }
+          ]
+        },
+        {
+          "id": "70cm",
+          "startHz": 420000000,
+          "endHz": 450000000,
+          "label": "70 cm amateur / shared",
+          "category": "shared",
+          "notes": "FCC amateur reference; licence class, sharing and geographic restrictions apply. No transmitting permission is implied.",
+          "references": [
+            {
+              "sourceId": "US",
+              "section": "47 CFR 97.301(a)/(b), Region 2; see 97.303"
+            }
+          ]
+        },
+        {
+          "id": "33cm",
+          "startHz": 902000000,
+          "endHz": 928000000,
+          "label": "33 cm amateur / shared",
+          "category": "shared",
+          "notes": "FCC amateur reference; licence class, sharing and geographic restrictions apply. No transmitting permission is implied.",
+          "references": [
+            {
+              "sourceId": "US",
+              "section": "47 CFR 97.301(a)/(b), Region 2; see 97.303"
+            }
+          ]
+        }
+      ]
+    },
+    "CA": {
+      "label": "Canada",
+      "group": "North America",
+      "scope": "Selected CTFA 2022 allocations plus BPR-3 issue 7 FM application. Later domestic decisions may apply; the 2026 consultation is not used as an adopted table.",
+      "bands": [
+        {
+          "id": "fm",
+          "startHz": 88000000,
+          "endHz": 108000000,
+          "label": "FM broadcast",
+          "category": "broadcast",
+          "notes": "Broadcast reference interval; consult national application and sharing conditions.",
+          "references": [
+            {
+              "sourceId": "CA-FM",
+              "section": "BPR-3 issue 7, introduction and section 1"
+            }
+          ]
+        },
+        {
+          "id": "air-nav",
+          "startHz": 108000000,
+          "endHz": 117975000,
+          "label": "Air navigation",
+          "category": "navigation",
+          "notes": "Aeronautical radionavigation; navigation-related mobile systems and national notes may also apply.",
+          "references": [
+            {
+              "sourceId": "CA",
+              "section": "CTFA 2022; 108–117.975 and 117.975–137 MHz; 5.197A"
+            }
+          ]
+        },
+        {
+          "id": "airband",
+          "startHz": 117975000,
+          "endHz": 137000000,
+          "label": "Airband",
+          "category": "navigation",
+          "notes": "Aeronautical communications. Satellite, distress and other special uses depend on the source notes.",
+          "references": [
+            {
+              "sourceId": "CA",
+              "section": "CTFA 2022; 108–117.975 and 117.975–137 MHz; 5.197A"
+            }
+          ]
+        },
+        {
+          "id": "20m",
+          "startHz": 14000000,
+          "endHz": 14350000,
+          "label": "20 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "CA",
+              "section": "CTFA 2022; 14000–14350 kHz"
+            }
+          ]
+        },
+        {
+          "id": "10m",
+          "startHz": 28000000,
+          "endHz": 29700000,
+          "label": "10 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "CA",
+              "section": "CTFA 2022; 28–29.7 MHz"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 148000000,
+          "label": "2 m amateur",
+          "category": "amateur",
+          "notes": "Amateur throughout; amateur-satellite allocation is in 144–146 MHz.",
+          "references": [
+            {
+              "sourceId": "CA",
+              "section": "CTFA 2022; 144–146 / 146–148 MHz"
+            }
+          ]
+        },
+        {
+          "id": "70cm",
+          "startHz": 430000000,
+          "endHz": 450000000,
+          "label": "70 cm amateur / shared",
+          "category": "shared",
+          "notes": "Secondary amateur use shares with radiolocation and other services. C10 and international footnotes require consultation; no extension below 430 MHz is inferred here.",
+          "references": [
+            {
+              "sourceId": "CA",
+              "section": "CTFA 2022; 430–432 / 432–438 / 438–450 MHz"
+            }
+          ]
+        }
+      ]
+    },
+    "AU": {
+      "label": "Australia",
+      "group": "Oceania",
+      "scope": "Selected Australian national allocations, 2025 update. © Commonwealth of Australia (Australian Communications and Media Authority) 2025; CC BY 4.0, adapted frequency facts.",
+      "bands": [
+        {
+          "id": "fm",
+          "startHz": 87500000,
+          "endHz": 108000000,
+          "label": "VHF broadcast / shared",
+          "category": "shared",
+          "notes": "Broadcasting with secondary fixed/mobile services. Application conditions require national footnotes.",
+          "references": [
+            {
+              "sourceId": "AU",
+              "section": "PDF page 56; Australian column; AUS103"
+            }
+          ]
+        },
+        {
+          "id": "air-nav",
+          "startHz": 108000000,
+          "endHz": 117975000,
+          "label": "Air navigation",
+          "category": "navigation",
+          "notes": "Aeronautical radionavigation; navigation-related mobile systems and national notes may also apply.",
+          "references": [
+            {
+              "sourceId": "AU",
+              "section": "PDF page 56; Australian column; AUS25 / AUS103"
+            }
+          ]
+        },
+        {
+          "id": "airband",
+          "startHz": 117975000,
+          "endHz": 137000000,
+          "label": "Airband",
+          "category": "navigation",
+          "notes": "Aeronautical communications. Satellite, distress and other special uses depend on the source notes.",
+          "references": [
+            {
+              "sourceId": "AU",
+              "section": "PDF page 56; Australian column; AUS25 / AUS103"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 148000000,
+          "label": "2 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "AU",
+              "section": "PDF page 58; Australian column; AUS103"
+            }
+          ]
+        },
+        {
+          "id": "70cm",
+          "startHz": 430000000,
+          "endHz": 450000000,
+          "label": "70 cm amateur / shared",
+          "category": "shared",
+          "notes": "Secondary amateur use shares with radiolocation and other services; allocations and conditions vary across the interval.",
+          "references": [
+            {
+              "sourceId": "AU",
+              "section": "PDF pages 66–67; Australian column; AUS95 / AUS101A"
+            }
+          ]
+        }
+      ]
+    },
+    "NZ": {
+      "label": "New Zealand",
+      "group": "Oceania",
+      "scope": "Selected PIB 21 issue 11 (June 2021) references. Subsequent policies and current general-user licences govern application conditions.",
+      "bands": [
+        {
+          "id": "fm",
+          "startHz": 87500000,
+          "endHz": 108000000,
+          "label": "FM broadcast",
+          "category": "shared",
+          "notes": "FM broadcasting and short-range audio references; fixed/mobile sharing below 100 MHz and national application conditions apply.",
+          "references": [
+            {
+              "sourceId": "NZ",
+              "section": "PDF page 49; New Zealand allocation and usage columns"
+            }
+          ]
+        },
+        {
+          "id": "air-nav",
+          "startHz": 108000000,
+          "endHz": 117975000,
+          "label": "Air navigation",
+          "category": "navigation",
+          "notes": "Aeronautical radionavigation; navigation-related mobile systems and national notes may also apply.",
+          "references": [
+            {
+              "sourceId": "NZ",
+              "section": "PDF pages 49–50; New Zealand column; usage varies within Airband"
+            }
+          ]
+        },
+        {
+          "id": "airband",
+          "startHz": 117975000,
+          "endHz": 137000000,
+          "label": "Airband",
+          "category": "navigation",
+          "notes": "Aeronautical communications. Satellite, distress and other special uses depend on the source notes.",
+          "references": [
+            {
+              "sourceId": "NZ",
+              "section": "PDF pages 49–50; New Zealand column; usage varies within Airband"
+            }
+          ]
+        },
+        {
+          "id": "20m",
+          "startHz": 14000000,
+          "endHz": 14350000,
+          "label": "20 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "NZ",
+              "section": "PDF pages 32–33; New Zealand column"
+            }
+          ]
+        },
+        {
+          "id": "10m",
+          "startHz": 28000000,
+          "endHz": 29700000,
+          "label": "10 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "NZ",
+              "section": "PDF page 43; New Zealand column"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 148000000,
+          "label": "2 m amateur / shared",
+          "category": "shared",
+          "notes": "Amateur reference; the usage column also notes government service use. Satellite allocation is in 144–146 MHz.",
+          "references": [
+            {
+              "sourceId": "NZ",
+              "section": "PDF page 52; New Zealand column"
+            }
+          ]
+        },
+        {
+          "id": "70cm",
+          "startHz": 430000000,
+          "endHz": 440000000,
+          "label": "70 cm amateur / shared",
+          "category": "shared",
+          "notes": "Amateur shares with radiolocation and other services; current licence conditions require checking.",
+          "references": [
+            {
+              "sourceId": "NZ",
+              "section": "PDF page 63; New Zealand column"
+            }
+          ]
+        }
+      ]
+    },
+    "IN": {
+      "label": "India",
+      "group": "Asia",
+      "scope": "Selected national-column allocations from NFAP 2025; Indian footnotes and application rules apply.",
+      "bands": [
+        {
+          "id": "fm",
+          "startHz": 87000000,
+          "endHz": 108000000,
+          "label": "VHF broadcast / shared",
+          "category": "shared",
+          "notes": "Broadcasting allocation; fixed/mobile sharing in 87–100 MHz. This allocation does not define an FM channel plan.",
+          "references": [
+            {
+              "sourceId": "IN",
+              "section": "PDF page 51; India column; IND11 / IND13"
+            }
+          ]
+        },
+        {
+          "id": "air-nav",
+          "startHz": 108000000,
+          "endHz": 117975000,
+          "label": "Air navigation",
+          "category": "navigation",
+          "notes": "Aeronautical radionavigation; navigation-related mobile systems and national notes may also apply.",
+          "references": [
+            {
+              "sourceId": "IN",
+              "section": "PDF page 51; India column; IND12 / IND13"
+            }
+          ]
+        },
+        {
+          "id": "airband",
+          "startHz": 117975000,
+          "endHz": 137000000,
+          "label": "Airband",
+          "category": "navigation",
+          "notes": "Aeronautical communications. Satellite, distress and other special uses depend on the source notes.",
+          "references": [
+            {
+              "sourceId": "IN",
+              "section": "PDF page 51; India column; IND12 / IND13"
+            }
+          ]
+        },
+        {
+          "id": "20m",
+          "startHz": 14000000,
+          "endHz": 14350000,
+          "label": "20 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "IN",
+              "section": "PDF page 40; India column"
+            }
+          ]
+        },
+        {
+          "id": "10m",
+          "startHz": 28000000,
+          "endHz": 29700000,
+          "label": "10 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "IN",
+              "section": "PDF page 46; India column"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 146000000,
+          "label": "2 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "IN",
+              "section": "PDF page 53; India column; IND13"
+            }
+          ]
+        },
+        {
+          "id": "70cm",
+          "startHz": 430000000,
+          "endHz": 440000000,
+          "label": "70 cm amateur / shared",
+          "category": "shared",
+          "notes": "Secondary amateur use shares with radiolocation, fixed/mobile, aeronautical navigation and other uses; IND23 and sub-band footnotes apply.",
+          "references": [
+            {
+              "sourceId": "IN",
+              "section": "PDF pages 63–64; India column"
+            }
+          ]
+        }
+      ]
+    },
+    "CN": {
+      "label": "China (mainland)",
+      "group": "Asia",
+      "scope": "Selected mainland column of MIIT Order 62 (2023). Hong Kong, Macao and Taiwan are excluded from this profile.",
+      "bands": [
+        {
+          "id": "fm",
+          "startHz": 87000000,
+          "endHz": 108000000,
+          "label": "VHF broadcast / shared",
+          "category": "shared",
+          "notes": "Broadcasting with secondary fixed/mobile and radiolocation allocations. This does not define an FM channel plan.",
+          "references": [
+            {
+              "sourceId": "CN",
+              "section": "PDF page 60; mainland column; CHN10"
+            }
+          ]
+        },
+        {
+          "id": "air-nav",
+          "startHz": 108000000,
+          "endHz": 117975000,
+          "label": "Air navigation",
+          "category": "navigation",
+          "notes": "Aeronautical radionavigation; navigation-related mobile systems and national notes may also apply.",
+          "references": [
+            {
+              "sourceId": "CN",
+              "section": "PDF page 61; mainland column; 5.197A"
+            }
+          ]
+        },
+        {
+          "id": "airband",
+          "startHz": 117975000,
+          "endHz": 137000000,
+          "label": "Airband",
+          "category": "navigation",
+          "notes": "Aeronautical communications. Satellite, distress and other special uses depend on the source notes.",
+          "references": [
+            {
+              "sourceId": "CN",
+              "section": "PDF page 61; mainland column; 5.197A"
+            }
+          ]
+        },
+        {
+          "id": "10m",
+          "startHz": 28000000,
+          "endHz": 29700000,
+          "label": "10 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "CN",
+              "section": "PDF page 56; mainland column; CHN7"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 146000000,
+          "label": "2 m amateur / shared",
+          "category": "shared",
+          "notes": "Amateur / amateur-satellite with secondary radiolocation and aeronautical mobile (OR).",
+          "references": [
+            {
+              "sourceId": "CN",
+              "section": "PDF page 63; mainland column; CHN42"
+            }
+          ]
+        },
+        {
+          "id": "2m-upper",
+          "startHz": 146000000,
+          "endHz": 148000000,
+          "label": "2 m amateur / shared",
+          "category": "shared",
+          "notes": "Amateur shares with fixed/mobile and secondary radiolocation. Satellite use is not inferred for this interval.",
+          "references": [
+            {
+              "sourceId": "CN",
+              "section": "PDF page 63; mainland column; CHN42"
+            }
+          ]
+        },
+        {
+          "id": "70cm",
+          "startHz": 430000000,
+          "endHz": 440000000,
+          "label": "70 cm amateur / shared",
+          "category": "shared",
+          "notes": "Secondary amateur use shares with radiolocation and aeronautical radionavigation.",
+          "references": [
+            {
+              "sourceId": "CN",
+              "section": "PDF page 74; mainland column; 5.282"
+            }
+          ]
+        }
+      ]
+    },
+    "BR": {
+      "label": "Brazil",
+      "group": "South America",
+      "scope": "Selected national allocations and destinations from Anatel Resolution 789 (2026), replacing the 2025 plan.",
+      "bands": [
+        {
+          "id": "extended-fm",
+          "startHz": 76000000,
+          "endHz": 87400000,
+          "label": "Extended FM / shared",
+          "category": "shared",
+          "notes": "Extended FM destination with TV and other shared uses; allocation does not establish that every channel is in service.",
+          "references": [
+            {
+              "sourceId": "BR",
+              "section": "Annex; 76–87.4 MHz destination"
+            }
+          ]
+        },
+        {
+          "id": "fm",
+          "startHz": 88000000,
+          "endHz": 108000000,
+          "label": "FM broadcast",
+          "category": "broadcast",
+          "notes": "Broadcast reference interval; consult national application and sharing conditions.",
+          "references": [
+            {
+              "sourceId": "BR",
+              "section": "Annex; 88–108 MHz allocation/destination"
+            }
+          ]
+        },
+        {
+          "id": "air-nav",
+          "startHz": 108000000,
+          "endHz": 117975000,
+          "label": "Air navigation",
+          "category": "navigation",
+          "notes": "Aeronautical radionavigation; navigation-related mobile systems and national notes may also apply.",
+          "references": [
+            {
+              "sourceId": "BR",
+              "section": "Annex; 108–117.975 and 117.975–137 MHz; B8.1"
+            }
+          ]
+        },
+        {
+          "id": "airband",
+          "startHz": 117975000,
+          "endHz": 137000000,
+          "label": "Airband",
+          "category": "navigation",
+          "notes": "Aeronautical communications. Satellite, distress and other special uses depend on the source notes.",
+          "references": [
+            {
+              "sourceId": "BR",
+              "section": "Annex; 108–117.975 and 117.975–137 MHz; B8.1"
+            }
+          ]
+        },
+        {
+          "id": "20m",
+          "startHz": 14000000,
+          "endHz": 14350000,
+          "label": "20 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "BR",
+              "section": "Annex; 14000–14350 kHz"
+            }
+          ]
+        },
+        {
+          "id": "10m",
+          "startHz": 28000000,
+          "endHz": 29700000,
+          "label": "10 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "BR",
+              "section": "Annex; 28–29.7 MHz"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 148000000,
+          "label": "2 m amateur",
+          "category": "amateur",
+          "notes": "Amateur throughout; amateur-satellite destination occurs in the lower interval.",
+          "references": [
+            {
+              "sourceId": "BR",
+              "section": "Annex; 144–146 and 146–148 MHz"
+            }
+          ]
+        }
+      ]
+    },
+    "ZA": {
+      "label": "South Africa",
+      "group": "Africa",
+      "scope": "Selected final NRFP 2026 allocations and applications; national footnotes and application regulations apply.",
+      "bands": [
+        {
+          "id": "fm",
+          "startHz": 87500000,
+          "endHz": 108000000,
+          "label": "FM broadcast",
+          "category": "broadcast",
+          "notes": "Broadcast reference interval; consult national application and sharing conditions.",
+          "references": [
+            {
+              "sourceId": "ZA",
+              "section": "PDF pages 94–95; South Africa column / applications"
+            }
+          ]
+        },
+        {
+          "id": "air-nav",
+          "startHz": 108000000,
+          "endHz": 117975000,
+          "label": "Air navigation",
+          "category": "navigation",
+          "notes": "Aeronautical radionavigation; navigation-related mobile systems and national notes may also apply.",
+          "references": [
+            {
+              "sourceId": "ZA",
+              "section": "PDF pages 95–96; South Africa column / applications"
+            }
+          ]
+        },
+        {
+          "id": "airband",
+          "startHz": 117975000,
+          "endHz": 137000000,
+          "label": "Airband",
+          "category": "navigation",
+          "notes": "Aeronautical communications. Satellite, distress and other special uses depend on the source notes.",
+          "references": [
+            {
+              "sourceId": "ZA",
+              "section": "PDF pages 95–96; South Africa column / applications"
+            }
+          ]
+        },
+        {
+          "id": "20m",
+          "startHz": 14000000,
+          "endHz": 14350000,
+          "label": "20 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "ZA",
+              "section": "PDF page 72; South Africa column"
+            }
+          ]
+        },
+        {
+          "id": "10m",
+          "startHz": 28000000,
+          "endHz": 29700000,
+          "label": "10 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "ZA",
+              "section": "PDF page 84; South Africa column"
+            }
+          ]
+        },
+        {
+          "id": "2m",
+          "startHz": 144000000,
+          "endHz": 146000000,
+          "label": "2 m amateur",
+          "category": "amateur",
+          "notes": "Amateur allocation; operating conditions and satellite sub-bands require the source footnotes.",
+          "references": [
+            {
+              "sourceId": "ZA",
+              "section": "PDF page 101; South Africa column"
+            }
+          ]
+        },
+        {
+          "id": "70cm",
+          "startHz": 430000000,
+          "endHz": 440000000,
+          "label": "70 cm amateur / shared",
+          "category": "shared",
+          "notes": "Amateur and radiolocation share this interval; NF8 and national sub-band conditions apply.",
+          "references": [
+            {
+              "sourceId": "ZA",
+              "section": "PDF pages 125–126; NF8"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

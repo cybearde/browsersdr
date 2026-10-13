@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.0 — 2026-10-14
+
+- Add a compact, stationary Band guide between spectrum and waterfall, with a saved visible switch and grouped country/profile selection.
+- Include Germany, a common CEPT European reference and twelve additional national profiles, retaining national boundaries, shared uses, source editions and honest gaps.
+- Keep inspection separate from tuning and align the guide to accepted display coordinates in both local renderers.
+
 ## 1.2.0 — 2026-10-14
 
 - Add experimental HackRF One reception alongside Pro in one automatically detected HackRF One / Pro source option. The initial One profile requires USB API 0x0110 (official v2026.01.3 baseline), uses native 9.6 MS/s CI8 and filters a 2.4 MS/s channel in the host.

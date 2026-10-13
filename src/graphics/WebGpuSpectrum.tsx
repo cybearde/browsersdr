@@ -1,5 +1,5 @@
 import { ActionButton } from "../ui/ActionButton";
-import { CanvasSpectrum } from "./canvasSpectrum";
+import type { CanvasSpectrum } from "./canvasSpectrum";
 import { SPECTRUM_PALETTES } from "./spectrumPalette";
 import { useTheme } from "../ui/themes";
 import { SpectrumInfo } from "./SpectrumInfo";
@@ -17,6 +17,8 @@ import { HISTORY_ROWS, spectrumShader } from "./spectrumShader";
 import { defaultDiagnosticRecorder } from "../diagnostics/diagnosticRecorder";
 import { channelPassbands, formatPassbandWidth } from "./channelPassband";
 import { formatFrequencyMHz } from "../ui/frequencyFormat";
+import { lazy, Suspense, type CSSProperties } from "react";
+const BandGuideFeature = lazy(() => import("./BandGuideFeature").then(module => ({default:module.BandGuideFeature})));
 
 export interface SpectrumDisplayStatus {
   kind: "checking" | "ready" | "unsupported" | "error";
@@ -90,6 +92,17 @@ export function WebGpuSpectrum({
   const sessionRef = useRef(session);
   sessionRef.current = session;
   const renderRef = useRef<() => void>(() => undefined);
+  const [guideGap, setGuideGap] = useState(0);
+  const [guideCoordinates, setGuideCoordinates] = useState<{center:number;rate:number;generation:number}>();
+  const guideCoordinatesRef = useRef(guideCoordinates);
+  const [displayWidth, setDisplayWidth] = useState(0);
+  const rememberGuideCoordinates = (frame: SpectrumFrame) => {
+    const old = guideCoordinatesRef.current;
+    if (old?.center === frame.centerFrequencyHz && old.rate === frame.sampleRateHz && old.generation === frame.sessionGeneration) return;
+    const next = {center:frame.centerFrequencyHz,rate:frame.sampleRateHz,generation:frame.sessionGeneration};
+    guideCoordinatesRef.current = next;
+    setGuideCoordinates(next);
+  };
   useEffect(() => {
     if (visible) renderRef.current();
   }, [visible]);
@@ -122,6 +135,10 @@ export function WebGpuSpectrum({
     kind: "checking",
     message: "Requesting a GPU adapter and device…",
   });
+  const validGuideCoordinates = hasFrame && guideCoordinates?.generation === session?.sessionGeneration ? guideCoordinates : undefined;
+  const guideGapRef = useRef(guideGap);
+  guideGapRef.current = guideGap;
+  useEffect(() => { renderRef.current(); }, [guideGap]);
   useEffect(() => {
     onStatusChange?.({ kind: state.kind, hasFrame, paused, stalled, renderer });
   }, [state.kind, hasFrame, paused, stalled, renderer, onStatusChange]);
@@ -276,6 +293,7 @@ export function WebGpuSpectrum({
       );
       view.setFloat32(4, floorRef.current, true);
       view.setFloat32(8, rangeRef.current, true);
+      view.setFloat32(12, cssHeight > 0 ? Math.min(.5, guideGapRef.current / cssHeight) : 0, true);
       view.setUint32(16, history.state.nextWriteRow, true);
       view.setUint32(20, history.state.count, true);
       colors.set(paletteRef.current.uniforms);
@@ -290,6 +308,7 @@ export function WebGpuSpectrum({
             canvasDisplay?.render(
               cssWidth, cssHeight, Math.max(1, window.devicePixelRatio || 1),
               floorRef.current, rangeRef.current, paletteRef.current,
+              guideGapRef.current,
             );
           } catch (error) {
             setState({ kind: "error", message: `Canvas2D rendering failed: ${error instanceof Error ? error.message : String(error)}` });
@@ -374,6 +393,7 @@ export function WebGpuSpectrum({
         latestBinsRef.current = accepted.bins;
         lastFrameAt.current = performance.now();
         setDisplayedGeneration(accepted.sessionGeneration);
+        rememberGuideCoordinates(accepted);
         render();
         if (shouldUpdateStatus()) setState({ kind: "ready", message: `Canvas2D live · ${(accepted.sampleIndex / accepted.sampleRateHz).toFixed(2)} s on source sample clock · ${fallbackReason}` });
         return;
@@ -390,6 +410,7 @@ export function WebGpuSpectrum({
       )
         return;
       latestFrame = frame;
+      rememberGuideCoordinates(frame);
       lastFrameAt.current = performance.now();
       setDisplayedGeneration(frame.sessionGeneration);
       device.queue.writeBuffer(spectrumBuffer, 0, frame.bins);
@@ -418,15 +439,22 @@ export function WebGpuSpectrum({
       const canvas = canvasRef.current;
       if (renderer === "canvas2d") {
         try {
+          const { CanvasSpectrum } = await import("./canvasSpectrum");
+          if (disposed) return;
           if (!canvas) throw new Error("Spectrum canvas is unavailable.");
           const canvasContext = canvas.getContext("2d", { alpha: false });
           if (!canvasContext) throw new Error("This browser could not create a Canvas2D context.");
           canvasDisplay = new CanvasSpectrum(canvasContext, sessionRef.current?.sessionGeneration ?? 0);
           cssWidth = canvas.clientWidth;
+          setDisplayWidth(cssWidth);
           cssHeight = canvas.clientHeight;
           resizeObserver = new ResizeObserver((entries) => {
             const entry = entries.find((item) => item.target === canvas);
-            if (entry) { cssWidth = entry.contentRect.width; cssHeight = entry.contentRect.height; }
+            if (entry) {
+              cssWidth = entry.contentRect.width;
+              setDisplayWidth(cssWidth);
+              cssHeight = entry.contentRect.height;
+            }
             render();
           });
           resizeObserver.observe(canvas);
@@ -602,6 +630,7 @@ export function WebGpuSpectrum({
                 });
                 fft.encode(input, encoder);
                 latestFrame = frame;
+                rememberGuideCoordinates(frame);
                 lastFrameAt.current = performance.now();
       setDisplayedGeneration(frame.sessionGeneration);
                 encoder.copyBufferToBuffer(
@@ -656,11 +685,13 @@ export function WebGpuSpectrum({
           }
         }
         cssWidth = canvas.clientWidth;
+        setDisplayWidth(cssWidth);
         cssHeight = canvas.clientHeight;
         resizeObserver = new ResizeObserver((entries) => {
           const entry = entries.find((item) => item.target === canvas);
           if (entry) {
             cssWidth = entry.contentRect.width;
+            setDisplayWidth(cssWidth);
             cssHeight = entry.contentRect.height;
           }
           render();
@@ -834,10 +865,13 @@ export function WebGpuSpectrum({
                 {paused ? "Resume display" : "Pause display"}
               </ActionButton>
             </div>
+          <Suspense fallback={null}><BandGuideFeature canvas={canvasRef} width={displayWidth}
+            coordinates={validGuideCoordinates} selectedHz={session?.selectedChannelFrequencyHz ?? 0}
+            onHeightChange={setGuideGap} /></Suspense>
           </div>
           {tuningControls}
         </div>
-        <div className="canvas-frame">
+        <div className={`canvas-frame${guideGap > 0 ? " has-band-guide" : ""}`} style={{"--band-guide-height":`${guideGap}px`} as CSSProperties}>
           <canvas
             key={renderer}
             ref={canvasRef}
@@ -932,6 +966,7 @@ export function WebGpuSpectrum({
             </>
           ) : null}
           <span className="plot-label spectrum-label">Spectrum</span>
+
           <span className="plot-label waterfall-label">
             Waterfall · newest at top
           </span>
