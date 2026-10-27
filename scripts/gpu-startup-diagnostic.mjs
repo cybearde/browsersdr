@@ -100,7 +100,22 @@ try {
           channel: "chromium",
           headless: true,
           args: [...base, ...extra],
-          env: { ...process.env, LP_NUM_THREADS: "2" },
+          env: {
+            ...process.env,
+            LP_NUM_THREADS: "2",
+            ...(process.env.GPU_DIAGNOSTIC_PIN_ICD === "1"
+              ? {
+                  VK_ICD_FILENAMES: path.join(
+                    path.dirname(chromium.executablePath()),
+                    "vk_swiftshader_icd.json",
+                  ),
+                  VK_DRIVER_FILES: path.join(
+                    path.dirname(chromium.executablePath()),
+                    "vk_swiftshader_icd.json",
+                  ),
+                }
+              : {}),
+          },
         });
         const page = await browser.newPage();
         page.on("console", (m) =>

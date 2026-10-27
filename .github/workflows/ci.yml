@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        warmup: ["0-a", "0-b", "1-a", "1-b"]
+        warmup: ["pinned-a", "pinned-b", "pinned-c", "pinned-d"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,7 +30,8 @@ jobs:
         env:
           DEBUG: pw:browser
           GPU_DIAGNOSTIC_FIRST: baseline
-          GPU_DIAGNOSTIC_WARMUP: ${{ startsWith(matrix.warmup, '1') && '1' || '0' }}
+          GPU_DIAGNOSTIC_WARMUP: "0"
+          GPU_DIAGNOSTIC_PIN_ICD: "1"
         run: node scripts/gpu-startup-diagnostic.mjs > gpu-diagnostic.log 2>&1
       - uses: actions/upload-artifact@v4
         if: always()
