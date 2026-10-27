@@ -1,272 +1,40 @@
-name: CI
-run-name: ${{ inputs.promotion_run_id != '' && format('CI promotion {0}', inputs.qualification_id) || github.event_name == 'workflow_dispatch' && format('Browser qualification {0}', inputs.qualification_id) || format('CI {0}', github.sha) }}
-
+name: GPU startup diagnostics
+run-name: GPU startup diagnostics ${{ inputs.qualification_id }}
 on:
-  push:
-  pull_request:
   workflow_dispatch:
     inputs:
       qualification_id:
-        description: Unique UUID from the local qualification request
+        description: Diagnostic identity; never release evidence
         required: true
         type: string
-
-      promotion_run_id:
-        description: Optional successful exact-SHA ordinary source run; fresh stability remains required
-        required: false
-        type: string
-
-      release_stamp:
-        description: Optional frozen release identity JSON from the private stamped operator
-        required: false
-        type: string
-
 permissions:
   contents: read
-  actions: read
-
 jobs:
-  quality:
-    outputs:
-      promotion: ${{ steps.promotion.outputs.promotion }}
-      promotion_run_id: ${{ steps.promotion.outputs.promotion_run_id }}
+  gpu-diagnostic:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Validate dedicated qualification identity
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        env:
-          QUALIFICATION_ID: ${{ inputs.qualification_id }}
-        run: python3 -c 'import os, sys, uuid; value = os.environ["QUALIFICATION_ID"]; sys.exit(str(uuid.UUID(value)) != value)'
-
-      - name: Check public source boundary
-        run: node scripts/check-public-source.mjs
-
-      - name: Use Node.js 22.23.1
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.23.1
-          cache: npm
-
-      - name: Install locked dependencies
-        run: npm ci
-
-      - name: Set frozen release identity flags
-        env:
-          BSD_RELEASE_STAMP: ${{ inputs.release_stamp }}
-        run: node scripts/browser-stamped-artifact.mjs env
-
-      - name: Lint
-        run: npm run lint
-
-      - name: Check infrastructure formatting
-        run: npm run format:check
-
-      - name: Validate checked-in WASM
-        run: npm run test:wasm
-
-      - name: Test optional diagnostics collector
-        run: npm run test:report-service
-
-      - name: Test browser reporting and coverage guards
-        run: npm run test:browser-guards
-
-      - name: Run unit and integration tests
-        run: npm test -- --reporter=verbose
-
-      - name: Build production bundle once, optionally with frozen release stamps
-        env:
-          BSD_RELEASE_STAMP: ${{ inputs.release_stamp }}
-        run: node scripts/browser-stamped-artifact.mjs build
-
-      - name: Check initial JavaScript and map byte budgets
-        run: npm run test:performance && npm run performance:check
-
-      - name: Verify static SEO documents and discovery files
-        run: node scripts/verify-seo.mjs dist
-
-      - name: Record exact hosted runner and build context
-        run: node scripts/browser-promotion.mjs context
-
-      - name: Verify optional exact-source promotion evidence
-        id: promotion
-        env:
-          GH_TOKEN: ${{ github.token }}
-          BSD_PROMOTION_RUN_ID: ${{ inputs.promotion_run_id }}
-          BSD_RELEASE_STAMP: ${{ inputs.release_stamp }}
-          BSD_MAIN_PROMOTION_ENABLED: ${{ vars.BSD_MAIN_PROMOTION_ENABLED }}
-        run: node scripts/browser-promotion.mjs prepare
-
-      - name: Retain the exact quality-checked production build
-        uses: actions/upload-artifact@v4
-        with:
-          name: browser-build
-          include-hidden-files: true
-          path: |
-            dist/
-            test-results/browser-build.json
-            test-results/ci-context.json
-            test-results/promotion-source/
-          if-no-files-found: error
-          retention-days: 14
-
-  browser:
-    needs: quality
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
-        project: [chromium-dev, chromium-production]
-        shard: [1, 2]
+        first: [baseline, gpu_in_tests, unblocked, upstream_dawn]
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Use Node.js 22.23.1
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: 22.23.1
           cache: npm
-
-      - name: Install locked dependencies
-        run: npm ci
-
-      - name: Set frozen release identity flags
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: sudo apt-get install -y --no-install-recommends mesa-vulkan-drivers
+      - name: Diagnose independent cold browser launches and real GPU pixels
         env:
-          BSD_RELEASE_STAMP: ${{ inputs.release_stamp }}
-        run: node scripts/browser-stamped-artifact.mjs env
-
-      - name: Install Chromium for browser integration tests
-        run: npx playwright install --with-deps chromium
-
-      # ANGLE's Vulkan backend needs a software Vulkan ICD on GPU-less runners.
-      # Playwright installs the loader but does not install the Mesa driver.
-      - name: Install software Vulkan driver for real 3D browser tests
-        run: sudo apt-get install -y --no-install-recommends mesa-vulkan-drivers
-
-      - name: Download the quality-checked production build
-        if: ${{ matrix.project == 'chromium-production' || needs.quality.outputs.promotion == 'true' }}
-        uses: actions/download-artifact@v4
+          DEBUG: pw:browser
+          GPU_DIAGNOSTIC_FIRST: ${{ matrix.first }}
+        run: node scripts/gpu-startup-diagnostic.mjs > gpu-diagnostic.log 2>&1
+      - uses: actions/upload-artifact@v4
+        if: always()
         with:
-          name: browser-build
-          path: .
-
-      - name: Run browser integration tests
-        if: ${{ needs.quality.outputs.promotion != 'true' }}
-        env:
-          BSD_E2E_BUILD_RECEIPT: ${{ matrix.project == 'chromium-production' && 'test-results/browser-build.json' || '' }}
-        run: npm run test:e2e:check -- --project=${{ matrix.project }} --shard=${{ matrix.shard }}/2 --output=test-results/guarded
-
-      - name: Run every required independent promotion stability case
-        if: ${{ needs.quality.outputs.promotion == 'true' }}
-        env:
-          BSD_E2E_BUILD_RECEIPT: ${{ matrix.project == 'chromium-production' && 'test-results/browser-build.json' || '' }}
-        run: node scripts/browser-promotion.mjs stability ${{ matrix.project }} ${{ matrix.shard }}
-
-      - name: Record dedicated qualification runner
-        if: ${{ always() && github.event_name == 'workflow_dispatch' }}
-        env:
-          QUALIFICATION_ID: ${{ inputs.qualification_id }}
-          QUALIFICATION_PROJECT: ${{ matrix.project }}
-          QUALIFICATION_SHARD: ${{ matrix.shard }}
-        run: |
-          python3 - <<'PY'
-          import json, os, socket
-          from pathlib import Path
-          fields = ["GITHUB_REPOSITORY", "GITHUB_RUN_ID", "GITHUB_RUN_ATTEMPT", "GITHUB_SHA", "GITHUB_EVENT_NAME", "RUNNER_OS", "RUNNER_ARCH", "QUALIFICATION_ID", "QUALIFICATION_PROJECT", "QUALIFICATION_SHARD"]
-          result = {key: os.environ[key] for key in fields}
-          result["hostname"] = socket.gethostname()
-          target = Path("test-results/guarded/qualification-runner.json")
-          target.parent.mkdir(parents=True, exist_ok=True)
-          target.write_text(json.dumps(result, indent=2) + "\n")
-          PY
-
-      - name: Upload browser failure artifacts
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: browser-check-${{ matrix.project }}-${{ matrix.shard }}
-          path: test-results/guarded/
-          if-no-files-found: error
-          retention-days: 14
-
-  browser-coverage:
-    needs: [quality, browser]
-    if: ${{ always() }}
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
-
-      - name: Use Node.js 22.23.1
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.23.1
-          cache: npm
-
-      - name: Install locked dependencies
-        run: npm ci
-
-      - name: Set frozen release identity flags
-        env:
-          BSD_RELEASE_STAMP: ${{ inputs.release_stamp }}
-        run: node scripts/browser-stamped-artifact.mjs env
-
-      - name: Download every browser shard
-        uses: actions/download-artifact@v4
-        with:
-          pattern: browser-check-*
-          path: browser-artifacts
-
-      - name: Download current quality artifact and original evidence
-        if: ${{ needs.quality.outputs.promotion == 'true' }}
-        uses: actions/download-artifact@v4
-        with:
-          name: browser-build
-          path: .
-
-      - name: Require complete inherited coverage and fresh independent stability
-        if: ${{ needs.quality.outputs.promotion == 'true' }}
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: node scripts/browser-promotion.mjs verify browser-artifacts
-
-      - name: Require complete development and production coverage
-        if: ${{ needs.quality.outputs.promotion != 'true' }}
-        run: node scripts/verify-browser-shards.mjs browser-artifacts
-
-      - name: Merge browser reports
-        if: ${{ always() }}
-        env:
-          PLAYWRIGHT_JSON_OUTPUT_FILE: merged-results.json
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import shutil
-          target = Path('browser-blobs')
-          target.mkdir()
-          for source in Path('browser-artifacts').glob('*/blob/*.zip'):
-              destination = target / source.name
-              if destination.exists():
-                  raise RuntimeError('Duplicate shard report')
-              shutil.copyfile(source, destination)
-          PY
-          npx playwright merge-reports --reporter=html,json browser-blobs
-
-      - name: Upload combined report and coverage summary
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: browser-coverage
-          path: |
-            playwright-report/
-            merged-results.json
-            browser-artifacts/coverage-summary.json
-            browser-artifacts/promotion-summary.json
+          name: gpu-diagnostic-${{ matrix.first }}
+          path: gpu-diagnostic.log
           if-no-files-found: error
           retention-days: 14
