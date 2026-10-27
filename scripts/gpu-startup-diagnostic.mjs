@@ -2,6 +2,7 @@
 import { chromium } from "@playwright/test";
 import http from "node:http";
 import os from "node:os";
+import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { readdirSync, readFileSync } from "node:fs";
 console.log(
@@ -63,6 +64,26 @@ const modes = {
     "--enable-accelerated-2d-canvas",
   ],
 };
+if (process.env.GPU_DIAGNOSTIC_WARMUP === "1") {
+  const icd = path.join(
+    path.dirname(chromium.executablePath()),
+    "vk_swiftshader_icd.json",
+  );
+  console.log(
+    "NATIVE_VULKAN_INIT",
+    icd,
+    execFileSync("vulkaninfo", ["--summary"], {
+      encoding: "utf8",
+      env: {
+        ...process.env,
+        DISPLAY: "",
+        WAYLAND_DISPLAY: "",
+        VK_ICD_FILENAMES: icd,
+        VK_DRIVER_FILES: icd,
+      },
+    }),
+  );
+}
 const order = Object.entries(modes);
 const first = order.findIndex(
   ([name]) => name === process.env.GPU_DIAGNOSTIC_FIRST,
@@ -105,15 +126,18 @@ try {
             const c2 = document.createElement("canvas");
             c2.width = c2.height = 1;
             const target = c2.getContext("webgpu");
-            target.configure({
-              device,
-              format: navigator.gpu.getPreferredCanvasFormat(),
+            const format = navigator.gpu.getPreferredCanvasFormat();
+            target.configure({ device, format, usage: 0x10 | 0x1 });
+            const texture = target.getCurrentTexture();
+            const readback = device.createBuffer({
+              size: 256,
+              usage: 0x1 | 0x8,
             });
             const encoder = device.createCommandEncoder();
             const pass = encoder.beginRenderPass({
               colorAttachments: [
                 {
-                  view: target.getCurrentTexture().createView(),
+                  view: texture.createView(),
                   loadOp: "clear",
                   storeOp: "store",
                   clearValue: { r: 1, g: 0, b: 0, a: 1 },
@@ -121,13 +145,21 @@ try {
               ],
             });
             pass.end();
+            encoder.copyTextureToBuffer(
+              { texture },
+              { buffer: readback, bytesPerRow: 256 },
+              [1, 1],
+            );
             device.queue.submit([encoder.finish()]);
-            await device.queue.onSubmittedWorkDone();
-            const copy = document.createElement("canvas");
-            copy.width = copy.height = 1;
-            const ctx = copy.getContext("2d");
-            ctx.drawImage(c2, 0, 0);
-            const pixels = [...ctx.getImageData(0, 0, 1, 1).data];
+            await readback.mapAsync(1);
+            const raw = [
+              ...new Uint8Array(readback.getMappedRange()).slice(0, 4),
+            ];
+            const pixels = format.startsWith("bgra")
+              ? [raw[2], raw[1], raw[0], raw[3]]
+              : raw;
+            readback.unmap();
+            readback.destroy();
             const red =
               pixels[0] > 200 &&
               pixels[1] < 30 &&

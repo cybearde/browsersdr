@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        first: [baseline, gpu_in_tests, unblocked, upstream_dawn]
+        warmup: ["0-a", "0-b", "1-a", "1-b"]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,16 +25,17 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps chromium
-      - run: sudo apt-get install -y --no-install-recommends mesa-vulkan-drivers
+      - run: sudo apt-get install -y --no-install-recommends mesa-vulkan-drivers vulkan-tools
       - name: Diagnose independent cold browser launches and real GPU pixels
         env:
           DEBUG: pw:browser
-          GPU_DIAGNOSTIC_FIRST: ${{ matrix.first }}
+          GPU_DIAGNOSTIC_FIRST: baseline
+          GPU_DIAGNOSTIC_WARMUP: ${{ startsWith(matrix.warmup, '1') && '1' || '0' }}
         run: node scripts/gpu-startup-diagnostic.mjs > gpu-diagnostic.log 2>&1
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: gpu-diagnostic-${{ matrix.first }}
+          name: gpu-diagnostic-${{ matrix.warmup }}
           path: gpu-diagnostic.log
           if-no-files-found: error
           retention-days: 14
