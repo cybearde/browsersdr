@@ -101,9 +101,45 @@ test("HackRF real pipeline with mocked USB supports controls, CI8 capture, surve
     .first()
     .check();
   await page.getByRole("button", { name: /Capture selected \(/ }).click();
-  await expect(page.locator(".recording-state")).toContainText(
-    /(?:0\.[1-9]\d|[1-9]\d*\.\d{2}) \/ (?:32|2048) MiB/,
+  // Explorer owns this capture. The hidden Receiver presentation is frozen;
+  // observe the shared live status and actual delivered/retained samples.
+  await expect(page.locator(".receiver-status-menu > summary")).toHaveAttribute(
+    "aria-label",
+    /^Receiver status: Recording/,
   );
+  await page.evaluate(async () => {
+    const device = (
+      window as unknown as {
+        __hackrf: {
+          device: {
+            pendingReads: { result: { promise: Promise<unknown> } }[];
+          };
+        };
+      }
+    ).__hackrf.device;
+    let timer: number | undefined;
+    try {
+      await Promise.race([
+        (async () => {
+          for (let block = 0; block < 4; block++) {
+            const read = device.pendingReads[0];
+            if (!read)
+              throw new Error("Active capture has no pending USB read");
+            await read.result.promise;
+          }
+        })(),
+        new Promise<never>((_resolve, reject) => {
+          timer = window.setTimeout(
+            () =>
+              reject(new Error("Capture made no USB progress within 7000 ms")),
+            7000,
+          );
+        }),
+      ]);
+    } finally {
+      window.clearTimeout(timer);
+    }
+  });
   const partialDownload = page.waitForEvent("download");
   await page
     .getByRole("button", { name: "Cancel capture", exact: true })
@@ -122,6 +158,11 @@ test("HackRF real pipeline with mocked USB supports controls, CI8 capture, surve
     ),
   );
   expect(sigmf.global["core:datatype"]).toBe("ci8");
+  const partialSamples = Object.entries(partial).find(([name]) =>
+    name.endsWith(".sigmf-data"),
+  )![1];
+  expect(partialSamples.byteLength).toBeGreaterThanOrEqual(0.1 * 1024 * 1024);
+  expect(partialSamples.byteLength).toBeLessThanOrEqual(2048 * 1024 * 1024);
   await page.getByRole("tab", { name: /Receiver/ }).click();
   await expect(page.locator(".receiver-session-details")).toContainText(
     "precise channel 4300.000001 MHz",

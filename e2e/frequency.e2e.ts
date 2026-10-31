@@ -2,7 +2,8 @@ import { expect, test as base } from "@playwright/test";
 
 // Keep this long tuning/reload workflow in a fresh normal browser, rather than
 // inheriting resources from the preceding decoder/Explorer context cycles.
-// Its original interactions, assertions and 20-second deadline stay intact.
+// Keep the tuning/reload workflow and its 20-second deadline; manual capture
+// exploration is now allowed outside the currently selected channel.
 const test = base.extend<object, { isolatedTuningWorker: boolean }>({
   isolatedTuningWorker: [true, { scope: "worker", auto: true }],
 });
@@ -41,12 +42,16 @@ test("receiver window and channel tune independently, with guarded automatic re-
     "Channel offset -100.000 kHz",
   );
   await center.fill("101");
-  await expect(center).toHaveAttribute("aria-invalid", "true");
+  await expect(center).toHaveAttribute("aria-invalid", "false");
   await expect(
     page.getByRole("button", { name: "Set", exact: true }),
-  ).toBeDisabled();
+  ).toBeEnabled();
   await center.press("Escape");
   await expect(center).toHaveValue("100.200");
+  await expect(channel).toHaveValue("100.100");
+  await expect(
+    page.getByRole("combobox", { name: "Mode", exact: true }),
+  ).toHaveValue("WBFM");
   await page.getByRole("button", { name: "To channel", exact: true }).click();
   await expect(center).toHaveValue("100.100");
   await auto.uncheck();
