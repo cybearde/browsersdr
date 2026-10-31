@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.19.1 — 2026-10-31
+
+- Keep Explorer source-sample measurements progressing when display redraws pause,
+  preserving the existing coverage requirements, bounded credits and watchdog.
+
 ## 1.19.0 — 2026-10-31
 
 - Add eight guided Radio Apps: aircraft tracking, ship tracking, DAB+, FM Radio,

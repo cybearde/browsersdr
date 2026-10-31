@@ -54,7 +54,7 @@ export interface ScanWindowResult {
 }
 
 export interface SpectrumMeasurementSource {
-  subscribeMeasurements(listener: (frame: SpectrumFrame) => void): () => void;
+  subscribeMeasurements(listener: (frame: SpectrumFrame) => void, realtime?: boolean): () => void;
 }
 
 export interface SpectrumMeasurement {
@@ -113,6 +113,7 @@ export function collectSpectrumMeasurement(
       cleanup();
       reject(new DOMException("Spectrum scan cancelled", "AbortError"));
     };
+    // Source-clock measurements must return worker credits even while display redraws pause.
     unsubscribe = source.subscribeMeasurements((frame) => {
       observedFrames += 1;
       lastObservedFrame = frame;
@@ -135,7 +136,7 @@ export function collectSpectrumMeasurement(
         cleanup();
         resolve({ frames, targetSamples, sourceSamples, missingSamples, coverage, status: coverage >= MIN_MEASUREMENT_COVERAGE ? "complete" : "insufficient" });
       } else armTimeout();
-    });
+    }, true);
     if (options.signal.aborted) abort();
     else {
       options.signal.addEventListener("abort", abort, { once: true });

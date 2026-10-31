@@ -11,6 +11,7 @@ import {
   analysisInputSlots,
 } from "./analysisPipeline";
 
+import { collectSpectrumMeasurement } from "../radio/spectrumScan";
 import { WaterfallHistory } from "../graphics/waterfallHistory";
 import { RECEIVER_MODES } from "../radio/receiverConfig";
 
@@ -764,4 +765,43 @@ it("background sharing returns spectrum credits without animation and preserves 
   expect(credits()).toBe(96);
   unsubscribe(); unsubscribe(); emit(96); expect(credits()).toBe(96);
   animationCallback?.(0); expect(credits()).toBe(97); pipeline.dispose();
+});
+
+
+it("releases exhausted display credits for a source-clock dwell without animation frames", async () => {
+  vi.useFakeTimers();
+  vi.stubGlobal("requestAnimationFrame", () => 1);
+  vi.stubGlobal("cancelAnimationFrame", vi.fn());
+  class CreditedWorker extends FakeWorker {
+    credits = 32;
+    sampleIndex = 0;
+    override postMessage(message: AnalysisWorkerInput): void {
+      super.postMessage(message);
+      if (message.type === "spectrum-credit") this.credits = Math.min(32, this.credits + message.credits);
+    }
+    step(): boolean {
+      if (!this.credits) return false;
+      this.credits--; this.sampleIndex += 40960;
+      this.emit({ type: "spectrum", sessionGeneration: 7, sequence: this.sampleIndex / 40960,
+        timestampMs: this.sampleIndex / 1024, centerFrequencyHz: 100e6, sampleRateHz: 1_024_000,
+        sampleIndex: this.sampleIndex, hopSamples: 40960, bins: new Float32Array(4096).buffer,
+        droppedFramesBefore: 0, skippedSpectrumFramesBefore: 0, missingSamplesBefore: 0 });
+      return true;
+    }
+  }
+  const worker = new CreditedWorker();
+  const pipeline = new AnalysisPipeline(worker as unknown as Worker);
+  const abort = new AbortController();
+  try {
+    pipeline.begin(METADATA);
+    for (let i = 0; i < 32; i++) expect(worker.step()).toBe(true);
+    expect(worker.step()).toBe(false);
+    const pending = collectSpectrumMeasurement(pipeline, { generation: 7, centerFrequencyHz: 100e6,
+      sampleRateHz: 1_024_000, dwellMs: 350, signal: abort.signal });
+    const outcome = pending.then(value => ({value}), error => ({error: String(error)}));
+    for (let i = 0; i < 12; i++) worker.step();
+    await vi.advanceTimersByTimeAsync(1500);
+    expect(await outcome).toMatchObject({value:{status:"complete",coverage:1,targetSamples:358400}});
+    expect(worker.credits).toBeLessThanOrEqual(32);
+  } finally { abort.abort(); pipeline.dispose(); vi.useRealTimers(); }
 });
