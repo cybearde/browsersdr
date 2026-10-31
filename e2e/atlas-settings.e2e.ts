@@ -112,7 +112,7 @@ test("SigIntAtlas memory-only credentials, viewer state and keyboard Settings fi
   ).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(
-    page.getByRole("button", { name: "Compact", exact: true }),
+    page.getByRole("button", { name: "Radio Apps", exact: true }),
   ).toBeFocused();
   await page.keyboard.press("Tab");
   await expect(page.getByLabel("Settings", { exact: true })).toBeFocused();
@@ -121,10 +121,20 @@ test("SigIntAtlas memory-only credentials, viewer state and keyboard Settings fi
   await expect(
     page.getByRole("combobox", { name: "Theme", exact: true }),
   ).toBeFocused();
+  await expect(page.locator(".install-app-control")).toBeVisible();
   await page.keyboard.press("Tab");
-  await expect(
-    page.getByRole("button", { name: "Integration settings", exact: true }),
-  ).toBeFocused();
+  const integration = page.getByRole("button", {
+    name: "Integration settings",
+    exact: true,
+  });
+  for (
+    let step = 0;
+    step < 3 &&
+    !(await integration.evaluate((node) => node === document.activeElement));
+    step++
+  )
+    await page.keyboard.press("Tab");
+  await expect(integration).toBeFocused();
   await page.keyboard.press("Enter");
   const panel = page.locator(".atlas-settings-panel");
   await panel.getByLabel("Settings SigIntAtlas user token").fill(token);

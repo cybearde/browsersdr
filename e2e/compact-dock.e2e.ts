@@ -13,7 +13,6 @@ test("header layout controls and condensed docks keep primary actions fully visi
   page,
 }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Compact", exact: true }).click();
   await page.evaluate(async () => {
     await document.fonts.ready;
   });
@@ -25,11 +24,6 @@ test("header layout controls and condensed docks keep primary actions fully visi
   ]) {
     await page.setViewportSize(viewport);
     await expect(page.locator(".workspace-toolbar")).toHaveCount(0);
-    const compact = (await page
-      .getByRole("button", { name: "Compact", exact: true })
-      .boundingBox())!;
-    const status = (await page.locator(".receiver-status-menu").boundingBox())!;
-    expect(Math.abs(compact.y - status.y)).toBeLessThan(8);
     for (const [tab, maximum] of [
       ["Audio & decode", 165],
       ["Session", 145],
@@ -74,15 +68,10 @@ test("header layout controls and condensed docks keep primary actions fully visi
       (await page.locator(".graphics-panel canvas").boundingBox())!.height,
     ).toBeGreaterThanOrEqual(120);
   }
-  const small = (await dock.boundingBox())!.height;
-  await page.getByRole("button", { name: "More space", exact: true }).click();
-  // More space raises the cap; fitting content must not acquire blank padding.
-  expect((await dock.boundingBox())!.height).toBeGreaterThanOrEqual(small);
-  expect((await dock.boundingBox())!.height).toBeLessThanOrEqual(small + 20);
-  await page.reload();
-  await expect(
-    page.getByRole("button", { name: "Less space", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
+});
+
+test("layout reset returns focus to Settings", async ({ page }) => {
+  await page.goto("/");
   await page.getByLabel("Settings", { exact: true }).click();
   await page.keyboard.press("Escape");
   await expect(
@@ -93,11 +82,9 @@ test("header layout controls and condensed docks keep primary actions fully visi
   await expect(page.getByLabel("Settings", { exact: true })).toBeFocused();
   await page.getByLabel("Settings", { exact: true }).click();
   await page.getByRole("button", { name: "Reset layout", exact: true }).click();
+  await expect(page.getByLabel("Settings", { exact: true })).toBeFocused();
   await expect(
-    page.getByRole("button", { name: "Compact", exact: true }),
-  ).toBeFocused();
-  await expect(
-    page.getByRole("button", { name: "More space", exact: true }),
+    page.getByRole("button", { name: "Collapse", exact: true }),
   ).toBeVisible();
 });
 
@@ -106,7 +93,6 @@ test("condensed recording keeps Stop, retained actions and reload warning visibl
 }) => {
   await page.setViewportSize({ width: 1280, height: 720 });
   await page.goto("/");
-  await page.getByRole("button", { name: "Compact", exact: true }).click();
   await page
     .getByRole("combobox", { name: "Signal source", exact: true })
     .selectOption("synthetic");
@@ -154,7 +140,6 @@ test("compact audio controls open by keyboard and remain reachable without page 
   page,
 }, testInfo) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Compact", exact: true }).click();
   const dock = page.locator(".receiver-dock");
   const panel = dock.locator(".audio-capture-panel");
   const summary = panel.locator("summary");

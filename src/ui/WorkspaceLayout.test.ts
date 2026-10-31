@@ -29,3 +29,7 @@ it("recovers safe appearance defaults from unavailable/malformed storage without
     dockExpanded: false,
   });
 });
+
+it("ignores retired density and large-dock preferences while preserving panel choices", () => {
+ expect(readWorkspace({getItem: () => JSON.stringify({compact:false,dockLarge:true,dockExpanded:false,sourceCollapsed:true,channelCollapsed:true})})).toEqual({...DEFAULT_WORKSPACE,dockExpanded:false,sourceCollapsed:true,channelCollapsed:true});
+});

@@ -1,4 +1,5 @@
 import { InstrumentButton } from "./InstrumentButton";
+import { matchingRadioApps, type RadioAppId } from "../radio/radioApps";
 import {
   readFrequencySourceMode,
   saveFrequencySourceMode,
@@ -138,6 +139,7 @@ function FrequencyPlan({
   );
 }
 export interface SearchOverlayProps {
+  onRadioApp?: (app: RadioAppId) => void;
   /** Caller supplies all preview-relevant settings so unrelated RF progress need not rerender Search. */
   validationKey?: string;
   antennaContext?: AntennaContext;
@@ -865,7 +867,7 @@ export function SearchOverlayFeature(props: SearchOverlayProps) {
                               }
                             >
                               <option value="all">All sources</option>
-                              <option value="guides">Local guides</option>
+                              <option value="guides">Local guides & Radio Apps</option>
                               <option value="frequencies">
                                 Shared RF frequencies
                               </option>
@@ -1121,6 +1123,7 @@ export function SearchOverlayFeature(props: SearchOverlayProps) {
                           })}
                         </section>
                       )}
+                      {props.onRadioApp && (group === "all" || group === "guides") && matchingRadioApps(query).length > 0 && <section aria-label="Radio Apps"><h3>Radio Apps</h3>{matchingRadioApps(query).map(app => <article key={app.id}><h4>{app.name}</h4><p>{app.description}</p><InstrumentButton type="button" className="secondary" onClick={() => { close(); props.onRadioApp?.(app.id); }}>Open {app.name}</InstrumentButton></article>)}</section>}
                       {(group === "all" || group === "guides") && (
                         <section aria-label="Modes & frequency guides">
                           <h3>Modes & frequency guides</h3>

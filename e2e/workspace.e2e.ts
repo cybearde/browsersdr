@@ -24,8 +24,6 @@ test("desktop receiver fills the window with all primary panels in view", async 
     await page
       .getByRole("button", { name: "Reset layout", exact: true })
       .click();
-    if (viewport.height < 900)
-      await page.getByRole("button", { name: "Compact", exact: true }).click();
     await expect
       .poll(() =>
         page.evaluate(() => ({
@@ -139,10 +137,6 @@ test("laptop windows fit primary panels and retain reachable internal tools", as
   await page.setViewportSize({ width: 1920, height: 768 });
   await page.goto("/");
   expect((await page.locator(".app-shell").boundingBox())!.width).toBe(1896);
-  expect(
-    await page.evaluate(() => document.documentElement.scrollHeight),
-  ).toBeGreaterThan(768);
-  await page.getByRole("button", { name: "Compact", exact: true }).click();
   expect(await page.evaluate(() => document.documentElement.scrollHeight)).toBe(
     768,
   );
@@ -390,5 +384,47 @@ test("all application views fit narrow screens without page-wide overflow", asyn
         .poll(() => page.evaluate(() => document.documentElement.scrollWidth))
         .toBe(width);
     }
+  }
+});
+
+test("legacy layout migrates and dock toggles persist across reload", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    if (!localStorage.getItem("layout-seeded")) {
+      localStorage.setItem(
+        "browsersdr.workspace.v1",
+        JSON.stringify({ compact: false, dockLarge: true, dockExpanded: true }),
+      );
+      localStorage.setItem("layout-seeded", "yes");
+    }
+  });
+  await page.goto("/");
+  await expect(page.locator(".app-shell")).toHaveClass(/density-compact/);
+  await expect(
+    page.getByRole("button", { name: "Compact", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: /^(Less space|More space)$/ }),
+  ).toHaveCount(0);
+  for (const width of [1440, 820, 390]) {
+    await page.setViewportSize({ width, height: 900 });
+    await page.getByRole("button", { name: "Collapse", exact: true }).click();
+    await expect(page.locator(".receiver-dock")).toHaveClass(/is-collapsed/);
+    await page.reload();
+    await expect(
+      page.getByRole("button", { name: "Expand", exact: true }),
+    ).toHaveAttribute("aria-expanded", "false");
+    await page
+      .getByRole("tab", { name: "Capture & replay", exact: true })
+      .click();
+    await expect(
+      page.getByRole("button", { name: "Collapse", exact: true }),
+    ).toHaveAttribute("aria-expanded", "true");
+    await page.getByRole("button", { name: "Collapse", exact: true }).click();
+    await page.getByRole("button", { name: "Expand", exact: true }).click();
+    await expect(
+      page.getByRole("button", { name: "Start I/Q recording" }),
+    ).toBeVisible();
   }
 });

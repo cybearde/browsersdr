@@ -1,0 +1,1072 @@
+.radio-app-dialog {
+  width: min(940px, calc(100vw - 32px));
+  max-width: calc(100vw - 16px);
+}
+.radio-app-dialog .favorites-heading h2 {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 5px 0;
+}
+.radio-app-eyebrow {
+  color: var(--muted);
+  font-size: 0.64rem;
+  font-weight: 650;
+  letter-spacing: 0.13em;
+}
+.radio-app-dialog-body {
+  display: grid;
+  gap: 20px;
+  overflow: auto;
+  min-height: 0;
+  padding: 4px;
+  overscroll-behavior: contain;
+}
+.radio-app-dialog-body label,
+.radio-app-station-search label,
+.radio-app-dab > section > label {
+  display: grid;
+  gap: 7px;
+  font-size: 0.83rem;
+}
+.radio-app-dialog-body :is(input, select),
+.radio-app-dab :is(input, select) {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+.radio-app-cards {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.radio-app-cards article {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+  border: 1px solid var(--line, #294359);
+  border-radius: 12px;
+  padding: 16px;
+  background: var(--theme-surface, rgba(12, 29, 45, 0.35));
+}
+.radio-app-cards :is(h3, p) {
+  margin: 0;
+}
+.radio-app-cards h3 {
+  font-size: 1.06rem;
+}
+.radio-app-cards p {
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+.radio-app-cards small {
+  font-size: 0.74rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.radio-app-cards button {
+  margin-top: auto;
+  justify-content: space-between;
+}
+.radio-app-art {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+  padding: 18px;
+  border-radius: 8px;
+  min-height: 100px;
+  background: linear-gradient(
+    130deg,
+    rgba(53, 149, 204, 0.18),
+    rgba(53, 149, 204, 0.03)
+  );
+  color: var(--accent, #7ac8ec);
+}
+.radio-app-art-ships {
+  background: linear-gradient(
+    130deg,
+    rgba(48, 178, 159, 0.18),
+    rgba(48, 178, 159, 0.03)
+  );
+}
+.radio-app-art-dab {
+  background: linear-gradient(
+    130deg,
+    rgba(189, 139, 222, 0.18),
+    rgba(189, 139, 222, 0.03)
+  );
+}
+.radio-app-art span {
+  font-size: 0.73rem;
+  letter-spacing: 0.02em;
+}
+.radio-app-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.radio-app-actions button {
+  white-space: normal;
+  max-width: 100%;
+}
+.radio-app-setup {
+  display: grid;
+  gap: 14px;
+  max-width: 680px;
+}
+.radio-app-setup > button {
+  justify-self: start;
+}
+.radio-app-setup h3 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+.radio-app-setup p {
+  margin: 0;
+  line-height: 1.65;
+}
+.radio-app-settings {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--line, #294359);
+  border-radius: 8px;
+}
+.radio-app-settings > span {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+/* The app owns the remaining viewport; secondary tools open over it. */
+.radio-app-active {
+  height: 100dvh;
+  box-sizing: border-box;
+  padding-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  overflow: clip;
+}
+.radio-app-active > .app-topbar {
+  flex: 0 0 auto;
+  position: relative;
+}
+.radio-app-view {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.radio-app-view[hidden] {
+  display: none;
+}
+.radio-app-context {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 0;
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--workspace-panel);
+  min-width: 0;
+}
+.radio-app-identity {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  min-width: 0;
+}
+.radio-app-identity h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+.radio-app-identity h2:focus-visible {
+  outline: 2px solid var(--cyan-soft);
+  outline-offset: 3px;
+}
+.radio-app-identity small {
+  font-size: 0.73rem;
+  color: var(--muted);
+}
+.radio-app-state {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+.radio-app-state[data-receiving="true"] {
+  color: var(--cyan-soft);
+}
+.radio-app-context .radio-app-actions {
+  gap: 6px;
+}
+.radio-app-context button,
+.radio-app-tools > summary {
+  min-height: 40px;
+  font-size: 0.75rem;
+  padding: 6px 10px;
+}
+.radio-app-tools {
+  position: relative;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.radio-app-tools > summary {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+.radio-app-tools > summary::after {
+  display: none;
+}
+.radio-app-popover {
+  position: absolute;
+  z-index: 30;
+  right: 0;
+  top: calc(100% + 6px);
+  width: min(340px, calc(100vw - 48px));
+  max-height: 60dvh;
+  overflow: auto;
+  padding: 14px;
+  background: var(--theme-surface, #071329);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 12px 32px #0008;
+}
+.radio-app-popover p {
+  font-size: 0.8rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+.radio-app-popover button {
+  width: 100%;
+  margin-top: 6px;
+}
+.radio-app-issue {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--warning, #ffd49a);
+}
+.radio-app-view .decoder-workbench {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.radio-app-view .decoder-toolbar {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+}
+.radio-app-view .decoder-toolbar:has(> .decoder-input-details:only-child) {
+  display: none;
+}
+.radio-app-view .decoder-stage {
+  flex: 1 1 0;
+  min-height: 0;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.radio-app-view .decoder-canvas,
+.radio-app-view .decoder-results-body {
+  flex: 1 1 0;
+  min-height: 0;
+  overflow: clip;
+}
+.radio-app-view .decoder-map {
+  height: 100%;
+  min-height: 0;
+}
+.radio-app-view .decoder-empty {
+  flex: 1 1 0;
+  min-height: 0;
+  padding: 16px;
+}
+.radio-app-view .decoder-empty h3 {
+  margin: 10px 0 0;
+  font-size: 1.1rem;
+}
+.radio-app-view .decoder-empty p {
+  margin: 10px 0;
+}
+.radio-app-view .decoder-tray-heading {
+  flex: 0 0 auto;
+  padding: 4px 10px;
+}
+.radio-app-view .decoder-record-list {
+  max-height: none;
+  overflow: visible;
+  flex: 0 0 auto;
+}
+.radio-app-view .decoder-table-wrap {
+  scrollbar-gutter: auto;
+}
+.radio-app-view .decoder-target-table {
+  min-width: 0;
+  table-layout: fixed;
+}
+.radio-app-view .decoder-target-table :is(th, td) {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  padding: 4px 8px;
+}
+.radio-app-view .decoder-target-table th {
+  position: static;
+  font-size: 0.65rem;
+}
+.radio-app-view .decoder-target-table .decoder-record {
+  padding: 5px 8px;
+  min-height: 40px;
+}
+.radio-app-pagination {
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+}
+.radio-app-pagination button {
+  min-height: 36px;
+  font-size: 0.72rem;
+  padding: 5px 10px;
+}
+.radio-app-pagination small {
+  color: var(--muted);
+  font-size: 0.7rem;
+  text-align: center;
+}
+.radio-app-view .decoder-footer {
+  position: relative;
+  flex: 0 0 auto;
+}
+.radio-app-view .decoder-reception-details {
+  padding: 4px 0;
+}
+.radio-app-view .decoder-reception-details[open] > :not(summary) {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  max-height: 65dvh;
+  overflow: auto;
+  background: var(--theme-surface, #071329);
+  z-index: 15;
+  border: 1px solid var(--line);
+  padding: 12px;
+}
+.radio-app-view .decoder-reception-details[open] > .decoder-hint {
+  display: none;
+}
+.radio-app-view .decoder-inspector {
+  height: auto;
+  max-height: none;
+  min-height: 0;
+}
+.radio-app-view .radio-app-dab-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 16px;
+  padding: 12px;
+}
+.radio-app-programme-target,
+.radio-app-media {
+  min-height: 0;
+  min-width: 0;
+}
+.radio-app-dab {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+}
+.radio-app-dab-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.radio-app-dab-heading h3,
+.radio-app-media h3 {
+  font-size: 0.9rem;
+  margin: 0;
+}
+.radio-app-dab-heading small {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+.radio-app-dab-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.radio-app-dab-controls label {
+  flex: 1 1 120px;
+  min-width: 0;
+}
+.radio-app-dab-controls button,
+.radio-app-dab-controls select {
+  font-size: 0.73rem;
+  min-height: 40px;
+}
+.radio-app-scan-status {
+  font-size: 0.73rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.radio-app-programmes {
+  flex: 1 1 0;
+  min-height: 0;
+}
+.radio-app-programmes article {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 0.82rem;
+}
+.radio-app-programmes article > div {
+  min-width: 0;
+}
+.radio-app-programmes :is(strong, small) {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.radio-app-programmes small {
+  color: var(--muted);
+  margin-top: 4px;
+  font-size: 0.7rem;
+}
+.radio-app-programmes button {
+  min-height: 40px;
+  font-size: 0.73rem;
+}
+.radio-app-programme-filter input {
+  min-height: 40px;
+}
+.radio-app-remembered {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+.radio-app-view .radio-app-media {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.radio-app-media .dab-metadata {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  gap: 10px;
+  padding: 10px;
+  margin: 0;
+}
+.radio-app-media .dab-metadata > div {
+  flex: 0 0 auto;
+}
+.radio-app-media .dab-live-text {
+  font-size: 0.85rem;
+  line-height: 1.5;
+}
+.radio-app-media .dab-slideshow {
+  flex: 1 1 0;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.radio-app-media .dab-slideshow img {
+  flex: 1;
+  min-height: 0;
+  height: 0;
+  max-height: none;
+  width: 100%;
+  object-fit: contain;
+}
+.radio-app-media .display-note {
+  font-size: 0.8rem;
+}
+.radio-app-view .decoder-audio-disclosure {
+  padding: 5px 10px;
+}
+.radio-app-view .decoder-audio-disclosure[open] {
+  gap: 6px 12px;
+}
+.radio-app-view .decoder-audio-disclosure[open] > summary {
+  flex-basis: auto;
+}
+.radio-app-view .decoder-audio label {
+  flex-basis: 130px;
+}
+.radio-app-view .decoder-audio button,
+.radio-app-view .decoder-audio select {
+  min-height: 36px;
+  font-size: 0.72rem;
+}
+.radio-app-scan-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+}
+@media (max-width: 1000px) {
+  .radio-app-view .decoder-inspector {
+    position: absolute;
+    inset: 8px;
+    z-index: 10;
+    background: var(--theme-surface, #071329);
+    border: 1px solid var(--line);
+    max-height: none;
+  }
+}
+@media (max-width: 760px) {
+  .radio-app-cards {
+    grid-template-columns: 1fr;
+  }
+  .radio-app-art {
+    min-height: 44px;
+    flex-direction: row;
+    align-items: center;
+  }
+  .radio-app-identity small {
+    display: none;
+  }
+  .radio-app-context {
+    gap: 6px;
+    padding: 6px 8px;
+  }
+  .radio-app-context .radio-app-actions {
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+  .radio-app-view .decoder-review-status {
+    flex-basis: 100%;
+    font-size: 0.65rem;
+  }
+  .radio-app-view
+    .decoder-target-table
+    :is(th, td):nth-child(n + 3):not(:last-child) {
+    display: none;
+  }
+  .radio-app-view .decoder-toolbar {
+    gap: 4px;
+  }
+  .radio-app-view .decoder-filter {
+    flex-basis: 100%;
+  }
+  .radio-app-view .decoder-toolbar button,
+  .radio-app-view .decoder-toolbar summary {
+    padding: 4px 8px;
+    min-height: 36px;
+  }
+  .radio-app-view .decoder-filter input {
+    height: 36px;
+    min-height: 36px;
+  }
+  .radio-app-view .radio-app-dab-stage {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 8px;
+    padding: 8px;
+  }
+  .radio-app-dab {
+    gap: 5px;
+  }
+  .radio-app-programmes article {
+    padding: 4px 0;
+  }
+  .radio-app-media .dab-metadata {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 6px;
+    padding: 6px;
+  }
+  .radio-app-media .dab-slideshow img {
+    height: 100%;
+  }
+  .radio-app-media .dab-live-text {
+    font-size: 0.75rem;
+  }
+  .radio-app-view .decoder-audio-disclosure[open] {
+    gap: 4px 8px;
+  }
+}
+@media (pointer: coarse) {
+  .radio-app-context button,
+  .radio-app-tools > summary,
+  .radio-app-view button {
+    min-height: 44px;
+  }
+}
+@media (max-width: 600px) {
+  .radio-app-active .app-topbar .receiver-status-menu > summary {
+    inline-size: 112px;
+  }
+  .radio-app-context .radio-app-actions {
+    justify-content: flex-start;
+  }
+  .radio-app-context .radio-app-receiver-settings {
+    margin-left: auto;
+  }
+  .radio-app-context .radio-app-receiver-settings span,
+  .radio-app-context .radio-app-tools > summary span,
+  .radio-app-view .decoder-input-details > summary span {
+    display: none;
+  }
+  .radio-app-context .radio-app-tools > summary {
+    min-width: 40px;
+    justify-content: center;
+  }
+  .radio-app-view .decoder-input-details {
+    margin-left: 0;
+  }
+  .radio-app-view .decoder-map .target-plot small {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .radio-app-view .decoder-view-options {
+    flex-wrap: nowrap;
+  }
+  .radio-app-view .decoder-tray-toggle {
+    margin-left: auto;
+  }
+}
+@media (max-width: 380px) {
+  .radio-app-view .decoder-target-table :is(th, td):nth-child(2) {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .radio-app-view .radio-app-dab-stage {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .radio-app-programme-target {
+    min-height: 210px;
+  }
+  .radio-app-programmes {
+    flex: 0 0 auto;
+    min-height: 48px;
+  }
+  .radio-app-dab > .display-note {
+    margin: 0;
+  }
+  .radio-app-programmes:empty {
+    min-height: 0;
+  }
+  .radio-app-dab .radio-app-pagination {
+    margin-top: auto;
+  }
+}
+.radio-app-view .decoder-audio-disclosure[open] {
+  display: block;
+}
+.radio-app-view .decoder-audio-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.radio-app-view .decoder-audio-controls label {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 400px;
+  gap: 10px;
+  white-space: nowrap;
+}
+.radio-app-view .decoder-audio-controls input {
+  flex: 1;
+  min-width: 0;
+}
+.radio-app-view .decoder-audio-disclosure[open] > summary {
+  font-size: 0.7rem;
+  margin-bottom: 3px;
+}
+@media (max-width: 1500px) and (min-width: 461px) {
+  .app-topbar:has(.radio-app-shortcut) .brand-tagline {
+    display: none;
+  }
+  .app-topbar:has(.radio-app-shortcut) {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+  }
+  .app-topbar:has(.radio-app-shortcut) .view-tabs {
+    grid-column: 2 / 4;
+    grid-row: 1;
+  }
+  .app-topbar:has(.radio-app-shortcut) .workspace-controls {
+    grid-column: 1;
+    grid-row: 2;
+    justify-self: start;
+  }
+  .app-topbar:has(.radio-app-shortcut) .radio-apps-entry {
+    grid-column: 2;
+    grid-row: 2;
+  }
+  .app-topbar:has(.radio-app-shortcut) .receiver-status-menu {
+    grid-column: 3;
+    grid-row: 2;
+  }
+}
+.radio-app-dab-tabs {
+  display: none;
+}
+@media (max-width: 760px) {
+  .radio-app-view .radio-app-dab-stage {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .radio-app-dab-tabs {
+    display: flex;
+    gap: 6px;
+  }
+  .radio-app-dab-tabs button {
+    min-height: 36px;
+    font-size: 0.75rem;
+  }
+  .radio-app-dab-tabs [aria-pressed="true"] {
+    border-color: var(--cyan-soft);
+  }
+  .radio-app-dab-stage > [data-app-pane-selected="false"] {
+    display: none;
+  }
+  .radio-app-dab-stage > [data-app-pane-selected="true"] {
+    height: 100%;
+  }
+  .radio-app-media .dab-metadata {
+    display: flex;
+  }
+  .radio-app-media .dab-slideshow img {
+    height: 0;
+  }
+}
+/* Programmes have their own filter; raw DAB exports stay in protocol tools. */
+.radio-app-view:has(.radio-app-dab-stage) .decoder-toolbar {
+  display: none;
+}
+@media (max-width: 760px) {
+  .radio-app-programme-target {
+    min-height: 220px;
+  }
+}
+/* Five additional apps retain the same bounded viewport and shared transport. */
+.radio-app-setup-fields {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.radio-app-setup-fields label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.8rem;
+  min-width: 0;
+}
+.radio-app-setup-fields :is(input, select) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+}
+.radio-app-setup-fields fieldset {
+  margin: 0;
+  padding: 10px;
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+}
+.radio-app-setup-fields legend,
+.radio-app-setup-fields small {
+  font-size: 0.72rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.radio-app-view .decoder-toolbar[hidden] {
+  display: none;
+}
+.radio-app-view .radio-app-output-stage {
+  padding: 14px;
+}
+.radio-app-output-target {
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+}
+.radio-app-fm-output,
+.radio-app-sensor-output {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  gap: 12px;
+}
+.radio-app-fm-station {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 12px;
+}
+.radio-app-fm-station h3 {
+  margin: 0;
+  font-size: clamp(2rem, 6vw, 4.5rem);
+  font-variant-numeric: tabular-nums;
+  color: var(--cyan-soft);
+}
+.radio-app-fm-station h3 small {
+  font-size: 0.8rem;
+}
+.radio-app-fm-station > small {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+.radio-app-fm-station p {
+  margin: 0;
+  max-width: 650px;
+  line-height: 1.5;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+.radio-app-fm-tuning,
+.radio-app-fm-seek {
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.radio-app-fm-tuning label {
+  display: grid;
+  gap: 4px;
+  font-size: 0.75rem;
+  flex: 0 1 160px;
+}
+.radio-app-fm-tuning input {
+  min-height: 40px;
+}
+.radio-app-fm-output button {
+  font-size: 0.75rem;
+  min-height: 40px;
+}
+.radio-app-fm-output > [role="alert"] {
+  margin: 0;
+  color: var(--warning, #ffc278);
+  font-size: 0.75rem;
+}
+.radio-app-favourites {
+  position: relative;
+  padding: 4px 0;
+}
+.radio-app-favourites > summary {
+  font-size: 0.8rem;
+}
+.radio-app-favourites > div {
+  position: absolute;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  z-index: 12;
+  padding: 16px;
+  max-height: 60dvh;
+  overflow: auto;
+  border: 1px solid var(--line);
+  background: var(--theme-surface, #071329);
+  border-radius: 6px;
+}
+.radio-app-favourites form,
+.radio-app-favourites label {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+.radio-app-sensor-heading {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px;
+}
+.radio-app-sensor-heading h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+.radio-app-sensor-output small {
+  font-size: 0.7rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.radio-app-sensor-cards,
+.radio-app-sensor-history {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  flex: 1;
+  min-height: 0;
+}
+.radio-app-sensor-output article {
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--selected-background);
+}
+.radio-app-sensor-output article h4 {
+  margin: 0 0 4px;
+  font-size: 0.95rem;
+}
+.radio-app-sensor-output article button {
+  font-size: 0.73rem;
+  min-height: 36px;
+  padding: 5px 10px;
+  margin-top: 6px;
+}
+.radio-app-sensor-output dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin: 10px 0;
+}
+.radio-app-sensor-output dl div {
+  display: grid;
+  gap: 3px;
+}
+.radio-app-sensor-output dt {
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+.radio-app-sensor-output dd {
+  font-size: 1rem;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.radio-app-sensor-empty {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  flex: 1;
+  min-height: 0;
+  text-align: center;
+}
+.radio-app-sensor-empty p {
+  max-width: 480px;
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.radio-app-aprs-filter {
+  flex: 0 1 180px;
+  min-width: 0;
+}
+.radio-app-view .decoder-record > span {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+.radio-app-search-progress {
+  flex-basis: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.72rem;
+  margin: 0;
+  color: var(--cyan-soft);
+}
+.radio-app-search-progress button {
+  min-height: 32px;
+}
+@media (max-width: 600px) {
+  .radio-app-view .radio-app-output-stage {
+    padding: 8px;
+  }
+  .radio-app-fm-output,
+  .radio-app-sensor-output {
+    gap: 6px;
+  }
+  .radio-app-fm-station {
+    gap: 6px;
+  }
+  .radio-app-fm-station p {
+    font-size: 0.75rem;
+  }
+  .radio-app-fm-station > strong {
+    font-size: 0.85rem;
+  }
+  .radio-app-fm-tuning {
+    gap: 5px;
+  }
+  .radio-app-fm-tuning label {
+    flex-basis: calc(100% - 90px);
+  }
+  .radio-app-fm-output button {
+    min-height: 36px;
+    padding: 5px 9px;
+  }
+  .radio-app-sensor-output article {
+    padding: 8px;
+  }
+  .radio-app-sensor-output dl {
+    gap: 6px 16px;
+  }
+  .radio-app-sensor-output dd {
+    font-size: 0.85rem;
+  }
+  .radio-app-aprs-filter {
+    flex: 1 1 100%;
+  }
+}
+@media (pointer: coarse) {
+  .radio-app-context button,
+  .radio-app-tools > summary,
+  .radio-app-view button,
+  .radio-app-view input:not([type="range"]),
+  .radio-app-view select,
+  .radio-app-favourites > summary {
+    min-height: 44px;
+  }
+}
+@media (pointer: coarse) and (min-width: 461px) and (max-width: 1000px) {
+  .app-topbar:has(.radio-app-shortcut) .workspace-controls {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .app-topbar:has(.radio-app-shortcut) .radio-apps-entry {
+    grid-column: 1 / 3;
+    grid-row: 3;
+    justify-self: start;
+  }
+  .app-topbar:has(.radio-app-shortcut) .receiver-status-menu {
+    grid-column: 3;
+    grid-row: 3;
+  }
+}

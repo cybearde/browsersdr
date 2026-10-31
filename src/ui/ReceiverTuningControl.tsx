@@ -7,6 +7,7 @@ import {
   validateSourceFrequency,
 } from "../radio/sourceCapabilities";
 import type { SourceSessionMetadata } from "../radio/types";
+import { rtlDeviceFrequency } from "../radio/rtlInput";
 import { editableFrequencyMHz, formatFrequencyMHz } from "./frequencyFormat";
 import { ActionButton } from "./ActionButton";
 
@@ -18,11 +19,13 @@ export function ReceiverTuningControl({
   onAutoRecenter,
   onTuneCenter,
   channelPending = false,
+  channelSelectionWarning,
 }: {
   session?: SourceSessionMetadata;
   configuredFrequencyHz: number;
   disabled: boolean;
   channelPending?: boolean;
+  channelSelectionWarning?: string;
   autoRecenter: boolean;
   onAutoRecenter: (enabled: boolean) => void;
   onTuneCenter: (frequencyHz: number) => Promise<string | undefined>;
@@ -55,8 +58,10 @@ export function ReceiverTuningControl({
     !isWidebandRate(session.actualSampleRateHz) &&
     ["DAB", "ADS-B"].includes(session.mode);
   let invalid: string | undefined;
+  let channelWarning: string | undefined;
   if (session && draft !== undefined) {
     try {
+      if (session.source === "rtl-sdr" && session.rtlInput) rtlDeviceFrequency(requestedHz, session.rtlInput);
       validateSourceFrequency(
         session.source,
         requestedHz,
@@ -65,6 +70,10 @@ export function ReceiverTuningControl({
           : 0,
         session.hackrf?.capabilities.identity,
       );
+    } catch (error) {
+      invalid = error instanceof Error ? error.message : "Enter a valid receiver center.";
+    }
+    if (!invalid && session.mode !== "OFF") try {
       planChannelTune(
         centerHz,
         channelHz!,
@@ -76,11 +85,8 @@ export function ReceiverTuningControl({
         throw new Error(
           `${session.mode} requires the receiver center to match the channel at this sample rate.`,
         );
-    } catch (error) {
-      invalid =
-        error instanceof Error
-          ? error.message
-          : "Enter a valid receiver center.";
+    } catch {
+      channelWarning = "This move clears the channel and switches to Spectrum only because the complete channel cannot play in the new window.";
     }
   }
   const pending =
@@ -213,6 +219,7 @@ export function ReceiverTuningControl({
         </small>
       )}
       {channelPending && !replay && <small>To channel applies the pending channel and recenters once. Follow channel stays {autoRecenter ? "on" : "off"}.</small>}
+      {(channelWarning ?? channelSelectionWarning) && <small role="status" className="receiver-tuning-error">{channelWarning ?? channelSelectionWarning}</small>}
       <small
         id="receiver-center-state"
         role="status"

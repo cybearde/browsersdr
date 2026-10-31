@@ -57,7 +57,7 @@ function fib(body: Uint8Array): Uint8Array {
   output[31] = crc;
   return output;
 }
-function ficBits(twoStations = false): Uint8Array {
+function ficBits(twoStations = false, labels = false): Uint8Array {
   const configuration = Uint8Array.of(
     0x05,
     0x01,
@@ -108,6 +108,11 @@ function ficBits(twoStations = false): Uint8Array {
   );
   decoded.set(fib(Uint8Array.of(0xff)), 32);
   decoded.set(fib(Uint8Array.of(0xff)), 64);
+  if (labels) {
+    const label = (extension: number, id: number, text: string) => Uint8Array.from([0x35, extension, id >> 8, id & 255, ...new TextEncoder().encode(text.padEnd(16).slice(0, 16)), 0xff, 0xff]);
+    decoded.set(fib(label(0, 0xcafe, "Test Ensemble")), 32);
+    decoded.set(fib(label(1, 0x1234, "Test Radio")), 64);
+  }
   const group = puncture(motherEncode(dabDescramble(decoded)), [
     { vector: 16, motherBits: 128 * 21 },
     { vector: 15, motherBits: 128 * 3 },
@@ -174,8 +179,8 @@ function transmissionBody(fic: Uint8Array, msc: Uint8Array) {
 
 export { ficBits, mscBits, transmissionBody };
 
-export function createDabEnsembleFixture(sampleRateHz = 2_400_000) {
-  const body = transmissionBody(ficBits(), mscBits(new Uint8Array(24).fill(0x31)));
+export function createDabEnsembleFixture(sampleRateHz = 2_400_000, labels = false) {
+  const body = transmissionBody(ficBits(false, labels), mscBits(new Uint8Array(24).fill(0x31)));
   let peak = 0;
   for (let n = 0; n < body.I.length; n++) peak = Math.max(peak, Math.abs(body.I[n]!), Math.abs(body.Q[n]!));
   const gain = 0.8 / peak;

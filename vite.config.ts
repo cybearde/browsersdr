@@ -45,7 +45,20 @@ const sharingProxy = sharingTarget ? { "/api/v1/sharing": { target: sharingTarge
 
 export default defineConfig({
   // Private evidence includes extracted system symlinks; it is never app source.
-  server: { proxy: sharingProxy, watch: { ignored: ["**/.local/**"] } },
+  server: {
+    proxy: sharingProxy,
+    watch: { ignored: ["**/.local/**"] },
+    // Prepare the common UI graphs during normal dev-server startup. This
+    // avoids cold transform waterfalls on the first Receiver/Decoder visit;
+    // transforming modules does not execute them or start acquisition.
+    warmup: {
+      clientFiles: [
+        "./src/App.tsx",
+        "./src/ui/DecodedResults.tsx",
+        "./src/ui/DecoderWorkspace.tsx",
+      ],
+    },
+  },
   preview: { proxy: sharingProxy },
   // Keep the app, stylesheet and module worker relocatable as one static directory.
   base: "./",

@@ -15,10 +15,14 @@ test("physical keys travel within a stationary native hit area for pointer and k
   page,
 }, info) => {
   await openInstrument(page);
-  const button = page.getByRole("button", { name: "Compact", exact: true });
+  const button = page.getByRole("button", {
+    name: /^(Collapse|Expand) source panel$/,
+    exact: true,
+  });
   const face = button.locator(".instrument-key-face");
   const base = (await button.boundingBox())!;
   const restingFace = (await face.boundingBox())!;
+  const restingOffsetY = restingFace.y - base.y;
   await page.mouse.move(base.x + base.width / 2, base.y + base.height / 2);
   await page.mouse.down();
   await expect
@@ -27,10 +31,15 @@ test("physical keys travel within a stationary native hit area for pointer and k
   expect(await button.boundingBox()).toEqual(base);
   await page.screenshot({ path: info.outputPath("key-held.png") });
   await page.mouse.up();
-  await expect(button).toHaveAttribute("aria-pressed", "true");
+  await expect(button).toHaveAttribute("aria-expanded", "false");
+  // Releasing the key changes the panel layout. Its cap must return to the
+  // same position inside the native hit box, even if that box moves afterward.
   await expect
-    .poll(async () => (await face.boundingBox())!.y)
-    .toBeLessThan(restingFace.y + 1);
+    .poll(
+      async () =>
+        (await face.boundingBox())!.y - (await button.boundingBox())!.y,
+    )
+    .toBeLessThan(restingOffsetY + 1);
   await button.focus();
   const keyboardBase = (await button.boundingBox())!;
   const keyboardFace = (await face.boundingBox())!;
@@ -40,7 +49,7 @@ test("physical keys travel within a stationary native hit area for pointer and k
     .toBeGreaterThan(keyboardFace.y + 1);
   expect(await button.boundingBox()).toEqual(keyboardBase);
   await page.keyboard.up("Space");
-  await expect(button).toHaveAttribute("aria-pressed", "false");
+  await expect(button).toHaveAttribute("aria-expanded", "true");
   await expect(
     page.getByRole("button", { name: "Connect", exact: true }),
   ).toBeEnabled();
@@ -128,7 +137,10 @@ test("material controls respect reduced motion, forced colors and other themes",
   );
   await expect(
     page
-      .getByRole("button", { name: "Compact", exact: true })
+      .getByRole("button", {
+        name: /^(Collapse|Expand) source panel$/,
+        exact: true,
+      })
       .locator(".instrument-key-face"),
   ).toHaveCSS("transition-duration", "0s");
   await page.emulateMedia({ forcedColors: "active" });

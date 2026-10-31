@@ -691,7 +691,7 @@ function RemoteReceiverView({
         </div>
       </section>
       <section
-        className={`receiver-dock remote-footer ${layout.dockExpanded ? "is-expanded" : "is-collapsed"}${layout.dockLarge && layout.dockExpanded ? " is-large" : ""}`}
+        className={`receiver-dock remote-footer ${layout.dockExpanded ? "is-expanded" : "is-collapsed"}`}
         aria-label="Receiver tools"
       >
         <div className="receiver-dock-bar">
@@ -736,22 +736,6 @@ function RemoteReceiverView({
             ))}
           </div>
           <div className="dock-actions">
-            {layout.dockExpanded && (
-              <button
-                type="button"
-                className="secondary dock-size-toggle"
-                aria-pressed={layout.dockLarge}
-                onClick={() =>
-                  onLayoutChange((old) => ({
-                    ...old,
-                    dockLarge: !old.dockLarge,
-                  }))
-                }
-              >
-                <AppIcon name={layout.dockLarge ? "collapse" : "expand"} />
-                {layout.dockLarge ? "Less space" : "More space"}
-              </button>
-            )}
             <button
               type="button"
               className="secondary dock-toggle"

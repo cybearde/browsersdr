@@ -455,7 +455,6 @@ test("unified remote workspace shares compact layout, panel hiding and source se
 }) => {
   const { closed } = await fixture(page);
   await enter(page);
-  await page.getByRole("button", { name: "Compact", exact: true }).click();
   await page.getByRole("button", { name: "Listen", exact: true }).click();
   await expect(
     page.getByRole("button", { name: "Back to Receiver", exact: true }),
@@ -520,9 +519,7 @@ test("unified remote workspace shares compact layout, panel hiding and source se
     .selectOption("synthetic");
   await expect.poll(() => closed.length).toBe(1);
   await expect(page.getByRole("tab", { name: /Explorer/ })).toBeEnabled();
-  await expect(
-    page.getByRole("button", { name: "Compact", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".app-shell")).toHaveClass(/density-compact/);
   await expect(
     page.getByRole("button", { name: "Expand channel panel", exact: true }),
   ).toBeVisible();
@@ -532,9 +529,7 @@ test("unified remote workspace shares compact layout, panel hiding and source se
   ).toBeEnabled();
   await page.getByRole("button", { name: "Stop", exact: true }).click();
   await page.reload();
-  await expect(
-    page.getByRole("button", { name: "Compact", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".app-shell")).toHaveClass(/density-compact/);
   await expect(
     page.getByRole("button", { name: "Expand channel panel", exact: true }),
   ).toBeVisible();
@@ -688,4 +683,24 @@ test("band switches wait through null detach and partial acknowledgements withou
   expect(commands.filter((c) => c.includes('"action":"start"'))).toHaveLength(
     1,
   );
+});
+
+test("remote dock has one reliable collapse control and no size mode", async ({
+  page,
+}) => {
+  await fixture(page);
+  await enter(page);
+  await expect(
+    page.getByRole("button", { name: /^(Less space|More space)$/ }),
+  ).toHaveCount(0);
+  const dock = page.locator(".remote-footer");
+  await dock.getByRole("button", { name: "Collapse", exact: true }).click();
+  await expect(dock).toHaveClass(/is-collapsed/);
+  await dock.getByRole("button", { name: "Expand", exact: true }).click();
+  await expect(dock).toHaveClass(/is-expanded/);
+  await dock.getByRole("button", { name: "Collapse", exact: true }).click();
+  await dock.getByRole("tab", { name: "Session", exact: true }).click();
+  await expect(
+    dock.getByRole("button", { name: "Collapse", exact: true }),
+  ).toHaveAttribute("aria-expanded", "true");
 });

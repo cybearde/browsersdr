@@ -4660,7 +4660,6 @@ button:has(> .app-icon) {
 .workspace-controls > button { min-height: 36px; padding: 6px 9px; font-size: 0.75rem; }
 .workspace-controls > button[aria-pressed="true"] { border-color: var(--cyan); color: var(--cyan-soft); }
 .dock-actions { display: flex; align-items: center; gap: 6px; }
-.dock-size-toggle { min-height: 32px; padding: 0 9px; font-size: 0.75rem; }
 
 /* Content-first receiver tools: the tab strip supplies the visible panel title. */
 .receiver-dock-panel { padding: 10px; }
@@ -4717,10 +4716,6 @@ button:has(> .app-icon) {
 .session-panel .session-grid > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 8px; padding: 0; background: transparent; }
 .session-panel .session-grid dd { margin: 0; }
 .session-panel .receiver-session-details { margin: 8px 0 0; padding: 0; border: 0; }
-@media (min-width: 1181px) and (min-height: 640px) {
-  .receiver-workspace .receiver-dock.is-large { min-height: min(50dvh, 480px); max-height: min(50dvh, 480px); }
-  .receiver-dock.is-large .receiver-dock-panel { flex: 1; }
-}
 @media (max-width: 600px) {
   .dock-actions { margin-left: auto; }
   .decode-panel[data-mode="WBFM"] .rds-content { grid-template-columns: minmax(0, 1fr); }
@@ -4813,13 +4808,17 @@ button:has(> .app-icon) {
 
 /* Primary workspaces, with compact application utilities beside status. */
 .app-topbar:has(.workspace-controls) {
-  grid-template-columns: auto auto minmax(0, 1fr) auto;
+  grid-template-columns: auto auto auto minmax(0, 1fr) auto;
   gap: 8px 12px;
 }
 .app-topbar:has(.workspace-controls) .view-tabs { grid-column: 2; grid-row: 1; justify-self: start; }
 .app-topbar:has(.workspace-controls) .view-tabs [role="tablist"] { flex-wrap: nowrap; }
-.app-topbar:has(.workspace-controls) .workspace-controls { grid-column: 3; grid-row: 1; justify-self: end; }
-.app-topbar:has(.workspace-controls) .receiver-status-menu { grid-column: 4; grid-row: 1; }
+.app-topbar:has(.workspace-controls) .radio-apps-entry { grid-column: 3; grid-row: 1; display: flex; align-items: center; gap: 4px; min-width: 0; }
+.app-topbar:has(.workspace-controls) .radio-apps-entry button { width: auto; min-height: 36px; padding: 6px 9px; font-size: .75rem; white-space: nowrap; }
+.radio-app-shortcut { max-width: 145px; }
+.radio-app-shortcut span { overflow: hidden; text-overflow: ellipsis; }
+.app-topbar:has(.workspace-controls) .workspace-controls { grid-column: 4; grid-row: 1; justify-self: end; }
+.app-topbar:has(.workspace-controls) .receiver-status-menu { grid-column: 5; grid-row: 1; }
 .density-compact .app-topbar .brand-tagline { display: none; }
 .header-utility-menu { position: relative; margin: 0; padding: 0; border: 0; }
 .app-topbar .header-utility-menu > summary {
@@ -4849,15 +4848,16 @@ button:has(> .app-icon) {
 .receiver-status-menu[open] > summary > .app-icon { transform: rotate(180deg); }
 .auxiliary-view-header { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 4px 0 16px; color: var(--muted); font-size: 0.8rem; }
 .auxiliary-view-header button { min-height: 36px; font-size: 0.8rem; }
-@media (max-width: 1100px) { .app-topbar:has(.workspace-controls) .brand-tagline { display: none; } }
+@media (max-width: 1300px) { .app-topbar:has(.workspace-controls) .brand-tagline { display: none; } }
 @media (max-width: 820px) {
   .app-topbar:has(.workspace-controls) { position: relative; }
 }
 @media (max-width: 1100px) {
-  .app-topbar:has(.workspace-controls) { grid-template-columns: minmax(0, 1fr) auto; }
-  .app-topbar:has(.workspace-controls) .view-tabs { grid-column: 2; grid-row: 1; }
+  .app-topbar:has(.workspace-controls) { grid-template-columns: minmax(0, 1fr) auto auto; }
+  .app-topbar:has(.workspace-controls) .view-tabs { grid-column: 2 / 4; grid-row: 1; }
   .app-topbar:has(.workspace-controls) .workspace-controls { grid-column: 1; grid-row: 2; justify-self: start; }
-  .app-topbar:has(.workspace-controls) .receiver-status-menu { grid-column: 2; grid-row: 2; }
+  .app-topbar:has(.workspace-controls) .radio-apps-entry { grid-column: 2; grid-row: 2; }
+  .app-topbar:has(.workspace-controls) .receiver-status-menu { grid-column: 3; grid-row: 2; }
   .header-utility-menu { position: static; }
   .header-utility-content { left: 8px; right: auto; }
 }
@@ -4867,6 +4867,7 @@ button:has(> .app-icon) {
   .app-topbar:has(.workspace-controls) .view-tabs { flex-basis: 100%; }
   .app-topbar:has(.workspace-controls) .view-tabs [role="tablist"] { justify-content: flex-start; width: fit-content; }
   .app-topbar:has(.workspace-controls) .receiver-status-menu { margin-left: auto; }
+  .app-topbar:has(.workspace-controls) .radio-apps-entry:has(.radio-app-shortcut) { order: 5; flex-basis: 100%; }
 }
 @media (pointer: coarse) {
   .app-topbar .workspace-controls > button, .app-topbar .header-utility-menu > summary,
@@ -5036,10 +5037,6 @@ body:has(.overlay-motion[open]) { overflow: hidden; }
 .packet-decode-panel > button { margin-top: .6rem; }
 
 
-.compact-layout-hint { display: none; }
-@media (min-width: 821px) and (max-height: 850px) {
-  .compact-layout-hint { display: inline; font-size: .75rem; color: var(--muted); }
-}
 input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
 
 .target-plot { position: relative; }
@@ -5075,11 +5072,6 @@ input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offs
 }
 @media (min-width: 821px) and (max-width: 1180px) { .density-compact:not(.source-collapsed) .receiver-layout { grid-template-columns: 280px minmax(0, 1fr); } }
 .signal-stage select { width: 100%; min-width: 0; }
-.receiver-workspace .receiver-dock.is-large { min-height: 0; }
-@media (min-width: 1181px) and (min-height: 640px) {
-  .receiver-workspace .receiver-dock.is-large { max-height: min(60dvh, 620px); }
-  .receiver-dock.is-large .receiver-dock-panel { flex: 0 1 auto; min-height: 0; }
-}
 .collapsed-metadata { min-width: 0; margin: 0; padding: 5px 12px; font-size: .78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--cyan-soft); }
 .library-delete { margin-left: 18px; border-style: dashed; }
 .library-delete-confirm { padding: 10px; border: 1px solid var(--danger); margin-top: 10px; border-radius: 6px; }
@@ -5218,3 +5210,6 @@ input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offs
 @media (max-width: 700px) { .workspace-controls .header-antenna-guide { display: none; } }
 
 .workspace-controls .header-antenna-guide { white-space: nowrap; }
+
+/* A dormant Radio Apps presentation target must not add layout space. */
+[data-radio-app-target]:empty { display: none; }

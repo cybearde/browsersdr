@@ -1,6 +1,18 @@
 # Changelog
 
-## Unreleased
+## 1.19.0 — 2026-10-31
+
+- Add eight guided Radio Apps: aircraft tracking, ship tracking, DAB+, FM Radio,
+  APRS, weather balloons, aircraft messages and supported weather sensors. Apps
+  share receiver settings, explicit Start/Stop, fitted information views and a
+  shortcut back from Receiver. Browsing and returning remain passive.
+- Allow capture-center exploration beyond the listening channel. Keep fitting
+  channels; otherwise warn and switch to Spectrum only while preserving the old
+  recording. Keep source/input limits and fixed replay context explicit.
+- Use one compact layout, remove the retired density/dock size buttons, migrate
+  saved layout preferences and retain Collapse/Expand in local and remote views.
+- Avoid hidden Receiver/capture presentation work and prepare common development
+  modules during startup. Receiver, decoder and recording ownership stay shared.
 
 ## 1.18.1 — 2026-10-30
 

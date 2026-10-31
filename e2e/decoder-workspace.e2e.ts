@@ -41,6 +41,11 @@ test("Decoder reviews actual worker replay, exports a frozen selection and clear
   );
   await page.getByRole("button", { name: "Open Decoder", exact: true }).click();
   const workspace = page.locator("#decoder-view");
+  // The hidden Receiver presentation must unsubscribe; Decoder owns this view.
+  // Acquisition and retained worker results continue on the shared controller.
+  await expect(page.locator("#receiver-view .packet-decode-panel")).toHaveCount(
+    0,
+  );
   await expect(workspace.locator(".decoder-record-list")).toContainText(
     "N0CALL-1",
   );

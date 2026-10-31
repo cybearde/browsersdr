@@ -41,6 +41,9 @@ const UtilityOverlay = lazy(() => import("./ui/UtilityOverlay").then(module => (
 import { bookmarkFromCandidate, validateBookmark, type Bookmark } from "./radio/bookmarks";
 import { applyBookmark } from "./radio/bookmarkSelection";
 import { SearchOverlay } from "./ui/SearchOverlay";
+import type { RadioAppId } from "./radio/radioApps";
+import type { RadioAppLink } from "./radio/radioAppSession";
+const RadioAppsFeature = lazy(() => import("./ui/RadioAppsFeature").then(module => ({ default: module.RadioAppsFeature })));
 import type { AntennaContext } from "./radio/antennaGuide";
 const AntennaGuide = lazy(() => import("./ui/AntennaGuide").then(module => ({ default: module.AntennaGuide })));
 import { ModeSelector } from "./ui/ModeSelector";
@@ -1413,6 +1416,15 @@ export function ReceiverApp({
   const autoConnectAttempted = useRef(false);
   const authorizedUsbDevice = useRef<USBDevice | undefined>(undefined);
   const [activeView, setActiveViewState] = useState<AppView>("receiver");
+  const [radioAppsRequest, setRadioAppsRequest] = useState({ revision: 0, open: false, app: undefined as RadioAppId | undefined });
+  const [radioAppsBusy, setRadioAppsBusy] = useState(false);
+  const [radioAppScanning, setRadioAppScanning] = useState(false);
+  const [radioAppRevision, setRadioAppRevision] = useState(0);
+  const [radioAppTarget, setRadioAppTarget] = useState<HTMLDivElement | null>(null);
+  const [activeRadioApp, setActiveRadioApp] = useState<RadioAppLink>();
+  const [radioAppContentTarget, setRadioAppContentTarget] = useState<HTMLDivElement | null>(null);
+  const radioAppsTrigger = useRef<HTMLButtonElement>(null);
+  const openRadioApps = (app?: RadioAppId) => setRadioAppsRequest(old => ({ revision: old.revision + 1, open: true, app }));
   const [utilityView, setUtilityView] = useState<UtilityView | null>(null);
   const [utilityTriggerId, setUtilityTriggerId] = useState<string>();
   const [remoteSelected, setRemoteSelected] = useState(false);
@@ -1440,13 +1452,11 @@ export function ReceiverApp({
     useState<ReceiverDockView>("decode");
   const [vfoToolsTarget, setVfoToolsTarget] = useState<HTMLDivElement | null>(null);
   const [watchToolsTarget, setWatchToolsTarget] = useState<HTMLDivElement | null>(null);
-  const receiverDockLarge = layout.dockLarge;
-  const setReceiverDockLarge = (update: (old: boolean) => boolean) => setLayout((old) => ({ ...old, dockLarge: update(old.dockLarge) }));
   const receiverDockExpanded = layout.dockExpanded;
   const setReceiverDockExpanded = (update: boolean | ((old: boolean) => boolean)) => setLayout((old) => ({ ...old, dockExpanded: typeof update === "function" ? update(old.dockExpanded) : update }));
   const [explorerActive, setScanActive] = useState(false);
   const [watchActive, setWatchActive] = useState(false);
-  const scanActive = explorerActive || watchActive;
+  const scanActive = explorerActive || watchActive || radioAppScanning;
   const [spectrumStatus, setSpectrumStatus] = useState<SpectrumDisplayStatus>({
     kind: "checking",
     hasFrame: false,
@@ -1488,7 +1498,7 @@ export function ReceiverApp({
       receiver.lifecycle,
     );
   const transitioning =
-    stationSelectionBusy || scanActive || receiver.hardwareSettingsPending ||
+    stationSelectionBusy || radioAppsBusy || scanActive || receiver.hardwareSettingsPending ||
     [
       "requesting-permission",
       "connecting",
@@ -1654,6 +1664,7 @@ export function ReceiverApp({
         previous.session === next.session &&
         previous.audioState === next.audioState &&
         previous.cleanupRequired === next.cleanupRequired &&
+        previous.channelSelectionWarning === next.channelSelectionWarning &&
         previous.secondaryVfo === next.secondaryVfo && previous.secondaryVfoMessage === next.secondaryVfoMessage
       )
         return;
@@ -1922,14 +1933,11 @@ export function ReceiverApp({
   );
 
   const tuneReceiverCenter = async (frequencyHz: number): Promise<string | undefined> => {
-    if (frequencyPending && !frequencyValid) return "Enter a supported channel frequency first.";
     analysis.cancelSignalCenter();
     const before = controller.getSnapshot().sessionGeneration;
     const editRevision = channelEditRevision.current;
-    if (frequencyPending && frequencyValid)
-      await controller.tune(Math.round(frequencyMhz * 1_000_000), { centerFrequencyHz: frequencyHz });
-    else
-      await controller.tuneCenter(frequencyHz);
+    await controller.tuneCenter(frequencyHz,
+      frequencyPending && frequencyValid ? Math.round(frequencyMhz * 1_000_000) : undefined);
     const snapshot = controller.getSnapshot();
     const completed = controller.takeCompletedRecording();
     if (completed) retainCompletedRecording(completed);
@@ -1937,6 +1945,7 @@ export function ReceiverApp({
     if (snapshot.lifecycle !== "running" || snapshot.sessionGeneration === before)
       return snapshot.message;
     setChannelTuneIssue(undefined);
+    if (snapshot.session!.mode !== mode) selectModeDefaults(snapshot.session!.mode);
     if (editRevision === channelEditRevision.current) {
       setChannelFrequencyDraft(undefined);
       setFrequencyMhz(snapshot.session!.selectedChannelFrequencyHz / 1_000_000);
@@ -2194,7 +2203,7 @@ export function ReceiverApp({
     if (controller.getSnapshot().lifecycle === "running") throw new Error("Stop reception before applying shared settings.");
     await recallFavorite(sharedSettingsBookmark(shared));
     setSpectrumDisplay({ floorDb: shared.display.floorDb, rangeDb: shared.display.rangeDb });
-    setLayout((old) => ({ ...old, compact: shared.display.compact }));
+    setLayout((old) => ({ ...old, compact: true }));
   };
   const saveFavoriteBlockedReason = remoteSelected ? "Remote presets are separate from local Favorites and settings sharing." : transitioning ? "Wait for the receiver operation to finish."
     : !frequencyValid || frequencyPending || channelFrequencyDraft !== undefined ? "Apply or cancel the channel frequency edit before saving."
@@ -2640,7 +2649,7 @@ export function ReceiverApp({
 
   return (
     <main
-      className={`app-shell${(activeView === "receiver" || activeView === "remote") ? " receiver-workspace" : ""}${layout.compact ? " density-compact" : ""}${layout.sourceCollapsed ? " source-collapsed" : ""}${layout.channelCollapsed ? " channel-collapsed" : ""}`}
+      className={`app-shell${activeRadioApp && activeView === "decoder" ? " radio-app-active" : ""}${(activeView === "receiver" || activeView === "remote") ? " receiver-workspace" : ""} density-compact${layout.sourceCollapsed ? " source-collapsed" : ""}${layout.channelCollapsed ? " channel-collapsed" : ""}`}
     >
       <div className="app-topbar">
         <ApplicationBrand />
@@ -2701,6 +2710,37 @@ export function ReceiverApp({
                     : "Licences, privacy and provenance"}
           </p>
         </nav>
+        <div className="radio-apps-entry">
+          <InstrumentButton
+            ref={radioAppsTrigger}
+            type="button"
+            className="secondary radio-apps-trigger"
+            aria-haspopup="dialog"
+            aria-expanded={radioAppsRequest.open}
+            onClick={() => openRadioApps()}
+          >
+            <AppIcon name="radio" />
+            Radio Apps
+          </InstrumentButton>
+          {activeRadioApp && (
+            <InstrumentButton
+              type="button"
+              className="radio-app-shortcut secondary"
+              aria-label={`Return to ${activeRadioApp.name}`}
+              title={`Return to ${activeRadioApp.name}`}
+              onClick={() => {
+                setActiveView("decoder");
+                requestAnimationFrame(() => {
+                  window.scrollTo({ top: 0 });
+                  document.querySelector<HTMLElement>(".radio-app-context h2")?.focus({ preventScroll: true });
+                });
+              }}
+            >
+              <AppIcon name="overlay" />
+              <span>{activeRadioApp.name}</span>
+            </InstrumentButton>
+          )}
+        </div>
         <AudioCaptureGuard sourceKey={remoteSelected ? "remote" : source} />
         <WorkspaceControls layout={layout} onChange={setLayout} activeView={utilityView ?? activeView}
           onSettings={() => openAuxiliaryView("settings")}
@@ -3044,7 +3084,7 @@ export function ReceiverApp({
                           : start
                       }
                       disabled={
-                        scanActive ||
+                        explorerActive || watchActive ||
                         !["connected", "running", "tuning"].includes(
                           receiver.lifecycle,
                         )
@@ -3074,7 +3114,7 @@ export function ReceiverApp({
                       className="secondary"
                       onClick={() => void stopReceiver()}
                       disabled={
-                        scanActive || !busy || receiver.lifecycle === "stopping"
+                        explorerActive || watchActive || !busy || receiver.lifecycle === "stopping"
                       }
                     >
                       <AppIcon name="stop" />Stop
@@ -3536,7 +3576,7 @@ export function ReceiverApp({
                 </div>
                 {source !== "replay" && source !== "synthetic" && ["DAB", "AIS", "ADS-B", "ACARS", "NAVTEX"].includes(mode) && <Suspense fallback={null}><ModeFrequencyHint mode={mode} frequencyHz={frequencyMhz * 1e6} disabled={transitioning || Boolean(recordingStatus) || exportingRecording || atlasTransferActive} onChoose={hz => { setChannelFrequencyDraft(undefined); setFrequencyMhz(hz / 1e6); if (running) tune(hz); }} /></Suspense>}
                 <div className="channel-utility-actions">
-                <SearchOverlay validationKey={JSON.stringify([currentModeSettings, hardwareOptions])} antennaContext={antennaContext} favorites={favorites.items} frequencyHz={displayedFrequencyHz ?? frequencyMhz * 1e6} mode={mode}
+                <SearchOverlay onRadioApp={openRadioApps} validationKey={JSON.stringify([currentModeSettings, hardwareOptions])} antennaContext={antennaContext} favorites={favorites.items} frequencyHz={displayedFrequencyHz ?? frequencyMhz * 1e6} mode={mode}
                   contextKey={`${source}:${remoteSelected}:${receiver.sessionGeneration}:${mode}:${sampleRateHz}:${frequencyMhz}`}
                   blockedReason={stationUseBlockedReason} onRecall={recallFavorite} onUseStation={useAtlasStation} onFavorite={saveAtlasFavorite}
                   onPreview={(bookmark) => previewDiscovery(controller, bookmark, { source, channelFrequencyHz: frequencyMhz * 1e6, modeSettings: currentModeSettings, sampleRateHz, ...hardwareOptions })} />
@@ -3842,6 +3882,7 @@ export function ReceiverApp({
             configuredFrequencyHz={frequencyMhz * 1_000_000}
             disabled={!running || transitioning || scanActive}
             channelPending={frequencyPending}
+            channelSelectionWarning={receiver.channelSelectionWarning}
             autoRecenter={autoRecenter}
             onAutoRecenter={(enabled) => {
               controller.setAutoRecenter(enabled);
@@ -3865,7 +3906,7 @@ export function ReceiverApp({
         />
 
         <section
-          className={`receiver-dock ${receiverDockExpanded ? "is-expanded" : "is-collapsed"}${receiverDockLarge && receiverDockExpanded ? " is-large" : ""}`}
+          className={`receiver-dock ${receiverDockExpanded ? "is-expanded" : "is-collapsed"}`}
           aria-label="Receiver tools"
         >
           <div className="receiver-dock-bar">
@@ -3933,10 +3974,6 @@ export function ReceiverApp({
               </button>
             </InstrumentTabs>
             <div className="dock-actions">
-              {receiverDockExpanded && <InstrumentButton type="button" className="secondary dock-size-toggle"
-                aria-pressed={receiverDockLarge} onClick={() => setReceiverDockLarge((large) => !large)}>
-                <AppIcon name={receiverDockLarge ? "collapse" : "expand"} />{receiverDockLarge ? "Less space" : "More space"}
-              </InstrumentButton>}
             <InstrumentButton
               type="button"
               className="secondary dock-toggle"
@@ -3954,7 +3991,7 @@ export function ReceiverApp({
             source={source}
             mode={liveMode}
             volume={volume}
-            active={receiverDockExpanded && receiverDockView === "decode"}
+            active={activeView === "receiver" && receiverDockExpanded && receiverDockView === "decode"}
             onOpenDecoder={() => setActiveView("decoder")}
           /></Suspense>}
 
@@ -3972,7 +4009,7 @@ export function ReceiverApp({
             aria-labelledby="recording-heading"
             hidden={!receiverDockExpanded || receiverDockView !== "capture"}
           >
-            <DeferredWorkspace active={receiverDockExpanded && receiverDockView === "capture"}>{() => <>
+            <DeferredWorkspace active={activeView === "receiver" && receiverDockExpanded && receiverDockView === "capture"} freezeWhenInactive>{() => <>
             <h2 id="recording-heading" className="visually-hidden">I/Q recordings</h2>
             <div className="capture-topline">
             <div
@@ -4606,7 +4643,149 @@ export function ReceiverApp({
         </section>
       </ReceiverWorkspace>
 
-      <DeferredWorkspace active={activeView === "decoder"}><DecoderWorkspace key={`${source}:${remoteSelected}`} controller={controller} source={source} mode={liveMode} configuredMode={mode}
+      {radioAppsRequest.revision > 0 && (
+        <Suspense fallback={null}>
+          <RadioAppsFeature
+            controller={controller}
+            analysis={analysis}
+            request={radioAppsRequest}
+            trigger={radioAppsTrigger}
+            target={radioAppTarget}
+            contentTarget={radioAppContentTarget}
+            appView={Boolean(activeRadioApp && activeView === "decoder")}
+            configuration={{
+              source,
+              channelFrequencyHz: frequencyMhz * 1e6,
+              sampleRateHz,
+              modeSettings: currentModeSettings,
+              ...hardwareOptions,
+              hackrfIdentity,
+            }}
+            volume={volume}
+            remote={remoteSelected}
+            dabAudioAvailable={dabPlusAudioAvailable}
+            fmFavorites={favorites.items.filter(item => item.settings.mode === "WBFM")}
+            favoriteMessage={favorites.message}
+            saveFmFavorite={name => {
+              const snapshot = controller.getSnapshot();
+              if (remoteSelected || mode !== "WBFM" || frequencyPending || recordingStartPending.current || radioAppScanning) throw new Error("Finish the current receiver operation before saving a station.");
+              const frequencyHz = snapshot.session?.mode === "WBFM" ? snapshot.session.selectedChannelFrequencyHz : frequencyMhz * 1e6;
+              favorites.change(items => [...items, validateBookmark({ id: crypto.randomUUID(), name, frequencyHz: Math.round(frequencyHz), settings: currentModeSettings, tags: ["FM"], notes: "User-saved FM tuning bookmark; transmitter identity unconfirmed.", sourceHint: source })]);
+            }}
+            blockedReason={
+              remoteSelected
+                ? "Choose a local I/Q source in Receiver."
+                : explorerActive || watchActive
+                  ? "Finish the Explorer or Watch activity first."
+                  : importingReplay || stationSelectionBusy
+                    ? "Wait for the current receiver operation."
+                    : recordingStatus ||
+                        exportingRecording ||
+                        atlasTransferActive ||
+                        retainedCapturePresent
+                      ? "Finish recording, transfer or retained capture preparation first."
+                      : frequencyPending
+                        ? "Apply or cancel the channel frequency edit first."
+                        : undefined
+            }
+            validateOperation={() => {
+              if (
+                recordingStartPending.current ||
+                stationSelectionPending.current ||
+                importingReplay ||
+                explorerActive ||
+                watchActive ||
+                channelFrequencyDraft !== undefined ||
+                controller.getRecordingStatus() ||
+                !["empty", "discarded"].includes(
+                  exportCoordinator.getSnapshot().status,
+                ) ||
+                atlasConnection.getSnapshot().transferActive
+              )
+                throw new Error(
+                  "Finish the current recording, scan, frequency edit or transfer before changing app settings.",
+                );
+            }}
+            applyDraft={(config) => {
+              autoConnectAttempted.current = true;
+              setMode(config.modeSettings.mode);
+              setBandwidthHz(config.modeSettings.bandwidthHz);
+              setSquelch(config.modeSettings.squelch);
+              setBeatToneHz(config.modeSettings.beatToneHz ?? 600);
+              setSrdSettings(
+                config.modeSettings.srd ?? defaultSrdModeSettings(),
+              );
+              setPocsagSettings(
+                config.modeSettings.pocsag ?? defaultPocsagSettings(),
+              );
+              setTextModemSettings(
+                config.modeSettings.textModem ?? defaultTextModemSettings(),
+              );
+              setSampleRateHz(config.sampleRateHz);
+              setFrequencyMhz(config.channelFrequencyHz / 1e6);
+              setChannelFrequencyDraft(undefined);
+              setChannelTuneIssue(undefined);
+              setReceptionCandidate(undefined);
+              const stopped = controller.getSnapshot();
+              if (source === "airspy" && stopped.lifecycle !== "running")
+                setAirspySettings((old) => ({ ...old, biasTee: false }));
+            }}
+            openDecoder={(reset) => {
+              if (reset) setRadioAppRevision((old) => old + 1);
+              setActiveView("decoder");
+            }}
+            openReceiver={() => {
+              setActiveView("receiver");
+              requestAnimationFrame(() => {
+                (document.querySelector<HTMLElement>(".acquire-stage .acquire-receive:not([disabled]), .acquire-stage .acquire-connect:not([disabled])") ??
+                  document.querySelector<HTMLElement>(".acquire-stage button:not([disabled])"))?.focus();
+                document
+                  .querySelector(".acquire-stage")
+                  ?.scrollIntoView({ block: "nearest" });
+              });
+            }}
+            reopen={openRadioApps}
+            close={() =>
+              setRadioAppsRequest((old) => ({ ...old, open: false }))
+            }
+            busyChanged={setRadioAppsBusy}
+            scanChanged={setRadioAppScanning}
+            volumeChanged={updateVolume}
+            appChanged={setActiveRadioApp}
+            startReception={() => {
+              if (
+                source === "usrp-b205" &&
+                (!usrpImageChecked ||
+                  !usrpImageRef.current ||
+                  !usrpFirmwareChecked ||
+                  !usrpFirmwareRef.current)
+              )
+                return Promise.reject(
+                  new Error(
+                    "Load the USRP firmware and FPGA files in Receiver before starting.",
+                  ),
+                );
+              autoConnectAttempted.current = true;
+              return controller.start({
+                source,
+                channelFrequencyHz: frequencyMhz * 1e6,
+                volume,
+                modeSettings: currentModeSettings,
+                ...hardwareOptions,
+                sampleRateHz,
+              });
+            }}
+            stopReception={stopReceiver}
+          />
+        </Suspense>
+      )}
+      <div
+        className={activeRadioApp ? "radio-app-view" : "decoder-view-host"}
+        hidden={activeView !== "decoder"}
+      >
+        <div data-radio-app-target ref={setRadioAppTarget} />
+      <DeferredWorkspace active={activeView === "decoder"}><DecoderWorkspace key={`${source}:${remoteSelected}:${radioAppRevision}`} controller={controller} source={source} mode={liveMode} configuredMode={mode}
+        appMode={activeRadioApp?.mode} onAppContentTarget={setRadioAppContentTarget}
         volume={volume} frequencyHz={frequencyMhz * 1_000_000} sampleRateHz={sampleRateHz}
         active={activeView === "decoder"} remote={remoteSelected}
         unavailableReason={modeUnavailable}
@@ -4624,6 +4803,7 @@ export function ReceiverApp({
           requestAnimationFrame(() => document.getElementById("open-recording-tab")?.focus());
         }}
         serviceControl={<DabStationControl controller={controller} />} /></DeferredWorkspace>
+      </div>
 
       {remoteSelected && <DeferredWorkspace active><RemoteReceiver active={activeView === "remote" || activeView === "decoder"} visible={activeView === "remote"} layout={layout} onLayoutChange={setLayout}
         onStatus={setRemoteStatus} initialPreset={remotePreset} onSource={(next) => {

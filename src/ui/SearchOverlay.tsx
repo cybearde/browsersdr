@@ -45,6 +45,7 @@ export function SearchOverlay(props: SearchOverlayProps) {
         latest.current.onUseStation(...args),
       onFavorite: (...args: Parameters<SearchOverlayProps["onFavorite"]>) =>
         latest.current.onFavorite(...args),
+      onRadioApp: (app: Parameters<NonNullable<SearchOverlayProps["onRadioApp"]>>[0]) => latest.current.onRadioApp?.(app),
     }),
     [],
   );

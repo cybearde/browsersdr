@@ -1,3 +1,4 @@
+import { useRadioAppPageSize } from "./useRadioAppPageSize";
 import { InstrumentRange } from "./InstrumentRange";
 import { InstrumentButton } from "./InstrumentButton";
 import { PocsagPanel } from "./PocsagPanel";
@@ -55,6 +56,8 @@ export interface DecoderWorkspaceProps {
   onOpenRecording: () => void;
   onVolumeChange: (volume: number) => void;
   serviceControl?: ReactNode;
+  appMode?: ReceiverMode;
+  onAppContentTarget?: (target: HTMLDivElement | null) => void;
   receiverLocation?: ReceiverLocation;
 }
 
@@ -85,15 +88,22 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
   }>();
   const [issue, setIssue] = useState("");
   const [audibleVolume, setAudibleVolume] = useState(props.volume || 0.7);
+  const [aprsCategory, setAprsCategory] = useState("stations");
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [dabPane, setDabPane] = useState("programmes");
   const [showTracks, setShowTracks] = useState(true);
   const nativeFormat = DECODER_FORMATS.find(
     (f) =>
       f.mode ===
       (receiver.lifecycle === "connected" ? props.configuredMode : props.mode),
   )?.mode;
-  const format = browsedFormat ?? nativeFormat ?? "WBFM";
+  const format =
+    DECODER_FORMATS.find((f) => f.mode === props.appMode)?.mode ??
+    browsedFormat ??
+    nativeFormat ??
+    "WBFM";
   const satellite = format === "satellite";
+  const customAppOutput = props.appMode === "WBFM" || props.appMode === "SRD";
   const reviewMode = satellite ? "OFF" : format;
   const identity = decoderIdentity(
     receiver,
@@ -150,6 +160,10 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
   const filtered = presenting
     ? records.filter(
         (r) =>
+          (props.appMode !== "APRS" ||
+            (aprsCategory !== "messages" && aprsCategory !== "weather") ||
+            r.category === aprsCategory ||
+            (aprsCategory === "weather" && r.hasWeather)) &&
           !(
             reviewMode === "POCSAG" &&
             clearedPaging?.identity === identity &&
@@ -160,6 +174,15 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
             .includes(filter.toLowerCase()),
       )
     : [];
+  const pageSize = useRadioAppPageSize();
+  const [pageSelection, setPageSelection] = useState({ key: "", page: 0 });
+  const pageKey = `${identity}:${filter}:${effectiveView}:${aprsCategory}`;
+  const pages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const page =
+    pageSelection.key === pageKey ? Math.min(pageSelection.page, pages - 1) : 0;
+  const pageRecords = props.appMode
+    ? filtered.slice(page * pageSize, (page + 1) * pageSize)
+    : filtered;
   const selected =
     selection?.identity === identity
       ? filtered.find((r) => r.key === selection.key)
@@ -167,6 +190,7 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
   const positioned = filtered.filter(hasPosition);
   const geographic = effectiveView === "map";
   const traffic = reviewMode === "ADS-B" || reviewMode === "AIS";
+  const hasTracks = traffic || reviewMode === "RS41";
   const sourceLabel = props.remote
     ? "Remote audio / FFT"
     : props.source === "synthetic"
@@ -193,7 +217,9 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
     : needsApply
       ? "This format is a preview. Apply it to the shared receiver before decoding."
       : receiver.lifecycle !== "running"
-        ? "No retained results. Open Receiver to connect and start, or open an I/Q recording."
+        ? props.appMode
+          ? "Use Start receiving above to connect and start. Receiver settings lets you change the source or antenna setup."
+          : "No retained results. Open Receiver to connect and start, or open an I/Q recording."
         : "Receiving, but no results have been accepted yet. Check the signal, frequency and input requirements in Receiver.";
 
   function freezeDisplay() {
@@ -357,7 +383,7 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
           </tr>
         </thead>
         <tbody>
-          {filtered.map((r) => (
+          {pageRecords.map((r) => (
             <tr
               key={r.key}
               className={
@@ -407,7 +433,7 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
           </tr>
         </thead>
         <tbody>
-          {filtered.map((r) => (
+          {pageRecords.map((r) => (
             <tr
               key={r.key}
               className={
@@ -438,7 +464,7 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
     </div>
   ) : (
     <div className="decoder-record-list" aria-label="Retained decoded records">
-      {filtered.map((r) => (
+      {pageRecords.map((r) => (
         <InstrumentButton
           type="button"
           key={r.key}
@@ -464,50 +490,79 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
     >
       {presenting && (
         <>
-          <div className="decoder-toolbar">
-            <div className="decoder-format">
-              <label htmlFor="decoder-format" className="visually-hidden">
-                Format
+          <div className="decoder-toolbar" hidden={customAppOutput}>
+            {props.appMode === "APRS" && (
+              <label className="radio-app-aprs-filter">
+                <span className="visually-hidden">APRS view</span>
+                <select
+                  aria-label="APRS view"
+                  value={aprsCategory}
+                  onChange={(event) => {
+                    const category = event.currentTarget.value;
+                    setAprsCategory(category);
+                    setView({
+                      format,
+                      value: category === "stations" ? "map" : "messages",
+                    });
+                    setSelection(undefined);
+                  }}
+                >
+                  <option value="stations">Stations & map</option>
+                  <option value="packets">All packets</option>
+                  <option value="messages">Messages</option>
+                  <option value="weather">Weather</option>
+                </select>
               </label>
-              <select
-                id="decoder-format"
-                value={format}
-                onChange={(event) => {
-                  setBrowsedFormat(event.currentTarget.value as DecoderFormat);
-                  setFrozen(undefined);
-                  setSelection(undefined);
-                  setFilter("");
-                  setIssue("");
-                  setView(undefined);
-                  setTrayCollapsed(false);
-                }}
-              >
-                {DECODER_FORMATS.map((f) => (
-                  <option key={f.mode} value={f.mode}>
-                    {f.label}
-                  </option>
-                ))}
-                <option value="satellite">
-                  Satellite · Recording workflow
-                </option>
-              </select>
-            </div>
-            <div className="decoder-input-summary">
-              <span>{sourceLabel}</span>
-              {!props.remote && (
-                <small>
-                  {(channelHz / 1e6).toLocaleString(undefined, {
-                    maximumFractionDigits: 6,
-                  })}{" "}
-                  MHz ·{" "}
-                  {(inputRate / 1e6).toLocaleString(undefined, {
-                    maximumFractionDigits: 3,
-                  })}{" "}
-                  MS/s
-                </small>
-              )}
-            </div>
-            <span className="decoder-state">{stateLabel}</span>
+            )}
+            {!props.appMode && (
+              <>
+                <div className="decoder-format">
+                  <label htmlFor="decoder-format" className="visually-hidden">
+                    Format
+                  </label>
+                  <select
+                    id="decoder-format"
+                    value={format}
+                    onChange={(event) => {
+                      setBrowsedFormat(
+                        event.currentTarget.value as DecoderFormat,
+                      );
+                      setFrozen(undefined);
+                      setSelection(undefined);
+                      setFilter("");
+                      setIssue("");
+                      setView(undefined);
+                      setTrayCollapsed(false);
+                    }}
+                  >
+                    {DECODER_FORMATS.map((f) => (
+                      <option key={f.mode} value={f.mode}>
+                        {f.label}
+                      </option>
+                    ))}
+                    <option value="satellite">
+                      Satellite · Recording workflow
+                    </option>
+                  </select>
+                </div>
+                <div className="decoder-input-summary">
+                  <span>{sourceLabel}</span>
+                  {!props.remote && (
+                    <small>
+                      {(channelHz / 1e6).toLocaleString(undefined, {
+                        maximumFractionDigits: 6,
+                      })}{" "}
+                      MHz ·{" "}
+                      {(inputRate / 1e6).toLocaleString(undefined, {
+                        maximumFractionDigits: 3,
+                      })}{" "}
+                      MS/s
+                    </small>
+                  )}
+                </div>
+                <span className="decoder-state">{stateLabel}</span>
+              </>
+            )}
             {!satellite && hasReviewData && (
               <>
                 {reviewMode === "POCSAG" && (
@@ -582,9 +637,9 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
               </>
             )}
             <details className="decoder-input-details">
-              <summary>
+              <summary aria-label="Input details" title="Input details">
                 <AppIcon name="sliders" />
-                Input details
+                <span>Input details</span>
               </summary>
               <div className="decoder-popover">
                 <dl className="decoder-context">
@@ -636,7 +691,7 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
               </div>
             </details>
           </div>
-          {!satellite && needsApply && (
+          {!props.appMode && !satellite && needsApply && (
             <div className="decoder-configuration">
               <p>
                 Apply {reviewMode} to replace {props.configuredMode}.{" "}
@@ -665,37 +720,39 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
                 Shared audio ·{" "}
                 {receiver.lifecycle === "running" ? "receiving" : "idle"}
               </summary>
-              <label htmlFor="decoder-volume">
-                Volume · {Math.round(props.volume * 100)}%
-                <InstrumentRange
-                  id="decoder-volume"
+              <div className="decoder-audio-controls">
+                <label htmlFor="decoder-volume">
+                  Volume · {Math.round(props.volume * 100)}%
+                  <InstrumentRange
+                    id="decoder-volume"
 
-                  min="0"
-                  max="1"
-                  step="0.01"
-                  value={props.volume}
-                  onChange={(event) =>
-                    props.onVolumeChange(event.currentTarget.valueAsNumber)
-                  }
-                />
-              </label>
-              <InstrumentButton
-                type="button"
-                className="secondary"
-                onClick={() => {
-                  if (props.volume > 0) {
-                    setAudibleVolume(props.volume);
-                    props.onVolumeChange(0);
-                  } else props.onVolumeChange(audibleVolume);
-                }}
-              >
-                {props.volume > 0 ? "Mute audio" : "Unmute audio"}
-              </InstrumentButton>
-              {reviewMode === "DAB" && props.serviceControl}
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={props.volume}
+                    onChange={(event) =>
+                      props.onVolumeChange(event.currentTarget.valueAsNumber)
+                    }
+                  />
+                </label>
+                <InstrumentButton
+                  type="button"
+                  className="secondary"
+                  onClick={() => {
+                    if (props.volume > 0) {
+                      setAudibleVolume(props.volume);
+                      props.onVolumeChange(0);
+                    } else props.onVolumeChange(audibleVolume);
+                  }}
+                >
+                  {props.volume > 0 ? "Mute audio" : "Unmute audio"}
+                </InstrumentButton>
+                {reviewMode === "DAB" && !props.appMode && props.serviceControl}
+              </div>
             </details>
           )}
           <section
-            className={`decoder-stage${geographic ? " decoder-geographic" : ""}`}
+            className={`decoder-stage${geographic ? " decoder-geographic" : ""}${props.appMode === "DAB" ? " radio-app-dab-stage" : ""}${customAppOutput ? " radio-app-output-stage" : ""}`}
             aria-label="Decoded results"
           >
             <h2 className="visually-hidden">{title}</h2>
@@ -706,7 +763,46 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
                 previous frozen display has been cleared.
               </p>
             )}
-            {satellite ? (
+            {customAppOutput ? (
+              <div
+                className="radio-app-output-target"
+                ref={props.onAppContentTarget}
+              />
+            ) : props.appMode === "DAB" ? (
+              <>
+                <nav className="radio-app-dab-tabs" aria-label="DAB content">
+                  <InstrumentButton
+                    type="button"
+                    className="secondary"
+                    aria-pressed={dabPane === "programmes"}
+                    onClick={() => setDabPane("programmes")}
+                  >
+                    Programmes
+                  </InstrumentButton>
+                  <InstrumentButton
+                    type="button"
+                    className="secondary"
+                    aria-pressed={dabPane === "media"}
+                    onClick={() => setDabPane("media")}
+                  >
+                    Now playing
+                  </InstrumentButton>
+                </nav>
+                <div
+                  data-app-pane-selected={dabPane === "programmes"}
+                  className="radio-app-programme-target"
+                  ref={props.onAppContentTarget}
+                />
+                <section
+                  className="radio-app-media"
+                  data-app-pane-selected={dabPane === "media"}
+                  aria-label="Selected DAB service metadata"
+                >
+                  <h3>Live text &amp; slideshow</h3>
+                  <DabMetadata metadata={receiver.dab?.programmeMetadata} />
+                </section>
+              </>
+            ) : satellite ? (
               <div className="decoder-empty">
                 <AppIcon name="folder" />
                 <h3>Start with an original I/Q recording</h3>
@@ -752,12 +848,18 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
                     </p>
                     <div className="decoder-empty-actions">
                       {filter ? (
-                        <InstrumentButton type="button" onClick={() => setFilter("")}>
+                        <InstrumentButton
+                          type="button"
+                          onClick={() => setFilter("")}
+                        >
                           Clear filter
                         </InstrumentButton>
                       ) : (
                         <>
-                          <InstrumentButton type="button" onClick={props.onOpenReceiver}>
+                          <InstrumentButton
+                            type="button"
+                            onClick={props.onOpenReceiver}
+                          >
                             <AppIcon name="radio" />
                             Open Receiver
                           </InstrumentButton>
@@ -782,7 +884,7 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
                       {positioned.length > 0 ? (
                         <>
                           <div className="decoder-map-actions">
-                            {traffic && (
+                            {hasTracks && (
                               <label className="checkbox-control target-track-toggle">
                                 <input
                                   type="checkbox"
@@ -809,9 +911,9 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
                             receiverLocation={props.receiverLocation}
                             pannable
                             label={`${reviewMode} decoded positions`}
-                            showTracks={traffic && showTracks}
+                            showTracks={hasTracks && showTracks}
                             framingKey={`${identity}:${display.receiver.sessionGeneration}:${fitRequest}`}
-                            points={filtered.map((r) => ({
+                            points={pageRecords.map((r) => ({
                               latitude: r.latitude ?? null,
                               longitude: r.longitude ?? null,
                               label: r.label,
@@ -849,46 +951,50 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
                     {filter &&
                       ` · ${filtered.length} match the filter; retained export includes unfiltered records.`}
                   </p>
-                  {hasReviewData && (hasMessages || supportsMap) && (
-                    <div
-                      className="decoder-view-options"
-                      role="group"
-                      aria-label="Result presentation"
-                    >
-                      <InstrumentButton
-                        type="button"
-                        className="secondary"
-                        aria-pressed={effectiveView === "results"}
-                        onClick={() => setView({ format, value: "results" })}
+                  {props.appMode !== "APRS" &&
+                    hasReviewData &&
+                    (hasMessages || supportsMap) && (
+                      <div
+                        className="decoder-view-options"
+                        role="group"
+                        aria-label="Result presentation"
                       >
-                        Results
-                      </InstrumentButton>
-                      {hasMessages && (
                         <InstrumentButton
                           type="button"
                           className="secondary"
-                          aria-pressed={effectiveView === "messages"}
-                          onClick={() => setView({ format, value: "messages" })}
+                          aria-pressed={effectiveView === "results"}
+                          onClick={() => setView({ format, value: "results" })}
                         >
-                          {reviewMode === "RS41"
-                            ? "Frames"
-                            : reviewMode === "SRD"
-                              ? "Bursts"
-                              : "Messages"}
+                          Results
                         </InstrumentButton>
-                      )}
-                      {supportsMap && (
-                        <InstrumentButton
-                          type="button"
-                          className="secondary"
-                          aria-pressed={geographic}
-                          onClick={() => setView({ format, value: "map" })}
-                        >
-                          Map & results
-                        </InstrumentButton>
-                      )}
-                    </div>
-                  )}
+                        {hasMessages && (
+                          <InstrumentButton
+                            type="button"
+                            className="secondary"
+                            aria-pressed={effectiveView === "messages"}
+                            onClick={() =>
+                              setView({ format, value: "messages" })
+                            }
+                          >
+                            {reviewMode === "RS41"
+                              ? "Frames"
+                              : reviewMode === "SRD"
+                                ? "Bursts"
+                                : "Messages"}
+                          </InstrumentButton>
+                        )}
+                        {supportsMap && (
+                          <InstrumentButton
+                            type="button"
+                            className="secondary"
+                            aria-pressed={geographic}
+                            onClick={() => setView({ format, value: "map" })}
+                          >
+                            Map & results
+                          </InstrumentButton>
+                        )}
+                      </div>
+                    )}
                   {geographic && filtered.length > 0 && (
                     <InstrumentButton
                       type="button"
@@ -903,6 +1009,36 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
                   )}
                 </div>
                 {geographic && filtered.length > 0 && results}
+                {props.appMode && filtered.length > 0 && !trayCollapsed && (
+                  <nav
+                    className="radio-app-pagination"
+                    aria-label="Result pages"
+                  >
+                    <InstrumentButton
+                      type="button"
+                      className="secondary"
+                      disabled={!page}
+                      onClick={() =>
+                        setPageSelection({ key: pageKey, page: page - 1 })
+                      }
+                    >
+                      Previous
+                    </InstrumentButton>
+                    <small>
+                      {page + 1} / {pages} · {filtered.length} results
+                    </small>
+                    <InstrumentButton
+                      type="button"
+                      className="secondary"
+                      disabled={page + 1 >= pages}
+                      onClick={() =>
+                        setPageSelection({ key: pageKey, page: page + 1 })
+                      }
+                    >
+                      Next
+                    </InstrumentButton>
+                  </nav>
+                )}
                 {applied && reviewMode === "DAB" && (
                   <section
                     aria-label="Selected DAB service metadata"
@@ -924,7 +1060,7 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
           {reviewMode === "POCSAG" && applied && (
             <PocsagPanel receiver={receiver} />
           )}
-          {isTextMode(reviewMode) && applied && (
+          {isTextMode(reviewMode) && applied && !props.appMode && (
             <TextDecodePanel receiver={receiver} mode={reviewMode} />
           )}
           <footer className="decoder-footer">
@@ -957,7 +1093,7 @@ export function DecoderWorkspace(props: DecoderWorkspaceProps) {
                 )}
               </details>
             )}
-            {(hasReviewData || satellite) && (
+            {!props.appMode && (hasReviewData || satellite) && (
               <nav aria-label="Decoder handoffs">
                 <InstrumentButton
                   type="button"

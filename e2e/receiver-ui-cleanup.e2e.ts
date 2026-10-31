@@ -52,7 +52,6 @@ test("header guide, compact tuning and local display settings preserve the works
   page,
 }, info) => {
   await page.goto("/?browser-test=1");
-  await page.getByRole("button", { name: "Compact", exact: true }).click();
   await expect(
     page.locator(".app-topbar #antenna-guide-trigger"),
   ).toBeVisible();

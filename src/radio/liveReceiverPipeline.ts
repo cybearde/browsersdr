@@ -168,7 +168,9 @@ export class LiveReceiverPipeline implements SampleReceiver {
         },
       ),
       (stats) => { if (active) receiver.updateProgrammeStats(stats); },
-      (error) => { if (active) this.events.runtimeError(error instanceof Error ? error : new Error(String(error))); },
+      // AAC support is independent of OFDM/FIC discovery. Keep receiving labels
+      // and services when the browser cannot decode this programme's audio.
+      (error) => { if (active && !(error instanceof DOMException && error.name === "NotSupportedError")) this.events.runtimeError(error instanceof Error ? error : new Error(String(error))); },
       (metadata) => { if (active) receiver.updateProgrammeMetadata(metadata); },
     );
     const ensemble = this.dependencies.createDabEnsembleDecoder?.(programme) ??

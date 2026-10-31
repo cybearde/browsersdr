@@ -313,3 +313,15 @@ it("uses qualified aircraft keys and exposes reported address/quality without an
   expect(nonIcao.summary).toBe("On ground · ≥175 kt");
   expect(JSON.parse(decoderViewExport(receiver, "ADS-B", records, "retained", false)).records).toHaveLength(2);
 });
+
+it("exposes APRS packet categories and retained weather with units without inventing missing readings", () => {
+  const snapshot: ReceiverSnapshot = { ...initial, aprs: { configured: true, stations: [], counters: { hdlcCandidates: 2, validAx25Frames: 2, invalidFcsFrames: 0, malformedAx25Frames: 0, decodedAprsPackets: 2, unsupportedAprsPackets: 0, duplicatePackets: 0 }, recentPackets: [
+    { sequence: 1, frame: { source: address, destination: address, path: [], control: 0x03, pid: 0xf0, information: new Uint8Array() }, payload: { kind: "weather", comment: "", weather: { temperatureCelsius: 0, humidityPercent: 82 } }, provenance },
+    { sequence: 2, frame: { source: address, destination: address, path: [], control: 0x03, pid: 0xf0, information: new Uint8Array() }, payload: { kind: "message", addressee: "N0CALL", text: "<script>literal</script>" }, provenance },
+  ] } };
+  const records = decoderRecords(snapshot, "APRS", true);
+  expect(records[0]).toMatchObject({ category: "messages", summary: "<script>literal</script>" });
+  expect(records[1]).toMatchObject({ category: "weather", hasWeather: true });
+  expect(records[1]!.fields).toContainEqual(["Weather · Temperature", "0 °C · retained"]);
+  expect(records[1]!.fields.some(([name]) => name.includes("Pressure"))).toBe(false);
+});

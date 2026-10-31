@@ -351,6 +351,18 @@ describe("RtlSdrBackend teardown", () => {
     expect(raw).toEqual([0.25]);
     expect(demodulator.setMode).not.toHaveBeenCalled();
     expect(demodulator.receiveSamples).not.toHaveBeenCalled();
+    // The same ownership gate also applies when leaving a playing channel to
+    // explore another capture window, not just when starting in OFF mode.
+    await backend.configureMode({mode: "WBFM", bandwidthHz: 150_000, squelch: 0}, 2);
+    reads.shift()!.resolve({I: new Float32Array([0.5]), Q: new Float32Array([0]), frequency: OPTIONS.channelFrequencyHz});
+    for (let index = 0; index < 10; index += 1) await Promise.resolve();
+    expect(demodulator.receiveSamples).toHaveBeenCalledOnce();
+    await backend.configureMode({mode: "OFF", bandwidthHz: 1, squelch: 0}, 3);
+    await backend.tune(110e6, 3, {centerFrequencyHz: 110e6});
+    reads.shift()!.resolve({I: new Float32Array([0.75]), Q: new Float32Array([0]), frequency: 110e6});
+    for (let index = 0; index < 10; index += 1) await Promise.resolve();
+    expect(raw).toEqual([0.25, 0.5, 0.75]);
+    expect(demodulator.receiveSamples).toHaveBeenCalledOnce();
     const disconnecting = backend.disconnect();
     for (const read of reads.splice(0))
       read.resolve({

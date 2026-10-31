@@ -181,7 +181,7 @@ const sourceDefaults: Record<SourceKind, SourceCapabilities> = {
     source: "synthetic", label: "Synthetic spectrum demo", requiresUsb: false, persistentConnection: false,
     frequency: legacyFrequency,
     rates: { kind: "choices", valuesHz: [1_024_000], defaultHz: 1_024_000 },
-    modes: ["WBFM", "NBFM", "AM", "USB", "LSB"], gain: { kind: "none" },
+    modes: ["OFF", "WBFM", "NBFM", "AM", "USB", "LSB"], gain: { kind: "none" },
   },
   replay: {
     source: "replay", label: "I/Q replay", requiresUsb: false, persistentConnection: false,

@@ -5,7 +5,6 @@ test("spectrum controls fit in coherent groups and plot info does not resize or 
 }) => {
   await page.setViewportSize({ width: 1686, height: 903 });
   await page.goto("/");
-  await page.getByRole("button", { name: "Compact", exact: true }).click();
   await page
     .getByRole("combobox", { name: "Signal source", exact: true })
     .selectOption("synthetic");

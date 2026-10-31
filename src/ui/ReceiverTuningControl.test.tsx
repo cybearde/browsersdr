@@ -59,9 +59,9 @@ it("validates receiver edits before tuning, supports Escape/Enter and centers on
   const ui = await setup();
   expect(ui.input.value).toBe("100.000");
   await ui.edit("101");
-  expect(ui.button("Set").disabled).toBe(true);
-  expect(ui.input.getAttribute("aria-invalid")).toBe("true");
-  expect(ui.host.textContent).toContain("selected channel outside");
+  expect(ui.button("Set").disabled).toBe(false);
+  expect(ui.input.getAttribute("aria-invalid")).toBe("false");
+  expect(ui.host.textContent).toContain("switches to Spectrum only");
   await act(async () =>
     ui.input.dispatchEvent(
       new KeyboardEvent("keydown", { key: "Escape", bubbles: true }),
@@ -78,6 +78,18 @@ it("validates receiver edits before tuning, supports Escape/Enter and centers on
   expect(ui.tune).toHaveBeenLastCalledWith(100.2e6);
   await act(async () => ui.button("To channel").click());
   expect(ui.tune).toHaveBeenLastCalledWith(100.1e6);
+});
+it("allows Set and Enter outside the channel window while rejecting invalid hardware frequencies", async () => {
+  const ui = await setup();
+  await ui.edit("110");
+  await act(async () => ui.button("Set").click());
+  expect(ui.tune).toHaveBeenLastCalledWith(110e6);
+  await ui.edit("120");
+  await act(async () => ui.input.dispatchEvent(new KeyboardEvent("keydown", {key: "Enter", bubbles: true})));
+  expect(ui.tune).toHaveBeenLastCalledWith(120e6);
+  await ui.edit("-1");
+  expect(ui.button("Set").disabled).toBe(true);
+  expect(ui.input.getAttribute("aria-invalid")).toBe("true");
 });
 it("keeps receiver center read-only for replay", async () => {
   const ui = await setup(true);

@@ -130,3 +130,4 @@
 .decoder-audio-disclosure > summary { font-size: .8rem; cursor: pointer; }
 .decoder-audio-disclosure[open] { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
 .decoder-audio-disclosure[open] > summary { flex-basis: 100%; }
+.decoder-audio-controls { display: contents; }

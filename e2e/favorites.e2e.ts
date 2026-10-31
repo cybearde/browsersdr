@@ -8,8 +8,7 @@ test("compact view and panel choices persist, enlarge the plot and reset", async
   await page.goto("/");
   const plot = page.locator(".graphics-panel");
   const original = (await plot.boundingBox())!;
-  await page.getByRole("button", { name: "Compact", exact: true }).click();
-  expect((await plot.boundingBox())!.width).toBeGreaterThan(original.width);
+  await expect(page.locator(".app-shell")).toHaveClass(/density-compact/);
   expect(
     (await plot.locator("canvas").boundingBox())!.height,
   ).toBeGreaterThanOrEqual(120);
@@ -30,9 +29,7 @@ test("compact view and panel choices persist, enlarge the plot and reset", async
   ).toBeVisible();
   await page.getByRole("button", { name: "Collapse", exact: true }).click();
   await page.reload();
-  await expect(
-    page.getByRole("button", { name: "Compact", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".app-shell")).toHaveClass(/density-compact/);
   await expect(
     page.getByRole("button", { name: "Expand source panel" }),
   ).toBeVisible();
@@ -47,12 +44,9 @@ test("compact view and panel choices persist, enlarge the plot and reset", async
   await expect(
     page.getByRole("combobox", { name: "Signal source", exact: true }),
   ).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Compact", exact: true }),
-  ).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator(".app-shell")).toHaveClass(/density-compact/);
   for (const width of [820, 390, 320]) {
     await page.setViewportSize({ width, height: 900 });
-    await page.getByRole("button", { name: "Compact", exact: true }).click();
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBe(width);

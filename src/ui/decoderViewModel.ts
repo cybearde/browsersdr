@@ -20,6 +20,8 @@ export interface DecoderRecord {
   fields: readonly (readonly [string, string])[];
   raw: unknown;
   map?: TargetMapPresentation;
+  category?: string;
+  hasWeather?: boolean;
 }
 export const DECODER_FORMATS = [
   {mode:"POCSAG",label:"POCSAG · Paging",title:"Paging messages"},
@@ -190,6 +192,8 @@ export function decoderRecords(
       .slice(-32)
       .map((p): DecoderRecord => ({
         key: key(`packet-${p.sequence}`),
+        category: p.payload.kind === "message" ? "messages" : p.payload.kind,
+        hasWeather: p.payload.kind === "weather" || "weather" in p.payload && Boolean(p.payload.weather),
         label: `${address(p.frame.source)} → ${address(p.frame.destination)}`,
         summary:
           p.payload.kind === "status" || p.payload.kind === "message"
@@ -205,6 +209,7 @@ export function decoderRecords(
         fields: [
           ["Path", p.frame.path.map(address).join(", ") || "Direct"],
           ["Payload", p.payload.kind],
+          ...("weather" in p.payload && p.payload.weather ? weatherFields(p.payload.weather) : []),
         ],
         raw: p,
       }))
@@ -242,6 +247,7 @@ export function decoderRecords(
               : "Unknown",
           ],
           ["Status", s.statusText || "Unknown"],
+          ...(s.weather ? weatherFields(s.weather) : []),
         ],
         raw: s,
       }))
@@ -290,6 +296,7 @@ export function decoderRecords(
       .map((s): DecoderRecord => ({
         key: key(s.sondeId),
         label: s.sondeId,
+        map: { symbol: "generic", categoryLabel: "RS41 radiosonde", direction: s.position?.headingDegrees ?? null, maximumGapMs: 10_000, track: s.track.filter(point => point.provenance.generation === s.lastHeard.generation).map(point => ({ latitude: point.position.latitudeDegrees, longitude: point.position.longitudeDegrees, timeMs: point.provenance.lastInputSampleIndex / point.provenance.actualInputSampleRateHz * 1000 })) },
         summary: `${value(s.position?.altitudeMeters, "m ellipsoidal")} · ${s.track.length} retained fixes`,
         integrity: "STATUS and position fields individually integrity-gated",
         clock: clock(s.lastHeard),
@@ -297,6 +304,7 @@ export function decoderRecords(
         longitude: s.position?.longitudeDegrees,
         fields: [
           ["Frame counter", String(s.lastFrameCounter)],
+          ["Battery", value(s.batteryVolts, "V")],
           ["Ellipsoidal altitude", value(s.position?.altitudeMeters, "m")],
           [
             "Horizontal speed",
@@ -482,4 +490,9 @@ export function decoderViewExport(
 
 function surfaceSpeed(range: readonly [number, number | null]): string {
   return range[1] === null ? `≥${range[0]} kt` : `${range[0]}–${range[1]} kt`;
+}
+
+function weatherFields(weather: import("../aprs/types").AprsWeather): [string, string][] {
+  const labels: Record<keyof typeof weather, [string, string]> = { windDirectionDegrees: ["Wind direction", "°"], windSpeedMetersPerSecond: ["Wind speed", "m/s"], windGustMetersPerSecond: ["Wind gust", "m/s"], temperatureCelsius: ["Temperature", "°C"], rainLastHourMillimeters: ["Rain · last hour", "mm"], rainLast24HoursMillimeters: ["Rain · last 24 hours", "mm"], rainSinceMidnightMillimeters: ["Rain · since midnight", "mm"], humidityPercent: ["Humidity", "%"], pressureHectopascals: ["Pressure", "hPa"], luminosityWattsPerSquareMeter: ["Luminosity", "W/m²"] };
+  return Object.entries(weather).filter(([, value]) => value !== undefined).map(([name, value]) => { const [label, unit] = labels[name as keyof typeof weather]; return [`Weather · ${label}`, `${value} ${unit} · retained`]; });
 }

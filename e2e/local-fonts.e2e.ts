@@ -65,13 +65,9 @@ for (const width of [1440, 390]) {
         .getByRole("combobox", { name: "Theme", exact: true })
         .selectOption(theme);
       await page.getByLabel("Settings", { exact: true }).click();
-      for (const compact of [false, true]) {
-        const density = page.getByRole("button", {
-          name: "Compact",
-          exact: true,
-        });
-        if ((await density.getAttribute("aria-pressed")) !== String(compact))
-          await density.click();
+      for (const compact of [true]) {
+        void compact;
+        await expect(page.locator(".app-shell")).toHaveClass(/density-compact/);
         const frequency = page.getByLabel("Channel frequency", { exact: true });
         await expect(frequency).toHaveCSS("font-size", "14.4px");
         await expect(frequency).toHaveCSS("font-weight", "500");

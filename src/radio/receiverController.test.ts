@@ -996,9 +996,9 @@ it("selects only playable discovered DAB stations without an RF tune", async () 
 });
 
 describe("receiver center and channel policy", () => {
-  function tuningFixture(source: "rtl-sdr" | "replay" = "rtl-sdr") {
-    let metadata = { ...METADATA, source };
-    const stopRecording = vi.fn(() => undefined);
+  function tuningFixture(source: "rtl-sdr" | "replay" | "hackrf" = "rtl-sdr", override: Partial<import("./types").SourceSessionMetadata> = {}) {
+    let metadata: Omit<import("./types").SourceSessionMetadata, "sessionGeneration"> = { ...METADATA, source, ...override };
+    const stopRecording = vi.fn<NonNullable<ReceiverBackend["stopRecording"]>>(() => undefined);
     const tune = vi.fn<ReceiverBackend["tune"]>(
       async (channel, _generation, options) => {
         const plan = planChannelTune(
@@ -1016,6 +1016,10 @@ describe("receiver center and channel policy", () => {
         return metadata;
       },
     );
+    const configureMode = vi.fn<ReceiverBackend["configureMode"]>(async settings => {
+      metadata = {...metadata, mode: settings.mode, channelBandwidthHz: settings.bandwidthHz, squelch: settings.squelch};
+      return metadata;
+    });
     const controller = new ReceiverController((events) => ({
       ...fakeBackend(
         events,
@@ -1023,9 +1027,10 @@ describe("receiver center and channel policy", () => {
         () => undefined,
       ),
       tune,
+      configureMode,
       stopRecording,
     }));
-    return { controller, tune, stopRecording };
+    return { controller, tune, stopRecording, configureMode };
   }
   it("preserves channel selection for Set and To channel", async () => {
     const f = tuningFixture();
@@ -1046,9 +1051,10 @@ describe("receiver center and channel policy", () => {
     const f = tuningFixture();
     await f.controller.start(OPTIONS);
     const before = f.controller.getSnapshot().sessionGeneration;
-    for (const center of [0, NaN, 101e6]) await f.controller.tuneCenter(center);
+    for (const center of [0, NaN, -1, Infinity]) await f.controller.tuneCenter(center);
     expect(f.tune).not.toHaveBeenCalled();
     expect(f.stopRecording).not.toHaveBeenCalled();
+    expect(f.configureMode).not.toHaveBeenCalled();
     expect(f.controller.getSnapshot()).toMatchObject({
       lifecycle: "running",
       sessionGeneration: before,
@@ -1057,6 +1063,63 @@ describe("receiver center and channel policy", () => {
         selectedChannelFrequencyHz: 100e6,
       },
     });
+  });
+  it.each([false, true])("clears an out-of-window channel without blocking center exploration (Follow=%s)", async follow => {
+    const f = tuningFixture();
+    await f.controller.start(OPTIONS);
+    f.controller.setAutoRecenter(follow);
+    await f.controller.tuneCenter(110e6);
+    expect(f.configureMode).toHaveBeenCalledWith(expect.objectContaining({mode: "OFF"}), expect.any(Number));
+    expect(f.stopRecording).toHaveBeenCalledWith("metadata-change");
+    expect(f.controller.getSnapshot()).toMatchObject({
+      lifecycle: "running", channelSelectionWarning: expect.stringContaining("100.000000 MHz"),
+      session: {hardwareCenterFrequencyHz: 110e6, selectedChannelFrequencyHz: 110e6, mode: "OFF"},
+    });
+    await f.controller.tuneCenter(120e6);
+    expect(f.controller.getSnapshot().session?.hardwareCenterFrequencyHz).toBe(120e6);
+    await f.controller.configureMode({mode: "WBFM", bandwidthHz: 150000, squelch: 0});
+    expect(f.controller.getSnapshot().channelSelectionWarning).toBeUndefined();
+  });
+  it("Stop cancels the second step of clearing a channel without a late retune", async () => {
+    const f = tuningFixture();
+    await f.controller.start(OPTIONS);
+    const mode = deferred<Omit<import("./types").SourceSessionMetadata, "sessionGeneration">>();
+    f.configureMode.mockReturnValueOnce(mode.promise);
+    const moving = f.controller.tuneCenter(110e6);
+    await f.controller.stop();
+    mode.resolve({...METADATA, mode: "OFF", channelBandwidthHz: 1});
+    await moving;
+    expect(f.tune).not.toHaveBeenCalled();
+    expect(f.controller.getSnapshot().lifecycle).toBe("idle");
+  });
+  it("finishes and retains the original recording before clearing a channel", async () => {
+    const f = tuningFixture();
+    await f.controller.start(OPTIONS);
+    const recording = createDeterministicRecordingFixture();
+    f.stopRecording.mockReturnValueOnce(recording);
+    await f.controller.tuneCenter(110e6);
+    expect(f.controller.takeCompletedRecording()).toBe(recording);
+    expect(recording.metadata.selectedChannelFrequencyHz).not.toBe(110e6);
+    expect(f.stopRecording.mock.invocationCallOrder[0]).toBeLessThan(f.configureMode.mock.invocationCallOrder[0]!);
+  });
+  it("validates declared Q-branch limits before disturbing the active channel", async () => {
+    const f = tuningFixture("rtl-sdr", {hardwareCenterFrequencyHz: 4.583e6, selectedChannelFrequencyHz: 4.583e6,
+      rtlInput: {profile: "nesdr-smart-v5", directSampling: "q", converterOffsetHz: 0, biasTee: false}});
+    await f.controller.start({...OPTIONS, channelFrequencyHz: 4.583e6});
+    await f.controller.tuneCenter(80e6);
+    expect(f.controller.getSnapshot().message).toContain("0.1–24 MHz");
+    expect(f.configureMode).not.toHaveBeenCalled();
+    expect(f.tune).not.toHaveBeenCalled();
+    expect(f.stopRecording).not.toHaveBeenCalled();
+    await f.controller.tuneCenter(6e6);
+    expect(f.controller.getSnapshot().session).toMatchObject({mode: "OFF", hardwareCenterFrequencyHz: 6e6});
+  });
+  it("clears a centered low-rate decoder even when the occupied passband would fit", async () => {
+    const f = tuningFixture("hackrf", {hardwareCenterFrequencyHz: 1090e6, selectedChannelFrequencyHz: 1090e6,
+      mode: "ADS-B", channelBandwidthHz: 2e6, actualSampleRateHz: 2.4e6, requestedSampleRateHz: 2.4e6});
+    await f.controller.start({...OPTIONS, source: "hackrf", channelFrequencyHz: 1090e6, sampleRateHz: 2.4e6});
+    await f.controller.tuneCenter(1090.1e6);
+    expect(f.controller.getSnapshot()).toMatchObject({lifecycle: "running", channelSelectionWarning: expect.any(String), session: {mode: "OFF", hardwareCenterFrequencyHz: 1090.1e6}});
   });
   it("moves the receiver only when the complete channel no longer fits, and honors the lock", async () => {
     const f = tuningFixture();

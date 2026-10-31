@@ -114,7 +114,6 @@ for (const size of [
   }, testInfo) => {
     await page.setViewportSize(size);
     await page.goto("/?browser-test=1");
-    await page.getByRole("button", { name: "Compact", exact: true }).click();
     await page
       .getByRole("button", { name: "Antenna site", exact: true })
       .click();

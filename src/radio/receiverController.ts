@@ -1,5 +1,6 @@
 import { validateAirspySettings, type AirspySettings } from "./airspySettings";
 import type { SecondaryVfoSettings } from "./secondaryVfo";
+import { rtlDeviceFrequency } from "./rtlInput";
 import type { PocsagSnapshot } from "../pocsag/types";
 import type { FmStereoReception } from "./fmStereoReception";
 import { isTextMode } from "../textmodem/settings";
@@ -26,6 +27,7 @@ import type { SrdSnapshot } from "../srd/types";
 import type { DigitalWorkerAdapterDiagnostics } from "../digital";
 import {
   normalizeGain,
+  defaultModeSettings,
   normalizeModeSettings,
   planChannelTune,
   type ReceiverTuneOptions,
@@ -164,6 +166,8 @@ export type ReceiverBackendFactory = (
 ) => ReceiverBackend;
 
 export interface ReceiverSnapshot {
+  /** Explicit center exploration cleared an incompatible listening channel. */
+  channelSelectionWarning?: string;
   secondaryVfo?: SecondaryVfoSettings;
   secondaryVfoMessage?: string;
   /** Stabilized recent WBFM reception; undefined while acquiring or outside WBFM. */
@@ -215,12 +219,17 @@ export class ReceiverController {
   private squelchMeter: SquelchMeterState | undefined;
   private readonly squelchMeterListeners = new Set<SquelchMeterListener>();
   private backend?: ReceiverBackend;
+  private connectionIdentity = 0;
+  /** Opaque session-local identity; never a serial number or persisted setting. */
+  getConnectionIdentity = (): number | undefined => this.backend ? this.connectionIdentity : undefined;
   private startTask?: Promise<void>;
   private sampleRateTask?: Promise<Omit<SourceSessionMetadata, "sessionGeneration">>;
   private generation = 0;
   private source: SourceKind = "rtl-sdr";
   private autoRecenter = true;
   private completedRecording?: IqRecording;
+  private requestedVolume = 0.7;
+  private readonly audioSuppressions = new Set<symbol>();
   private readonly cleanupTasks = new Map<ReceiverBackend, Promise<void>>();
 
   constructor(private readonly createBackend: ReceiverBackendFactory) {}
@@ -263,6 +272,9 @@ export class ReceiverController {
       return this.startTask ?? Promise.resolve();
     }
     if (this.backend && !restartingConnectedBackend) return Promise.resolve();
+
+    this.requestedVolume = clampVolume(options.volume);
+    options = { ...options, volume: this.audioSuppressions.size ? 0 : this.requestedVolume };
 
     const generation = ++this.generation;
     this.source = options.source ?? "rtl-sdr";
@@ -333,6 +345,8 @@ export class ReceiverController {
     )
       return;
     if (this.backend) return;
+    this.requestedVolume = clampVolume(options.volume);
+    options = { ...options, volume: this.audioSuppressions.size ? 0 : this.requestedVolume };
     const generation = ++this.generation;
     this.source = options.source ?? "rtl-sdr";
     try {
@@ -482,7 +496,20 @@ export class ReceiverController {
 
   setVolume(volume: number): void {
     const safeVolume = clampVolume(volume);
-    this.backend?.setVolume(safeVolume);
+    this.requestedVolume = safeVolume;
+    this.backend?.setVolume(this.audioSuppressions.size ? 0 : safeVolume);
+  }
+
+  /** Scoped temporary silence without overwriting the user's volume/mute.
+   * Multiple owners cannot release one another's gate. Start also respects it. */
+  suppressAudio(): () => void {
+    const owner = Symbol("receiver-audio-suppression");
+    this.audioSuppressions.add(owner);
+    this.backend?.setVolume(0);
+    return () => {
+      if (!this.audioSuppressions.delete(owner)) return;
+      this.backend?.setVolume(this.audioSuppressions.size ? 0 : this.requestedVolume);
+    };
   }
 
   startRecording(survey?: SurveyCaptureContext, options?: RecordingOptions): RecordingStatus | undefined {
@@ -523,10 +550,48 @@ export class ReceiverController {
     this.autoRecenter = enabled;
   }
 
-  async tuneCenter(centerFrequencyHz: number): Promise<void> {
-    const channel = this.snapshot.session?.selectedChannelFrequencyHz;
-    if (channel !== undefined)
-      await this.tune(channel, { centerFrequencyHz });
+  async tuneCenter(centerFrequencyHz: number, channelFrequencyHz = this.snapshot.session?.selectedChannelFrequencyHz): Promise<void> {
+    const session = this.snapshot.session;
+    const backend = this.backend;
+    if (this.snapshot.lifecycle !== "running" || this.snapshot.hardwareSettingsPending || !session || !backend || channelFrequencyHz === undefined) return;
+    // Hardware limits still apply, independently of whether the old channel fits.
+    // Reject before changing a mode, ending a recording, or touching the source.
+    try {
+      if (session.source === "replay") throw new Error("The capture center is fixed during replay. Select a channel within the recorded RF window.");
+      if (session.source === "rtl-sdr" && session.rtlInput) rtlDeviceFrequency(centerFrequencyHz, session.rtlInput);
+      validateSourceFrequency(session.source, centerFrequencyHz,
+        ["airspy", "hackrf", "bladerf", "usrp-b205"].includes(session.source) ? session.actualSampleRateHz : 0,
+        session.hackrf?.capabilities.identity);
+    } catch (error) {
+      this.publishCommandFailure(error);
+      return;
+    }
+    try {
+      this.validateTune(channelFrequencyHz, { centerFrequencyHz });
+    } catch {
+      // A manual capture move takes priority over listening. Use the existing
+      // OFF route, so neither an aliased channel nor a decoder can keep playing.
+      // One generation owns both steps; Stop/source replacement cancels step two.
+      this.captureCompletedRecording(backend.stopRecording?.("metadata-change"));
+      const generation = ++this.generation;
+      this.publish({
+        lifecycle: "tuning", message: "Clearing the channel and moving the receiver window…",
+        sessionGeneration: generation, session, audioState: this.snapshot.audioState,
+      });
+      try {
+        await backend.configureMode(defaultModeSettings("OFF"), generation);
+        if (generation !== this.generation || this.backend !== backend) return;
+        const metadata = await backend.tune(centerFrequencyHz, generation, { centerFrequencyHz });
+        if (generation !== this.generation || this.backend !== backend) return;
+        this.publishRunning(metadata, generation);
+        this.publish({ ...this.snapshot, channelSelectionWarning:
+          `Channel ${(channelFrequencyHz / 1e6).toFixed(6)} MHz cannot play in this receiver window. Switched to Spectrum only; select a channel and mode to listen again.` });
+      } catch (error) {
+        if (generation === this.generation && this.backend === backend) await this.failBackend(backend, error);
+      }
+      return;
+    }
+    await this.tune(channelFrequencyHz, { centerFrequencyHz });
   }
 
   /** Check a proposed channel/mode together without changing the active session. */
@@ -1325,6 +1390,7 @@ export class ReceiverController {
       generation,
     );
     this.backend = backend;
+    this.connectionIdentity++;
     this.lastIngress = undefined;
     return backend;
   }

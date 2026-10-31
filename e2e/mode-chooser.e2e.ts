@@ -211,7 +211,6 @@ test("chooser fits desktop and phone, traps focus and follows all themes", async
   page,
 }, testInfo) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Compact", exact: true }).click();
   const trigger = page.getByRole("button", {
     name: "More modes…",
     exact: true,

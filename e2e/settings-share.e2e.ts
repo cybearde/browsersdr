@@ -81,7 +81,6 @@ test("settings share generates a clean link and restores CW/display with no hard
 }, testInfo) => {
   await page.goto("/");
   await page.getByRole("combobox", { name: /^Mode/ }).selectOption("CW");
-  await page.getByRole("button", { name: "Compact", exact: true }).click();
   await openDisplaySettings(page);
   await page.getByRole("slider", { name: "Spectrum floor" }).press("Home");
   await page
@@ -191,9 +190,7 @@ test("settings share generates a clean link and restores CW/display with no hard
   await expect(recipient.getByRole("combobox", { name: /^Mode/ })).toHaveValue(
     "CW",
   );
-  await expect(
-    recipient.getByRole("button", { name: "Compact", exact: true }),
-  ).toHaveAttribute("aria-pressed", "true");
+  await expect(recipient.locator(".app-shell")).toHaveClass(/density-compact/);
   await openDisplaySettings(recipient);
   await expect(
     recipient.getByRole("slider", { name: "Spectrum floor" }),
@@ -224,9 +221,7 @@ test("shared settings preflight rejects incompatible source without changing tun
   await expect(page.getByRole("combobox", { name: /^Mode/ })).toHaveValue(
     "WBFM",
   );
-  await expect(
-    page.getByRole("button", { name: "Compact", exact: true }),
-  ).toHaveAttribute("aria-pressed", "false");
+  await expect(page.locator(".app-shell")).toHaveClass(/density-compact/);
 });
 
 test("malformed/unknown links show recoverable errors and cannot apply; narrow modal stays reachable", async ({

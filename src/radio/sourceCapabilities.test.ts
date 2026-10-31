@@ -113,6 +113,7 @@ describe("source capabilities and requests", () => {
     // Existing UI passes a rate preference ignored by the fixed-rate demo.
     expect(() => validateOptions({ ...options, source: "synthetic", sampleRateHz: 2_400_000 })).not.toThrow();
     for (const mode of ["DAB", "ADS-B", "AIS"] as const) expect(() => validateOptions({ ...options, source: "synthetic", modeSettings: defaultModeSettings(mode) })).toThrow();
+    expect(() => validateOptions({ ...options, source: "synthetic", modeSettings: defaultModeSettings("OFF") })).not.toThrow();
     expect(() => validateSourceRoute("hackrf", defaultModeSettings("DAB"), 2_399_999.75, 200_000_000)).not.toThrow();
   });
   it("preserves reported rate evidence and rejects inconsistent native/effective metadata", () => {

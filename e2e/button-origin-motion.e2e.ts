@@ -133,13 +133,9 @@ test("source padding and tuning columns stay aligned at desktop and phone densit
   await page.goto("/?browser-test=1");
   for (const width of [1440, 390, 320]) {
     await page.setViewportSize({ width, height: 1000 });
-    for (const compact of [false, true]) {
-      const density = page.getByRole("button", {
-        name: "Compact",
-        exact: true,
-      });
-      if ((await density.getAttribute("aria-pressed")) !== String(compact))
-        await density.click();
+    for (const compact of [true]) {
+      void compact;
+      await expect(page.locator(".app-shell")).toHaveClass(/density-compact/);
       const tune = (await page
         .getByRole("button", { name: "Tune", exact: true })
         .boundingBox())!;

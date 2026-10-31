@@ -26,7 +26,7 @@ export interface WorkspaceLayout {
   dockLarge: boolean;
 }
 export const DEFAULT_WORKSPACE: WorkspaceLayout = {
-  compact: false,
+  compact: true,
   sourceCollapsed: false,
   channelCollapsed: false,
   dockExpanded: true,
@@ -40,14 +40,14 @@ export function readWorkspace(
       storage.getItem(WORKSPACE_KEY) ?? "null",
     ) as Partial<WorkspaceLayout> | null;
     if (!value) return { ...DEFAULT_WORKSPACE };
-    return Object.fromEntries(
+    return { ...Object.fromEntries(
       Object.entries(DEFAULT_WORKSPACE).map(([key, fallback]) => [
         key,
         typeof value[key as keyof WorkspaceLayout] === "boolean"
           ? value[key as keyof WorkspaceLayout]
           : fallback,
       ]),
-    ) as unknown as WorkspaceLayout;
+    ) as unknown as WorkspaceLayout, compact: true, dockLarge: false };
   } catch {
     return { ...DEFAULT_WORKSPACE };
   }
@@ -129,7 +129,6 @@ function HeaderMenu({
 }
 
 export function WorkspaceControls({
-  layout,
   onChange,
   onSettings,
   onHelp,
@@ -147,33 +146,12 @@ export function WorkspaceControls({
   onAbout: () => void;
   activeView: string;
 }) {
-  const compactButton = useRef<HTMLButtonElement>(null);
   const [settingsOpened, setSettingsOpened] = useState(false);
   return (
     <div
       className="workspace-controls"
       aria-label="Layout and application options"
     >
-      <InstrumentButton
-        ref={compactButton}
-        type="button"
-        className="secondary"
-        aria-pressed={layout.compact}
-        title={
-          layout.compact
-            ? "Density: compact. Switch to comfortable spacing."
-            : "Density: comfortable. Switch to compact spacing."
-        }
-        aria-describedby={!layout.compact ? "compact-layout-hint" : undefined}
-        onClick={() => onChange((old) => ({ ...old, compact: !old.compact }))}
-      >
-        Compact
-      </InstrumentButton>
-      {!layout.compact && (
-        <span id="compact-layout-hint" className="compact-layout-hint">
-          Short screen? Try Compact.
-        </span>
-      )}
       {onAntenna && <InstrumentButton id="antenna-guide-trigger" type="button" className="secondary header-antenna-guide" aria-haspopup="dialog" onClick={() => onAntenna("antenna-guide-trigger")}><AppIcon name="radio" />Antenna guide</InstrumentButton>}
       <HeaderMenu
         label="Settings"
@@ -199,10 +177,10 @@ export function WorkspaceControls({
         <InstrumentButton
           type="button"
           className="secondary"
-          title="Reset panel layout and density; receiver settings stay unchanged"
+          title="Reset panel layout; receiver settings stay unchanged"
           onClick={() => {
             onChange({ ...DEFAULT_WORKSPACE });
-            compactButton.current?.focus();
+            document.getElementById("settings-menu-trigger")?.focus();
           }}
         >
           <AppIcon name="retry" />
