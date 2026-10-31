@@ -13,6 +13,8 @@
   saved layout preferences and retain Collapse/Expand in local and remote views.
 - Avoid hidden Receiver/capture presentation work and prepare common development
   modules during startup. Receiver, decoder and recording ownership stay shared.
+- Reduce recording-worker message overhead during high-rate channel capture,
+  retaining the same filters, sample order, memory limit and stop behavior.
 
 ## 1.18.1 — 2026-10-30
 
