@@ -648,7 +648,9 @@ it("seeks in place without replacing the analysis session and preserves pause", 
   await backend.start(options);
   await vi.advanceTimersByTimeAsync(100);
   backend.setReplayPaused(true);
-  await backend.seekReplay(48_000 * 15);
+  const seek = backend.seekReplay(48_000 * 15);
+  expect(() => backend.startRecording()).toThrow("Wait for replay seeking to finish before recording.");
+  await seek;
   expect(backend.getReplayPosition()).toBe(48_000 * 15);
   await vi.advanceTimersByTimeAsync(500);
   expect(backend.getReplayPosition()).toBe(48_000 * 15);

@@ -293,6 +293,7 @@ export class ReplayBackend implements ReceiverBackend {
 
   startRecording(survey?: import("./fieldSurvey").SurveyCaptureContext, options?: RecordingOptions): RecordingStatus {
     if (!this.metadata || this.stopped) throw new Error("Replay source is not running");
+    if (this.seeking) throw new Error("Wait for replay seeking to finish before recording.");
     if (this.recorder || this.completedRecording) throw new Error("Finish or retrieve the existing replay recording first.");
     const original = this.recording.metadata;
     const offset = this.position + this.priorGapSamples + this.elapsedGapSamples;
@@ -364,7 +365,7 @@ export class ReplayBackend implements ReceiverBackend {
     if (this.timer !== undefined) window.clearTimeout(this.timer);
     try {
       await this.pendingRead;
-      if (this.stopped) return;
+      if (this.stopped || this.recorder) return;
       this.position = Math.max(0, Math.min(this.rangeEnd, Math.round(sample)));
       this.rangeStart = this.position;
       this.nextGap = 0; this.priorGapSamples = 0; this.elapsedGapSamples = 0;

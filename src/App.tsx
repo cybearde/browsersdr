@@ -1399,6 +1399,7 @@ export function ReceiverApp({
   const [replayPositionSeconds, setReplayPositionSeconds] = useState(0);
   const [replaySeeking, setReplaySeeking] = useState(false);
   const replaySeekLock = useRef(false);
+  const pendingReplaySeek = useRef<number | undefined>(undefined);
   const [replayPaused, setReplayPaused] = useState(false);
   useEffect(() => { if (!["running", "tuning"].includes(receiver.lifecycle)) setReplayPaused(false); }, [receiver.lifecycle]);
   const [replayStartSeconds, setReplayStartSeconds] = useState(0);
@@ -1788,7 +1789,7 @@ export function ReceiverApp({
       const status = controller.getRecordingStatus();
       setRecordingStatus(status);
       const position = controller.getReplayPosition();
-      if (position !== undefined && replayRef.current) setReplayPositionSeconds(position / replayRef.current.metadata.sampleRateHz);
+      if (position !== undefined && replayRef.current && !replaySeekLock.current) setReplayPositionSeconds(position / replayRef.current.metadata.sampleRateHz);
       if (surveyCaptureActive.current) return;
       if (
         status?.state === "capacity-reached" &&
@@ -1808,13 +1809,21 @@ export function ReceiverApp({
 
   const seekReplay = async (seconds: number) => {
     const recording = replayRef.current;
-    if (!recording || source !== "replay" || transitioning || replaySeekLock.current || recordingStatus || receiver.cleanupRequired || !Number.isFinite(seconds)) return;
+    if (!recording || source !== "replay" || transitioning || recordingStatus || recordingStartPending.current || receiver.cleanupRequired || !Number.isFinite(seconds)) return;
     const target = Math.max(replayStartSeconds, Math.min(replayEndSeconds, seconds));
-    const wasRunning = controller.getSnapshot().lifecycle === "running";
+    setReplayPositionSeconds(target);
+    pendingReplaySeek.current = target;
+    if (replaySeekLock.current) return;
     replaySeekLock.current = true; setReplaySeeking(true);
     try {
-      if (wasRunning) await controller.seekReplay(Math.round(target * recording.metadata.sampleRateHz));
-      if (replayRef.current === recording) setReplayPositionSeconds(target);
+      while (pendingReplaySeek.current !== undefined) {
+        const next = pendingReplaySeek.current;
+        pendingReplaySeek.current = undefined;
+        if (replayRef.current !== recording || selectedSourceRef.current !== "replay") break;
+        if (controller.getSnapshot().lifecycle === "running") await controller.seekReplay(Math.round(next * recording.metadata.sampleRateHz));
+      }
+    } catch (error) {
+      setFileMessage(error instanceof Error ? error.message : "Could not seek in this recording.");
     } finally { replaySeekLock.current = false; setReplaySeeking(false); }
   };
 
@@ -2247,7 +2256,7 @@ export function ReceiverApp({
   };
   const startRecording = async () => {
     const captureSite = antennaSite.site;
-    if (replayPaused || recordingStartPending.current || stationSelectionPending.current) return;
+    if (replayPaused || replaySeeking || recordingStartPending.current || stationSelectionPending.current) return;
     recordingStartPending.current = true;
     let status: RecordingStatus | undefined;
     try {
@@ -2885,7 +2894,7 @@ export function ReceiverApp({
                 {remoteEntryIssue && <p className="remote-entry-hint" role="status">{remoteEntryIssue}</p>}
                 {source === "replay" && loadedReplay && <div className="source-replay-player" aria-label="Recording playback">
                   <div className="source-replay-readout"><strong>{replaySeeking ? "Seeking…" : running ? replayPaused ? "Paused" : "Playing" : replayPositionSeconds >= replayEndSeconds ? "Finished" : "Stopped"}</strong><output aria-label="Playback time">{formatReplayTime(replayPositionSeconds)} / {formatReplayTime(loadedReplay.metadata.durationSeconds)}</output></div>
-                  <label>Recording timeline<input aria-label="Recording timeline" type="range" min={replayStartSeconds} max={replayEndSeconds} step={0.01} value={Math.max(replayStartSeconds, Math.min(replayEndSeconds, replayPositionSeconds))} aria-valuetext={`${formatReplayTime(replayPositionSeconds)} of ${formatReplayTime(loadedReplay.metadata.durationSeconds)}`} disabled={transitioning || replaySeeking || Boolean(recordingStatus) || Boolean(receiver.cleanupRequired)} onChange={event => void seekReplay(Number(event.currentTarget.value))} /></label>
+                  <label>Recording timeline<input aria-label="Recording timeline" type="range" min={replayStartSeconds} max={replayEndSeconds} step={0.01} value={Math.max(replayStartSeconds, Math.min(replayEndSeconds, replayPositionSeconds))} aria-valuetext={`${formatReplayTime(replayPositionSeconds)} of ${formatReplayTime(loadedReplay.metadata.durationSeconds)}`} disabled={transitioning || Boolean(recordingStatus) || Boolean(receiver.cleanupRequired)} onChange={event => void seekReplay(Number(event.currentTarget.value))} /></label>
                   {(replayStartSeconds > 0 || replayEndSeconds < loadedReplay.metadata.durationSeconds) && <small>Selected range: {formatReplayTime(replayStartSeconds)}–{formatReplayTime(replayEndSeconds)}</small>}
                   <div className="source-replay-actions">
                     <InstrumentButton type="button" disabled={transitioning || replaySeeking || Boolean(recordingStatus) || replayPositionSeconds <= replayStartSeconds} onClick={() => void seekReplay(replayPositionSeconds - 10)}>↶ 10 s</InstrumentButton>
@@ -4161,13 +4170,13 @@ export function ReceiverApp({
                     disabled={
                       !recordingSupported ||
                       !running ||
-                      replayPaused ||
+                      replayPaused || replaySeeking ||
                       (captureCurrentChannel && !channelCapturePreview.plan) ||
                       scanActive ||
                       exportingRecording ||
                       captureSlotBlocked
                     }
-                    disabledReason={!recordingSupported ? "Recording is unavailable for this receive profile." : !running ? "Start reception before recording." : replayPaused ? "Resume replay before recording." : scanActive ? "Finish or pause the spectrum scan first." : exportingRecording ? "Wait for recording preparation to finish." : captureSlotBlocked ? "Download or discard the prepared capture first." : "Choose a channel bandwidth that fits inside the receiver window."}
+                    disabledReason={!recordingSupported ? "Recording is unavailable for this receive profile." : !running ? "Start reception before recording." : replaySeeking ? "Wait for replay seeking to finish before recording." : replayPaused ? "Resume replay before recording." : scanActive ? "Finish or pause the spectrum scan first." : exportingRecording ? "Wait for recording preparation to finish." : captureSlotBlocked ? "Download or discard the prepared capture first." : "Choose a channel bandwidth that fits inside the receiver window."}
                     onClick={startRecording}
                     icon="record"
                   >

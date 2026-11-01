@@ -358,6 +358,23 @@ test("replay player seeks without replacing the spectrum and preserves paused po
     .getByRole("button", { name: "Pause replay", exact: true })
     .click();
   const canvas = await page.locator("canvas").first().elementHandle();
+  const bounds = await timeline.boundingBox();
+  expect(bounds).not.toBeNull();
+  await page.mouse.move(bounds!.x + 8, bounds!.y + bounds!.height / 2);
+  await page.mouse.down();
+  await page.mouse.move(
+    bounds!.x + bounds!.width * 0.8,
+    bounds!.y + bounds!.height / 2,
+    { steps: 20 },
+  );
+  await page.mouse.up();
+  await expect
+    .poll(async () => Number(await timeline.inputValue()))
+    .toBeGreaterThan(20);
+  await expect(player.getByText("Paused", { exact: true })).toBeVisible();
+  const draggedPosition = await timeline.inputValue();
+  await page.waitForTimeout(500);
+  await expect(timeline).toHaveValue(draggedPosition);
   await timeline.fill("15");
   await expect(timeline).toHaveValue("15");
   await page.waitForTimeout(500);
