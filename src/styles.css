@@ -5213,3 +5213,20 @@ input[type="range"]:focus-visible { outline: 2px solid var(--cyan); outline-offs
 
 /* A dormant Radio Apps presentation target must not add layout space. */
 [data-radio-app-target]:empty { display: none; }
+
+.source-replay-player { display: grid; gap: 10px; width: 100%; min-width: 0; padding: 0; border: 0; }
+.source-replay-readout, .source-replay-actions { display: flex; justify-content: space-between; gap: 8px; align-items: center; flex-wrap: wrap; }
+.source-replay-readout output { font-variant-numeric: tabular-nums; }
+.source-replay-player input[type="range"] { width: 100%; }
+
+.source-replay-actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.8fr) minmax(0, 1fr); align-items: stretch; }
+.source-replay-actions button { width: 100%; min-width: 0; margin: 0; padding-inline: 6px; min-height: 38px; white-space: nowrap; }
+
+.replay-import-progress { display: grid; gap: 6px; width: min(100%, 32rem); margin-block: 12px; }
+.replay-import-progress > div { display: flex; justify-content: space-between; gap: 12px; font-size: .85rem; }
+.replay-import-progress progress { width: 100%; accent-color: var(--cyan); }
+.replay-range-controls { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; }
+.replay-range-controls > p { flex-basis: 100%; margin-block: 0 4px; }
+.replay-range-controls > label { width: 12rem; max-width: 100%; }
+.replay-range-controls > label input { width: 100%; }
+.replay-range-controls > button { flex: none; margin: 0; }

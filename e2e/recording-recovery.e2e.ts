@@ -211,7 +211,9 @@ test("large SigMF import keeps the UI responsive, supports cancellation, range a
   const cdp = await page.context().newCDPSession(page);
   const before = await cdp.send("Runtime.getHeapUsage");
   await page.getByRole("button", { name: "Load SigMF pair" }).click();
+  await expect(page.getByRole("progressbar", { name: /SigMF/ })).toBeVisible();
   await page.getByRole("button", { name: "Cancel replay import" }).click();
+  await expect(page.locator(".replay-import-progress")).toBeHidden();
   await expect(
     page.getByRole("button", { name: "Load SigMF pair" }),
   ).toBeEnabled();
@@ -219,6 +221,18 @@ test("large SigMF import keeps the UI responsive, supports cancellation, range a
   await expect(page.locator(".file-message")).toContainText(
     "Loaded SigMF replay",
   );
+  await expect(page.locator(".replay-import-progress")).toBeHidden();
+  const rangeFields = await page
+    .locator(".replay-range-controls > label")
+    .evaluateAll((labels) =>
+      labels.map((label) => {
+        const rect = label.getBoundingClientRect();
+        return { width: rect.width, top: rect.top };
+      }),
+    );
+  expect(rangeFields).toHaveLength(2);
+  expect(rangeFields.every((field) => field.width <= 210)).toBe(true);
+  expect(Math.abs(rangeFields[0]!.top - rangeFields[1]!.top)).toBeLessThan(1);
   await page.getByRole("button", { name: "Start replay", exact: true }).click();
   await page.getByRole("button", { name: "Pause replay", exact: true }).click();
   await expect(
@@ -284,4 +298,94 @@ test("invalid replacement preserves the previously valid replay", async ({
   await expect(
     page.getByRole("button", { name: "Start replay", exact: true }),
   ).toBeEnabled();
+});
+
+test("replay player seeks without replacing the spectrum and preserves paused position", async ({
+  page,
+}) => {
+  const recording = createDeterministicRecordingFixture(48_000 * 30);
+  await page.goto("/?browser-test=1");
+  await page
+    .getByRole("combobox", { name: "Signal source" })
+    .selectOption("replay");
+  await page
+    .locator(".file-picker-input")
+    .nth(0)
+    .setInputFiles({
+      name: "player.cu8",
+      mimeType: "application/octet-stream",
+      buffer: Buffer.from(recording.data),
+    });
+  await page
+    .locator(".file-picker-input")
+    .nth(1)
+    .setInputFiles({
+      name: "player.json",
+      mimeType: "application/json",
+      buffer: Buffer.from(JSON.stringify(recording.metadata)),
+    });
+  await page.getByRole("button", { name: "Load files", exact: true }).click();
+  const player = page.getByLabel("Recording playback", { exact: true });
+  const timeline = player.getByRole("slider", { name: "Recording timeline" });
+  await expect(page.getByLabel("Playback time", { exact: true })).toHaveText(
+    "00:00.0 / 00:30.0",
+  );
+  const geometry = await page.evaluate(() => {
+    const source = document
+      .querySelector('select[aria-label="Signal source"]')!
+      .getBoundingClientRect();
+    const actions = document
+      .querySelector(".source-replay-actions")!
+      .getBoundingClientRect();
+    const transport = document
+      .querySelector(".acquire-controls .transport")!
+      .getBoundingClientRect();
+    return [
+      Math.abs(actions.left - source.left),
+      Math.abs(actions.right - source.right),
+      Math.abs(transport.left - source.left),
+      Math.abs(transport.right - source.right),
+    ];
+  });
+  expect(geometry.every((delta) => delta < 1)).toBe(true);
+  await player
+    .getByRole("button", { name: "Play recording", exact: true })
+    .click();
+  await expect
+    .poll(async () => Number(await timeline.inputValue()))
+    .toBeGreaterThan(0);
+  await player
+    .getByRole("button", { name: "Pause replay", exact: true })
+    .click();
+  const canvas = await page.locator("canvas").first().elementHandle();
+  await timeline.fill("15");
+  await expect(timeline).toHaveValue("15");
+  await page.waitForTimeout(500);
+  await expect(timeline).toHaveValue("15");
+  await expect(
+    player.getByRole("button", { name: "Resume replay", exact: true }),
+  ).toBeEnabled();
+  await player.getByRole("button", { name: "↶ 10 s", exact: true }).click();
+  await expect(timeline).toHaveValue("5");
+  await player.getByRole("button", { name: "10 s ↷", exact: true }).click();
+  await expect(timeline).toHaveValue("15");
+  expect(await canvas!.evaluate((node) => node.isConnected)).toBe(true);
+  await player
+    .getByRole("button", { name: "Resume replay", exact: true })
+    .click();
+  await expect
+    .poll(async () => Number(await timeline.inputValue()))
+    .toBeGreaterThan(15);
+  await timeline.fill("30");
+  await expect(player.getByText("Finished", { exact: true })).toBeVisible();
+  await expect(page.getByLabel("Playback time", { exact: true })).toHaveText(
+    "00:30.0 / 00:30.0",
+  );
+  await player
+    .getByRole("button", { name: "Play recording", exact: true })
+    .click();
+  await expect
+    .poll(async () => Number(await timeline.inputValue()))
+    .toBeLessThan(5);
+  await page.getByRole("button", { name: "Stop", exact: true }).click();
 });

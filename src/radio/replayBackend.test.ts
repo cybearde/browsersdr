@@ -642,3 +642,25 @@ describe("text modem product replay", () => {
     await f.backend.stop();
   }, 20_000);
 });
+
+it("seeks in place without replacing the analysis session and preserves pause", async () => {
+  const { backend, options, analysis, events } = setup(48_000 * 30);
+  await backend.start(options);
+  await vi.advanceTimersByTimeAsync(100);
+  backend.setReplayPaused(true);
+  await backend.seekReplay(48_000 * 15);
+  expect(backend.getReplayPosition()).toBe(48_000 * 15);
+  await vi.advanceTimersByTimeAsync(500);
+  expect(backend.getReplayPosition()).toBe(48_000 * 15);
+  await backend.seekReplay(48_000 * 5);
+  expect(backend.getReplayPosition()).toBe(48_000 * 5);
+  expect(analysis.begin).toHaveBeenCalledTimes(1);
+  expect(analysis.stop).not.toHaveBeenCalled();
+  expect(analysis.retune).not.toHaveBeenCalled();
+  expect(events.sourceEnded).not.toHaveBeenCalled();
+  backend.setReplayPaused(false);
+  await vi.advanceTimersByTimeAsync(100);
+  expect(backend.getReplayPosition()).toBeGreaterThan(48_000 * 5);
+  expect(events.runtimeError).not.toHaveBeenCalled();
+  await backend.stop();
+});

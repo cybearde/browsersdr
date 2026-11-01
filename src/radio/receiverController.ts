@@ -157,6 +157,7 @@ export interface ReceiverBackend {
   getRecordingStatus?(): RecordingStatus | undefined;
   setReplayPaused?(paused: boolean): void;
   getReplayPosition?(): number;
+  seekReplay?(sample: number): Promise<void>;
 }
 
 export type ReceiverBackendFactory = (
@@ -211,6 +212,10 @@ export class ReceiverController {
   setReplayPaused(paused: boolean): void {
     if (this.snapshot.lifecycle !== "running" || this.snapshot.session?.source !== "replay") return;
     this.backend?.setReplayPaused?.(paused);
+  }
+  async seekReplay(sample: number): Promise<void> {
+    if (this.snapshot.lifecycle !== "running" || this.snapshot.session?.source !== "replay" || this.backend?.getRecordingStatus?.()) return;
+    await this.backend?.seekReplay?.(sample);
   }
   getReplayPosition(): number | undefined { return this.backend?.getReplayPosition?.(); }
 

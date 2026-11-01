@@ -15,7 +15,7 @@ BrowserSDR turns a supported USB radio into a browser workspace for listening, d
 - **Listen to radio.** Tune FM broadcasts with RDS station information, AM, narrowband FM, single sideband and Morse audio. Digital radio reception includes DAB+.
 - **Explore the spectrum.** Watch signals appear in the live spectrum and waterfall, click to tune, consult band guides, and use Explorer for scans and field surveys. Save useful frequencies as favorites.
 - **Decode more than audio.** Explore aircraft positions, ship messages, weather-balloon telemetry, selected wireless sensors, pager messages, amateur text and radio images. Supported modes include ADS-B, AIS, APRS, POCSAG (512/1200/2400 bit/s), RTTY, NAVTEX, WEFAX and SSTV, with maps or dedicated results views where applicable.
-- **Record and revisit.** Save short audio clips as WAV, rewind recent audio, or record radio samples (I/Q) to replay and investigate later. Export compatible captures as SigMF for use with other radio tools.
+- **Record and revisit.** Save short audio clips as WAV, rewind recent audio, or record radio samples (I/Q) to replay and investigate later. Export compatible captures as SigMF for use with other radio tools. Replay from Signal source with elapsed/total time, a seek timeline, pause/resume and 10-second jumps; SigMF imports show checksum progress.
 
 Reception depends on your receiver, antenna, location and signal conditions. Decoder availability and real-world validation vary by mode; some newer decoders still await off-air verification.
 

@@ -1,3 +1,8 @@
+function formatReplayTime(seconds: number): string {
+  const tenths = Math.floor(Math.max(0, seconds) * 10);
+  return `${Math.floor(tenths / 600).toString().padStart(2, "0")}:${(Math.floor(tenths / 10) % 60).toString().padStart(2, "0")}.${tenths % 10}`;
+}
+
 import { DEFAULT_AIRSPY_SETTINGS, type AirspySettings } from "./radio/airspySettings";
 import { InstrumentTabs } from "./ui/InstrumentTabs";
 import { InstrumentRange } from "./ui/InstrumentRange";
@@ -1388,8 +1393,12 @@ export function ReceiverApp({
   const [exportingRecording, setExportingRecording] = useState(false);
   const { exportCoordinator, retainedCapture, setRetainedCapture } = useCaptureRetention(recordingStatus);
   const [importingReplay, setImportingReplay] = useState(false);
+  const [replayImportProgress, setReplayImportProgress] = useState<{ phase: "metadata" | "checksum" | "opening"; bytes: number; total: number }>();
   const replayImportAbort = useRef<AbortController | undefined>(undefined);
   const [replayActivation] = useState(() => new ReplayActivation());
+  const [replayPositionSeconds, setReplayPositionSeconds] = useState(0);
+  const [replaySeeking, setReplaySeeking] = useState(false);
+  const replaySeekLock = useRef(false);
   const [replayPaused, setReplayPaused] = useState(false);
   useEffect(() => { if (!["running", "tuning"].includes(receiver.lifecycle)) setReplayPaused(false); }, [receiver.lifecycle]);
   const [replayStartSeconds, setReplayStartSeconds] = useState(0);
@@ -1674,10 +1683,11 @@ export function ReceiverApp({
       if (next.lifecycle === "running" || next.lifecycle === "connected")
         setAppliedSession(next.session);
       else if (!next.session) setAppliedSession(undefined);
+      if (next.message === "Replay reached end of file. Final spectrum retained." && replayRef.current) setReplayPositionSeconds((replayRef.current.replayRange?.endSample ?? replayRef.current.metadata.sampleCount) / replayRef.current.metadata.sampleRateHz);
       setReceiver(next);
     });
     return unsubscribe;
-  }, [controller]);
+  }, [controller, replayRef]);
 
   useEffect(() => {
     if (autoConnectAttempted.current || (hasSettingsShare(location.hash) || hasRemoteShare(location.hash))) return;
@@ -1777,6 +1787,8 @@ export function ReceiverApp({
     const timer = window.setInterval(() => {
       const status = controller.getRecordingStatus();
       setRecordingStatus(status);
+      const position = controller.getReplayPosition();
+      if (position !== undefined && replayRef.current) setReplayPositionSeconds(position / replayRef.current.metadata.sampleRateHz);
       if (surveyCaptureActive.current) return;
       if (
         status?.state === "capacity-reached" &&
@@ -1792,9 +1804,25 @@ export function ReceiverApp({
       if (completed) retainCompletedRecording(completed);
     }, 250);
     return () => window.clearInterval(timer);
-  }, [controller, retainCompletedRecording, source]);
+  }, [controller, retainCompletedRecording, source, replayRef]);
+
+  const seekReplay = async (seconds: number) => {
+    const recording = replayRef.current;
+    if (!recording || source !== "replay" || transitioning || replaySeekLock.current || recordingStatus || receiver.cleanupRequired || !Number.isFinite(seconds)) return;
+    const target = Math.max(replayStartSeconds, Math.min(replayEndSeconds, seconds));
+    const wasRunning = controller.getSnapshot().lifecycle === "running";
+    replaySeekLock.current = true; setReplaySeeking(true);
+    try {
+      if (wasRunning) await controller.seekReplay(Math.round(target * recording.metadata.sampleRateHz));
+      if (replayRef.current === recording) setReplayPositionSeconds(target);
+    } finally { replaySeekLock.current = false; setReplaySeeking(false); }
+  };
 
   const start = () => {
+    if (source === "replay" && loadedReplay) {
+      const position = replayPositionSeconds >= replayEndSeconds ? replayStartSeconds : Math.max(replayStartSeconds, replayPositionSeconds);
+      loadedReplay.replayRange = { startSample: Math.round(position * loadedReplay.metadata.sampleRateHz), endSample: Math.round(replayEndSeconds * loadedReplay.metadata.sampleRateHz) };
+    }
     void controller.start({
       source,
       channelFrequencyHz: frequencyMhz * 1_000_000,
@@ -2498,7 +2526,7 @@ export function ReceiverApp({
     const activated = await replayActivation.activate(controller, () => {
       if (replayRef.current !== recording) void replayRef.current?.releaseData?.();
       replayRef.current = recording;
-      setReplayStartSeconds(0); setReplayEndSeconds(recording.metadata.durationSeconds); setReplayPaused(false);
+      setReplayPositionSeconds(0); setReplayStartSeconds(0); setReplayEndSeconds(recording.metadata.durationSeconds); setReplayPaused(false);
       setLoadedReplay(recording);
       setFrequencyMhz(recording.metadata.selectedChannelFrequencyHz / 1_000_000);
       setMode(recording.metadata.mode);
@@ -2522,6 +2550,8 @@ export function ReceiverApp({
     if (!replayBinary || !replayMetadata || replayImportAbort.current) return;
     const aborter = new AbortController();
     replayImportAbort.current = aborter; setImportingReplay(true);
+    setReplayImportProgress(replayImportFormat === "sigmf" ? { phase: "metadata", bytes: 0, total: replayBinary.size } : undefined);
+    setFileMessage("Loading selected recording…");
     const sourceAtStart = selectedSourceRef.current;
     const generation = controller.getSnapshot().sessionGeneration;
     try {
@@ -2536,9 +2566,13 @@ export function ReceiverApp({
       aborter.signal.throwIfAborted();
       let recording: IqRecording;
       if (replayImportFormat === "sigmf") {
+        setReplayImportProgress({ phase: "checksum", bytes: 0, total: binary.size });
         recording = await importSigmfRecording(metadataText, binary, {
           signal: aborter.signal,
-          onProgress: bytes => setFileMessage("Checking SigMF checksum: " + (bytes / binary.size * 100).toFixed(0) + "%"),
+          onProgress: bytes => {
+            if (aborter.signal.aborted || replayImportAbort.current !== aborter) return;
+            setReplayImportProgress({ phase: "checksum", bytes: Math.min(bytes, binary.size), total: binary.size });
+          },
           modeSettings: selectedSigmfModeSettings(sigmfReplayMode),
           ...(sigmfChannelChoice === "custom"
             ? {
@@ -2553,6 +2587,7 @@ export function ReceiverApp({
       }
       aborter.signal.throwIfAborted();
       if (selectedSourceRef.current !== sourceAtStart || controller.getSnapshot().sessionGeneration !== generation) throw new Error("Receiver changed while loading; select Load again.");
+      if (replayImportFormat === "sigmf") setReplayImportProgress({ phase: "opening", bytes: binary.size, total: binary.size });
       await activateReplay(
         recording,
         replayImportFormat === "sigmf"
@@ -2564,7 +2599,7 @@ export function ReceiverApp({
       setFileMessage(
         error instanceof Error ? error.message : "Could not load recording.",
       );
-    } finally { if (replayImportAbort.current === aborter) replayImportAbort.current = undefined; setImportingReplay(false); }
+    } finally { if (replayImportAbort.current === aborter) replayImportAbort.current = undefined; setImportingReplay(false); setReplayImportProgress(undefined); }
   };
 
   const activeSession = receiver.session;
@@ -2848,6 +2883,16 @@ export function ReceiverApp({
                 </label>
                 {remoteBlockedReason && <span id="remote-source-prerequisite" className="visually-hidden">Remote receiver: {remoteBlockedReason}</span>}
                 {remoteEntryIssue && <p className="remote-entry-hint" role="status">{remoteEntryIssue}</p>}
+                {source === "replay" && loadedReplay && <div className="source-replay-player" aria-label="Recording playback">
+                  <div className="source-replay-readout"><strong>{replaySeeking ? "Seeking…" : running ? replayPaused ? "Paused" : "Playing" : replayPositionSeconds >= replayEndSeconds ? "Finished" : "Stopped"}</strong><output aria-label="Playback time">{formatReplayTime(replayPositionSeconds)} / {formatReplayTime(loadedReplay.metadata.durationSeconds)}</output></div>
+                  <label>Recording timeline<input aria-label="Recording timeline" type="range" min={replayStartSeconds} max={replayEndSeconds} step={0.01} value={Math.max(replayStartSeconds, Math.min(replayEndSeconds, replayPositionSeconds))} aria-valuetext={`${formatReplayTime(replayPositionSeconds)} of ${formatReplayTime(loadedReplay.metadata.durationSeconds)}`} disabled={transitioning || replaySeeking || Boolean(recordingStatus) || Boolean(receiver.cleanupRequired)} onChange={event => void seekReplay(Number(event.currentTarget.value))} /></label>
+                  {(replayStartSeconds > 0 || replayEndSeconds < loadedReplay.metadata.durationSeconds) && <small>Selected range: {formatReplayTime(replayStartSeconds)}–{formatReplayTime(replayEndSeconds)}</small>}
+                  <div className="source-replay-actions">
+                    <InstrumentButton type="button" disabled={transitioning || replaySeeking || Boolean(recordingStatus) || replayPositionSeconds <= replayStartSeconds} onClick={() => void seekReplay(replayPositionSeconds - 10)}>↶ 10 s</InstrumentButton>
+                    <InstrumentButton type="button" disabled={transitioning || replaySeeking || Boolean(recordingStatus) || Boolean(receiver.cleanupRequired)} onClick={() => { if (!running) start(); else { controller.setReplayPaused(!replayPaused); setReplayPaused(!replayPaused); } }}>{replayPaused ? "Resume replay" : running ? "Pause replay" : "Play recording"}</InstrumentButton>
+                    <InstrumentButton type="button" disabled={transitioning || replaySeeking || Boolean(recordingStatus) || replayPositionSeconds >= replayEndSeconds} onClick={() => void seekReplay(replayPositionSeconds + 10)}>10 s ↷</InstrumentButton>
+                  </div>
+                </div>}
                 {(source === "usrp-b205" || source === "bladerf") && (
                   <div className="setup-checklist" aria-label="Setup files">
                     <p className="setup-caption">
@@ -4491,11 +4536,17 @@ export function ReceiverApp({
                   <AppIcon name="folder" />Open example recording
                 </InstrumentButton>
               </div>
+              {importingReplay && replayImportProgress && <div className="replay-import-progress">
+                <div><span id="replay-import-progress-label">{replayImportProgress.phase === "metadata" ? "Reading SigMF metadata…" : replayImportProgress.phase === "opening" ? "Opening recording…" : "Checking SigMF checksum…"}</span>
+                  {replayImportProgress.phase === "checksum" && <span>{Math.floor(replayImportProgress.bytes / Math.max(1, replayImportProgress.total) * 100)}%</span>}
+                </div>
+                <progress aria-labelledby="replay-import-progress-label" max={Math.max(1, replayImportProgress.total)} value={replayImportProgress.phase === "checksum" ? replayImportProgress.bytes : undefined} />
+              </div>}
               <p className="file-message" role="status">
                 {fileMessage}
               </p>
               {loadedReplay && <div className="replay-range-controls">
-                <p>File-backed replay up to 2 GiB. Choose the playback range while stopped; Stop then change Start to seek.</p>
+                <p>File-backed replay up to 2 GiB. Choose the playback range while stopped. Use the player in Signal source to seek.</p>
                 <label>Replay start (seconds)<input aria-label="Replay start seconds" type="number" min={0} max={loadedReplay.metadata.durationSeconds} step="any" disabled={running || busy}
                   value={Number(replayStartSeconds.toFixed(6))} onChange={event => {
                     const value = Number(event.currentTarget.value); setReplayStartSeconds(value);
@@ -4510,9 +4561,6 @@ export function ReceiverApp({
                 <InstrumentButton type="button" disabled={running || busy || importingReplay} onClick={() => {
                   void replayRef.current?.releaseData?.(); replayRef.current = undefined; setLoadedReplay(undefined); setFileMessage("Replay closed.");
                 }}>Close replay</InstrumentButton>
-                <InstrumentButton type="button" disabled={!running || source !== "replay" || Boolean(receiver.cleanupRequired) || Boolean(recordingStatus)} onClick={() => { controller.setReplayPaused(!replayPaused); setReplayPaused(!replayPaused); }}>
-                  {replayPaused ? "Resume replay" : "Pause replay"}
-                </InstrumentButton>
               </div>}
 
               </>}</DeferredWorkspace>

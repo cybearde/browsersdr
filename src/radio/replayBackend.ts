@@ -64,6 +64,9 @@ export class ReplayBackend implements ReceiverBackend {
   private closed = false;
   private closeTask?: Promise<void>;
   private position = 0;
+  private playbackEpoch = 0;
+  private pendingRead?: Promise<void>;
+  private seeking = false;
   private rangeStart = 0;
   private rangeEnd = 0;
   private pausedAt?: number;
@@ -354,14 +357,45 @@ export class ReplayBackend implements ReceiverBackend {
 
   getReplayPosition(): number { return this.position; }
 
+  async seekReplay(sample: number): Promise<void> {
+    if (this.stopped || this.ended || this.seeking || this.recorder || !Number.isFinite(sample)) return;
+    this.seeking = true;
+    ++this.playbackEpoch;
+    if (this.timer !== undefined) window.clearTimeout(this.timer);
+    try {
+      await this.pendingRead;
+      if (this.stopped) return;
+      this.position = Math.max(0, Math.min(this.rangeEnd, Math.round(sample)));
+      this.rangeStart = this.position;
+      this.nextGap = 0; this.priorGapSamples = 0; this.elapsedGapSamples = 0;
+      while ((this.recording.metadata.knownGaps[this.nextGap]?.afterSample ?? Infinity) < this.position) {
+        this.priorGapSamples += this.recording.metadata.knownGaps[this.nextGap]!.missingSamples ?? 0;
+        this.nextGap++;
+      }
+      this.player.reset();
+      this.demodulator.setSampleRate(channelSampleRate(recordingRoutingSampleRate(this.recording.metadata)));
+      this.channel?.reset(this.metadata!.selectedChannelFrequencyHz - this.metadata!.hardwareCenterFrequencyHz);
+      this.rds.reset();
+      this.receiver?.resetDigitalReceiver();
+      this.dabPlayback?.reset();
+      this.analysis.markDiscontinuity(0);
+      this.startedAtMs = performance.now();
+      if (this.pausedAt !== undefined) this.pausedAt = this.startedAtMs;
+    } finally {
+      this.seeking = false;
+      if (!this.stopped) this.timer = window.setTimeout(() => this.scheduleNext(), 0);
+    }
+  }
+
   private scheduleNext(): void {
-    if (this.stopped) return;
+    if (this.stopped || this.seeking) return;
     if (this.pausedAt !== undefined) { this.timer = window.setTimeout(() => this.scheduleNext(), 25); return; }
     if (this.recording.dataBlob) {
       const bytesPerSample = this.recording.metadata.bytesPerComplexSample;
-      void this.reader.prepare(this.position * bytesPerSample, Math.min(REPLAY_CHUNK_SAMPLES * REPLAY_MAX_CATCH_UP_BLOCKS, this.rangeEnd - this.position) * bytesPerSample)
-        .then(() => { if (!this.stopped) this.deliverNext(); })
-        .catch(error => { if (!this.stopped) this.events.runtimeError(error); });
+      const epoch = this.playbackEpoch;
+      this.pendingRead = this.reader.prepare(this.position * bytesPerSample, Math.min(REPLAY_CHUNK_SAMPLES * REPLAY_MAX_CATCH_UP_BLOCKS, this.rangeEnd - this.position) * bytesPerSample)
+        .then(() => { if (!this.stopped && epoch === this.playbackEpoch) this.deliverNext(); })
+        .catch(error => { if (!this.stopped && epoch === this.playbackEpoch) this.events.runtimeError(error); });
     } else this.deliverNext();
   }
 
